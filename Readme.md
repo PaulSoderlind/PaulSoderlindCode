@@ -5,4 +5,6 @@ Readme for PaulSoderlindCode
 
 2. EmpiricalFinancePhD: Julia code for a PhD course in empirical finance at UNISG (unpolished) 
 
-3.  Driscoll-Kraay: Julia code for panel regressions with Driscoll-Kraay standard errors
+3. DriscollKraay: Julia code for panel regressions with Driscoll-Kraay standard errors
+
+4. LStar: Julia code for LSTAR regressions
