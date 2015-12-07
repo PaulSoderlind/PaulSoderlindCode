@@ -8,3 +8,5 @@ Readme for PaulSoderlindCode
 3. DriscollKraay: Julia code for panel regressions with Driscoll-Kraay standard errors
 
 4. LStar: Julia code for LSTAR regressions
+
+5. AssetPricingTest: Julia code for asset pricing test
