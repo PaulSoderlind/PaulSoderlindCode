@@ -103,10 +103,7 @@ for i = 1:K                                #loop over mean returns in Std x  mea
   Var_p[i] = (w_pi'Sigma*w_pi)[1]                  #variance of portfolio with mean mu_p[i]
 end 
 
-w_T     = Sigma_1*(mu-Rf)/(ettor'Sigma_1*(mu-Rf))  #tangency portfolio (T)
-mu_T    = w_T'mu                                 #average return T
-Var_T   = w_T'Sigma*w_T                          #variance T
-SR_T    = (mu_T - Rf)/sqrt(Var_T)                #Sharpe ratio T 
+SR_T    = sqrt((mu-Rf)'Sigma_1*(mu-Rf))          #Sharpe ratio of Tangency portfolio 
 CML_std = sqrt(((mu_p-Rf)./SR_T).^2)             #std according to CLM
 
 plot1 = plot(layer(x=sqrt(Var_p),y=mu_p,Geom.line(preserve_order=true),Theme(default_color=color("red"))),
