@@ -63,6 +63,7 @@ function AssetPricingTest3bPs(Re1,Re2,f,h,bandwidth=0,q=0,ExtraTest=[],ExtraTest
   f   = yx[:,n1+n2+1:n1+n2+K]            #factors, set f
   h   = yx[:,n1+n2+K+1:n1+n2+K+L]        #factors, set h
   T   = size(Re1,1)                      #no. obs
+  yx = nothing                              #can save some memory
   
   Ef   = mean(f,1)'
   Eh   = mean(h,1)'
@@ -100,6 +101,9 @@ function AssetPricingTest3bPs(Re1,Re2,f,h,bandwidth=0,q=0,ExtraTest=[],ExtraTest
   theta = [vec(bf);vec(bh)]              #parameters (combined)
   g     = [gf gh]                        #moment conditions (combined)
   S0    = NewEst3Ps(g,bandwidth)         #Cov[sqrt(T)*gbar]
+  g  = nothing                               #can save some memory
+  gf = nothing
+  gh = nothing
   
   Sff  = f1'f1/T
   Df_1 = -kron(inv(Sff),eye(n1))          #upper left corner of inverse of Jacobian

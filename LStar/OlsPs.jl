@@ -36,6 +36,7 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
     y = yx[:,1:n]
     x = yx[:,n+1:end]
   end 
+  yx = nothing
   
   Ty = size(y,1)
   Tx = size(x,1)
