@@ -21,7 +21,7 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
 #
 #
 #
-#  Calls on:  excisePs   
+#  Calls on:  excisePs  
 #
 #
 #
