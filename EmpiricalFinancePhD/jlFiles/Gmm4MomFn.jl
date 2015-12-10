@@ -1,4 +1,4 @@
-function Gmm4MomFn(par,x,W=1)
+function Gmm4MomFn(par,x)
 
   mu = par[1]
   s2 = par[2]
@@ -14,7 +14,7 @@ end
 
 function Gmm4MomLossFn(par,x,W=1)
 
-  (g,gbar) = Gmm4MomFn(par,x,W)
+  (g,gbar) = Gmm4MomFn(par,x)
 
   Loss = gbar'W*gbar                #to be minimized
   Loss = Loss[1]
