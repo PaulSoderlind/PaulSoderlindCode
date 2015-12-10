@@ -19,12 +19,11 @@ function VasicekTsCsFn(par,yo,yu,nMo,nMu)
   
   (ao,bo,xt,au,bu,yuHat) = VasicekABFn(lambda,mu,p,sqrt(s2),nMo,nMu,yo)
   
-  
   Et1xt    = (1-p)*mu + p*lagnPs(xt)    #E(t-1)x(t)
   Et1xt[1] = mu
   Et1yo    = ao + Et1xt*bo              #E(t-1)yo(t)
   v        = yo - Et1yo                 #Tx1, forecast error of yo
-  S        = bo's2*bo                  #variance of forecast error of yo
+  S        = bo's2*bo                   #variance of forecast error of yo
   S_1      = inv(S*1000)*1000           #1000/1000 improves the precision a bit
   LLo_t    = -0.5*log(pi) - 0.5*log(det(S)) - 0.5*sum(v*S_1.*v,2)   #Tx1
   
