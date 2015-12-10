@@ -2,9 +2,9 @@ function garch11LL(parm::Vector,yx)
 
   y = yx[:,1]               #split up yx
   x = yx[:,2:end]
-  
   T = size(x,1)
   k = size(x,2)
+
   b     = parm[1:k]         #mean equation, y = x'*b
   omega = abs(parm[k+1])    #GARCH(1,1) equation: s2(t) = omega + alpha*u(t-1)^2 + beta1*s2(t-1)
   alpha = abs(parm[k+2])
@@ -26,7 +26,6 @@ function garch11LL(parm::Vector,yx)
                           #output scalar: overall LL function value
   LL = -sum(LL)           #to minimize -sum(LL), notice
   
-  
   return LL,s2,yhat
 
 end
@@ -40,4 +39,4 @@ function garch11LLLoss(parm::Vector,yx)
   
 end
 #------------------------------------------------------------------------------
-   
+ 
