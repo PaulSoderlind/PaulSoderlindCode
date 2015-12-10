@@ -73,10 +73,10 @@ for i = 1:NSim                                       #loop over simulations
   epsilon    = res[round(Int64,t_i),:]        
   epsilon    = epsilon[1:T,:]                        #get exact sample length
   y_i        = x*bLS + epsilon
-  (b_i,)     = OlsFn(y_i,x)                          #,skips the remaining outputs
+  b_i,       = OlsFn(y_i,x)                          #,skips the remaining outputs
   bBoot[i,:] = b_i'                     
 end
 
-println("\n","Average bootstrap estimates and their std")
+println("\n","Average bootstrap estimates and bootstrapped std")
 println(round([mean(bBoot,1); std(bBoot,1)],3))
 #------------------------------------------------------------------------------
