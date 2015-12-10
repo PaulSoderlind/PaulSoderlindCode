@@ -22,7 +22,6 @@ include("jlFiles/NWFn.jl")
 using Optim
 #------------------------------------------------------------------------------
 
-
 xx   = readdlm("Data/FFmFactorsPs.csv",',',header=true)      
 x    = xx[1]
 ym   = x[:,1]              #[yearmonth]
@@ -59,9 +58,9 @@ println(round([par_a sqrt(diag(V3/T))],4))
 W     = diagm([1;1;0;0])                  #weighting matrix
 x1    = optimize(par->Gmm4MomLossFn(par,x,W),par_a)
 par_b = x1.minimum
-g,    = Gmm4MomFn(par_b,x,W)              #Tx4, moment conditions, evaluated at point estimates
+g,    = Gmm4MomFn(par_b,x)              #Tx4, moment conditions, evaluated at point estimates
 S     = NWFn(g,1)                         #variance of sqrt(T)"gbar, NW with 1 lag
-V2 = inv(D'W*D)*D'W*S*W'D*inv(D'W*D)
+V2    = inv(D'W*D)*D'W*S*W'D*inv(D'W*D)
 println("\n","parameter, std(parameters)")
 println(round([par_b sqrt(diag(V2/T))],4))
 #------------------------------------------------------------------------------
@@ -75,11 +74,9 @@ while (Dpar > 1e-3) || (i < 2)    #require at least one iteration
   println("iteration  ", i, ": old and new parameters")
   par_b           = par_c + 0.0     #important, par_b=par_c would make them always identical
   W               = inv(S)                           
-  Gmm4MomFn_W     = W
-  Gmm4MomFn_AvgIt = 1
   x1              = optimize(par->Gmm4MomLossFn(par,x,W),par_b)   #use last estimates as starting point
   par_c           = x1.minimum
-  g,              = Gmm4MomFn(par_c,x,W)
+  g,              = Gmm4MomFn(par_c,x)
   S               = NWFn(g,1)
   Dpar            = maximum(abs(par_c-par_b))
   tst1 = (Dpar > 1e-5)
