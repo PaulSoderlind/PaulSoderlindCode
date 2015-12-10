@@ -30,9 +30,9 @@ Re = R - repmat(Rf,1,size(R,2))  #excess returns for the 25 FF portfolios
 #------------------------------------------------------------------------------
 
                                            #FF, testing alphas
-cf       = [ones(T,1) Rme RSMB RHML]       #factors, constant and 3 FF factors
+cf        = [ones(T,1) Rme RSMB RHML]       #factors, constant and 3 FF factors
 (b,epsM,) = OlsFn(Re,cf)
-alfaM    = b[1,:]'                         #nx1
+alfaM     = b[1,:]'                         #nx1
 
 #g_    = HDirProdFn(cf,epsM)
 g = fill(NaN,(T,size(cf,2)*n))            #moment conditions, regressors*residual
