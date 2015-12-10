@@ -186,6 +186,8 @@ println("result from the function MatLecD: ", y)
 
 println("\n","----------------------------- Plotting -----------------------","\n")
 
+warn("currently (early Dec 2015) plotting generates some error messages, but still works")
+
 t = collect(-3:6/99:6) 
 
 using Gadfly      #the first time, do Pkg.add("Gadfly") to install the package
@@ -203,7 +205,6 @@ plot1 = plot(layer(x=t,y=MathLecD(t,1),Geom.line,Theme(default_color=color("red"
                           ["red", "blue"]))
 display(plot1)                                   #show plot in browser
 draw(PDF("Fig1.pdf",15cm,10.5cm),plot1)      #save pdf file with the plot
-warn("currently (early Dec 2015) this generates some error messages, but still works")
 
 
 println("\n","---------------- Solving (non-linear) equations --------------","\n")
