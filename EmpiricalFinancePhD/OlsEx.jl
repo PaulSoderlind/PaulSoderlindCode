@@ -22,8 +22,7 @@ include("jlFiles/OlsDiagnosticsFn.jl")
 include("jlFiles/excise.jl")
 include("jlFiles/lagnPs.jl")
 
-using StatsBase
-using Distributions
+using StatsBase, Distributions
 #------------------------------------------------------------------------------
 
 xx   = readdlm("Data/FFmFactorsPs.csv",',',header=true)      
@@ -52,26 +51,25 @@ b2 = inv(X'X)*X'Y            #OLS coeffs, version 2
 
 b3 = X\Y                     #OLS coeffs, version 3
 
-println("b1, b2 and b3")
+println("\n b1, b2 and b3")
 println(round([b1 b2 b3],3))
 
 b = X\Y
 u = Y - X*b              #residuals
 g = X.*repmat(u,1,K)     #moment conditions
-println("avg moment conditions")
+println("\n avg moment conditions")
 println(round(mean(g,1),3))
 
 S = NWFn(g,1)            #Newey-West covariance matrix
-
 D = -X'X/T
 V = inv(D'inv(S)*D)     #Cov(sqrt(T)*b)
 
-println("b and std(b)")
+println("\n b and std(b)")
 println(round(b3,3))
 println(round(sqrt(diag(V/T)),3))
 
 (b4,res,yhat_,CovbLS_,R2_,T_,CovbNW4) = Ols2Fn(Y,X,1)
-println("OLS with NW standard errors")
+println("\n OLS with NW standard errors")
 println(round(b4,3))
 println(round(sqrt(diag(CovbNW4)),3))
 
@@ -80,9 +78,8 @@ R = [0 1 0;               #testing if b(2)=0 and b(3)=0
 a = [0;0]
 Gamma = R*V*R'
 test_stat = (R*b-a)'inv(Gamma/T)*(R*b-a)
-println("test-statictic and 10% critical value of chi-square(2)")
+println("\n test-statictic and 10% critical value of chi-square(2)")
 println([round(test_stat,3) 4.61])
-
 
 (AutoCorr,DW,BoxPierce,White,Regr) = OlsDiagnosticsFn(Y,X,u,2)     #diagnostics
 println("\n","diagnostics with std (and df): AutoCorr,DW,BoxPierce,White,Regr")
