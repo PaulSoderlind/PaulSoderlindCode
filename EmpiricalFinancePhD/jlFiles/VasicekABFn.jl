@@ -1,4 +1,3 @@
-
 function VasicekABFn(lambda,mu,rho,sigma,nMo,nMu,yo)
 
   nMax = maximum([nMo;nMu])    #longest maturity to calculate (a,b) for
@@ -30,5 +29,3 @@ function VasicekABFn(lambda,mu,rho,sigma,nMo,nMu,yo)
   return ao,bo,xt,au,bu,yuHat
 
 end
-#------------------------------------------------------------------------------
-
