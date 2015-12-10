@@ -40,7 +40,7 @@ for i = 1:N
    (b,) = OlsFn(ER[:,i],[Factors ones(T,1)])
    alphaM[i] = b[end]
 end
-println("Average annualised alphas for the two groups")
+println("\n Average annualised alphas for the two groups")
 println(round([mean(alphaM[~D]) mean(alphaM[D])]*252,3))
 
 PortfER      = fill(NaN,(T,2))     #create portfolios as average across individuals
@@ -51,14 +51,14 @@ Avg = mean(PortfER,1)*252          #average excess return on portfolios
 Std = std(PortfER,1)*sqrt(252)
 SR  = Avg./Std
 (b,res,yhat,Covb) = OlsFn(PortfER,[ones(T,1) Factors])
-println("Stats for the portfolios: Avg, Std, SR, alpha")
+println("\n Stats for the portfolios: Avg, Std, SR, alpha")
 println(round([Avg' Std' SR' b[1,:]'*252],3))
 
 println(round(b[1,:]*252,3))
 R       = [1 0 0 0 -1 0 0 0]                       #testing if alpha(1) = alpha(2)
 a_diff  = R*vec(b)                                   #b(:) = vec(b)
 tstatLS = a_diff/sqrt(R*Covb*R')
-println("diff of annual alpha (inactive - 51+), tstat (LS)")
+println("\n diff of annual alpha (inactive - 51+), tstat (LS)")
 println(round([a_diff*252 tstatLS],3))
 #------------------------------------------------------------------------------
 
@@ -68,6 +68,6 @@ R       = [1 0 0 0 -1 0 0 0]                #testing if alpha(1) = alpha(2)
 a_diff  = R*theta
 tstatLS = a_diff/sqrt(R*CovLS*R')
 tstatDK = a_diff/sqrt(R*CovDK*R')
-println("LS of panel, diff of annual alpha (inactive - 51+), tstat (LS), tstat (DK)")
+println("\n LS of panel, diff of annual alpha (inactive - 51+), tstat (LS), tstat (DK)")
 println(round([a_diff*252 tstatLS tstatDK],3))
 #------------------------------------------------------------------------------
