@@ -26,8 +26,8 @@ include("jlFiles/OlsFn.jl")
 CrossValCalcIt = 1       #1: do cross validation calculations
 #------------------------------------------------------------------------------
 
-xx   = readdlm("Data/FFdSizePs.csv",',',header=true)      
-R    = xx[1]
+xx  = readdlm("Data/FFdSizePs.csv",',',header=true)      
+R   = xx[1]
 ymd = R[:,1]             #[YearMonthDay]
 R   = R[:,11]            #returns for the size portfolio we want to study
 
@@ -39,7 +39,7 @@ T   = size(x,1)
 
 xGrid = collect(-10:0.25:10)
 h     = 1.5
-bHat = KernRegNormalFn(y,x,xGrid,h,1:T)
+bHat  = KernRegNormalFn(y,x,xGrid,h,1:T)
 
 xGridU = collect(-9.5:0.25:9.5)
 bHatU  = KernRegUniformFn(y,x,xGridU,1)
@@ -100,4 +100,3 @@ if CrossValCalcIt == 1
 
 end
 #------------------------------------------------------------------------------
-
