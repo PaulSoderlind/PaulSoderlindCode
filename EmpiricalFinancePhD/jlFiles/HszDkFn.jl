@@ -5,12 +5,10 @@ function HszDkFn(y,x,z)
 #  Paul.Soderlind@unisg.ch   Oct 2015
 #------------------------------------------------------------------------------
 
-
   T = size(y,1)
   N = size(y,2)
   K = size(x,2)*size(z,2)
-  
-  
+    
   Sxx = 0.0
   Sxy = 0.0
   for t = 1:T                          #OLS by looping over t
@@ -22,7 +20,6 @@ function HszDkFn(y,x,z)
   end
   
   theta = Sxx\Sxy
-  
   
   s2     = 0.0
   omegaj = zeros(K,K)
@@ -37,8 +34,7 @@ function HszDkFn(y,x,z)
   end
   Shat = omegaj/T^2                     #estimate of S
   s2   = s2/T^2
-  
-  
+    
   zx_1  = inv(Sxx)
   CovDK = zx_1 * Shat * zx_1'                     #covariance matrix, DK
   stdDK = sqrt( diag(CovDK) )                     #standard errors, DK
