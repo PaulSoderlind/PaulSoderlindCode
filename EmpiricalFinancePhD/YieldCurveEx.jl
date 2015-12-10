@@ -50,8 +50,6 @@ nMu = mMonth[vvu]                     #maturity of yu
 #notice: important that the elements of the parameter vector have similar magnitude
 #lambda/100,mu*1200,p = 1 - 2/(1+exp(par(3))) so 5.6 -> p = 0.993,sigma*1200,omega*1200
 par0 = [-2.3;10;5.5;0.5;0.8]
-#------------------------------------------------------------------------------
-
 
                          #just testing the VasicekABFn function
 (ao,bo,xt,au,bu,yuHat) = VasicekABFn(1,0.5,0.9,0.02,nMo,nMu,yo)
@@ -62,8 +60,7 @@ par0 = [-2.3;10;5.5;0.5;0.8]
                              #do MLE by optimization with optimize, minimize -sum(LL)
 x1 = optimize(par->VasicekTsCsLossFn(par,yo,yu,nMo,nMu),par0)        
 par1 = x1.minimum
-
-println("par0 and par1")
+println("\n par0 and par1")
 println(round([par0 par1],3))
                                                 #fitted yields at parameter estimates
 (MinusLL,yuHat,) = VasicekTsCsFn(par1,yo,yu,nMo,nMu)
