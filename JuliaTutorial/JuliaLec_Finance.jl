@@ -164,3 +164,29 @@ display(plot1)
 iv = Roots.fzero(sigma->OptionBlackSPs(10,10,0.5,0.1,sigma)-c1,[-1;1])  
 println("Implied volatility (should be the same as above): ",round(iv,3))
 
+#  LIFFE Bunds option data, trade date April 6, 1994
+X = [                        #strike prices; Mx1 vector
+      92.00;  94.00;  94.50;  95.00;  95.50;  96.00;  96.50;  97.00;
+      97.50;  98.00;  98.50;  99.00;  99.50;  100.0;  100.5;  101.0;
+     101.5;  102.0;  102.5;  103.0;  103.5 ];
+C = [                        #call prices; Mx1 vector
+      5.13;    3.25;    2.83;    2.40;    2.00;    1.64;    1.31;    1.02;
+      0.770;   0.570;   0.400;   0.280;   0.190;   0.130;  0.0800;  0.0500;
+      0.0400;  0.0300;  0.0200;  0.0100;  0.0100 ];
+F = 97.05                #Forward price
+m = 48/365               #time to expiry in years
+r = 0.0                  #Interest rate: LIFFE=>no discounting
+N = length(X)
+
+iv = fill(NaN,N)
+for i = 1:N
+  iv[i] = Roots.fzero(sigma->OptionBlackSPs(exp(-m*r)*F,X[i],m,r,sigma)-C[i],[-1;1])  
+end  
+
+println(round([X iv],4))
+
+plot1 = plot(x=X,y=iv,Geom.line,Theme(default_color=color("red")),
+             Guide.title("Implied volatility, Bunds options April 6, 1994"),
+             Guide.xlabel("strike price"),
+             Guide.ylabel(" "))
+display(plot1)
