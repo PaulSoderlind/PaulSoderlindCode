@@ -12,3 +12,5 @@ Readme for PaulSoderlindCode
 5. AssetPricingTest: Julia code for asset pricing test
 
 To download use "Download ZIP" (upper right). This gives you a zip file with all the subfolders. (No, as of yet there is no simple way of downloading a single subfolder.)
+
+The code typically follows my lecture notes or papers. So far, there is little error checking.
