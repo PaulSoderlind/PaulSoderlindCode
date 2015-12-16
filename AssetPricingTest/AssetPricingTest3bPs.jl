@@ -6,20 +6,19 @@ function AssetPricingTest3bPs(Re1,Re2,f,h,bandwidth=0,q=0,ExtraTest=[],ExtraTest
 #
 #
 #
-#  Usage:  fnOutput = AssetPricingTest3bPs(Re1,Re2,f,h[,bandwidth[,ExtraTest[,ExtraTestq]]]])
+#  Usage:  fnOutput = AssetPricingTest3bPs(Re1,Re2,f,h[,bandwidth[,q[,ExtraTest[,ExtraTestq]]]])
 #
 #  Input:   Re1           Txn1, test assets
 #           Re2           Txn2, test assets     (in many applications, Re2 = Re1)
 #           f             TxK, 1st set of factors 
 #           h             TxL, 2nd set of factors 
 #           bandwidth     (optional) scalar of Newey-West band width,  [0]
-#           options       (optional) structure, struct('q',0,'ExtraTest', [],'ExtraTestq',0)
-#             q             cell array of vectors, expected values of R*theta: {alpha,delta}
-#             ExtraTest     cell array of vectors, indices of coeffs in theta 
-#                           to test whether = 0 or = ExtraTestq, eg. {{[1,4,5:9];[2:3]}} 
-#                           to make 2 tests
-#             ExtraTestq    cell array of vectors, matching ExtraTest, expected values of
-#                           extra tests, eg {{zeros(7,1);ones(2,1}}
+#           q             vector, expected values of R*theta: [alpha delta]
+#           ExtraTest     heterogeneous array of vectors, indices of coeffs in theta 
+#                         to test whether = 0 or = ExtraTestq, eg. Any[[1;4;5:9],[2:3]] 
+#                         to make 2 tests
+#           ExtraTestq    heterogeneous array of vectors, matching ExtraTest, expected values of
+#                         extra tests, eg Any[zeros(7,1),ones(2,1]
 #
 #  Output:  fnOutput      8x1 heterogeneous array with the following contents:
 #             [1] Joint         3x1, in each row WaldStat for alpha, delta, alpha-delta (if n1=n2)
@@ -47,8 +46,8 @@ function AssetPricingTest3bPs(Re1,Re2,f,h,bandwidth=0,q=0,ExtraTest=[],ExtraTest
 #  Paul.Soderlind@unisg.ch, April 2015, To Julia Oct 2015
 #------------------------------------------------------------------------------ 
   
-  n1         = size(Re1,2)   
-  n2         = size(Re2,2) 
+  n1 = size(Re1,2)   
+  n2 = size(Re2,2) 
   if q == 0                                    #scalar 0   
     q = Any[zeros(n1,1),zeros(n2,1)]           #default values for options
   end
@@ -57,13 +56,13 @@ function AssetPricingTest3bPs(Re1,Re2,f,h,bandwidth=0,q=0,ExtraTest=[],ExtraTest
   K  = size(f,2)            
   L  = size(h,2)
   
-  yx  = excise([Re1 Re2 f h])          #cut rows with some NaNs
+  yx  = excise([Re1 Re2 f h])            #cut rows with some NaNs
   Re1 = yx[:,1:n1]
   Re2 = yx[:,n1+1:n1+n2]
   f   = yx[:,n1+n2+1:n1+n2+K]            #factors, set f
   h   = yx[:,n1+n2+K+1:n1+n2+K+L]        #factors, set h
   T   = size(Re1,1)                      #no. obs
-  yx = nothing                              #can save some memory
+  yx = nothing                           #can save some memory
   
   Ef   = mean(f,1)'
   Eh   = mean(h,1)'
@@ -74,15 +73,15 @@ function AssetPricingTest3bPs(Re1,Re2,f,h,bandwidth=0,q=0,ExtraTest=[],ExtraTest
   K1 = 1 + K
   h1 = [ones(T,1) h]
   L1 = 1 + L
-                                          #bf = f1\Re1; epsf = Re1 - bf*f1
+                                         #bf = f1\Re1; epsf = Re1 - bf*f1
   bf         = f1\Re1
   epsf       = Re1 - f1*bf
-  #(bf,epsf,) = OlsPs(Re1,f1)             #first set of factors
-  bf         = bf'                        #n1xK1
+  #(bf,epsf,) = OlsPs(Re1,f1)            #first set of factors
+  bf         = bf'                       #n1xK1
   alfaM      = bf[:,1]
-  betaM      = bf[:,2:end]                #n1xK, Re1(t) = alfa * beta*f(t) + e(t)
-  gf         = HDirProdPs(f1,epsf)        #moment conditions
-  ERe1Hatf   = betaM*Ef                   #n1xK1 * K1x1
+  betaM      = bf[:,2:end]               #n1xK, Re1(t) = alfa * beta*f(t) + e(t)
+  gf         = HDirProdPs(f1,epsf)       #moment conditions
+  ERe1Hatf   = betaM*Ef                  #n1xK1 * K1x1
   
   bh         = h1\Re2
   epsh       = Re2 - h1*bh
@@ -101,20 +100,20 @@ function AssetPricingTest3bPs(Re1,Re2,f,h,bandwidth=0,q=0,ExtraTest=[],ExtraTest
   theta = [vec(bf);vec(bh)]              #parameters (combined)
   g     = [gf gh]                        #moment conditions (combined)
   S0    = NewEst3Ps(g,bandwidth)         #Cov[sqrt(T)*gbar]
-  g  = nothing                               #can save some memory
+  g  = nothing                           #can save some memory
   gf = nothing
   gh = nothing
   
   Sff  = f1'f1/T
-  Df_1 = -kron(inv(Sff),eye(n1))          #upper left corner of inverse of Jacobian
+  Df_1 = -kron(inv(Sff),eye(n1))         #upper left corner of inverse of Jacobian
   
   Shh  = h1'h1/T
-  Dh_1 = -kron(inv(Shh),eye(n2))          #lower right corner of inverse of Jacobian
+  Dh_1 = -kron(inv(Shh),eye(n2))         #lower right corner of inverse of Jacobian
   
   D_1  = [ Df_1                zeros(n1*K1,n2*L1);  #inverse of Jacobian of g wrt theta'
            zeros(n2*L1,n1*K1)  Dh_1              ]
   
-  V    = D_1*S0*D_1'                      #Cov[sqrt(T)*theta] 
+  V    = D_1*S0*D_1'                     #Cov[sqrt(T)*theta] 
   #----------------------------------------------------------
   
   RM = Any[[eye(n1)      zeros(n1,n1*K) zeros(n1,n2) zeros(n1,n2*L)],        #alpha
