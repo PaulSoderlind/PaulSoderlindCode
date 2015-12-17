@@ -1,6 +1,8 @@
 Readme for PaulSoderlindCode
 ============================
 
+This repository has the following separate sub projects:
+
 1. JuliaLec: a Julia tutorial aimed at finance students
 
 2. EmpiricalFinancePhD: Julia code for a PhD course in empirical finance at UNISG (unpolished) 
