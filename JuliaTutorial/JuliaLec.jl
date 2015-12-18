@@ -186,8 +186,6 @@ println("result from the function MatLecD: ", y)
 
 println("\n","----------------------------- Plotting -----------------------","\n")
 
-warn("currently (early Dec 2015) plotting generates some error messages, but still works")
-
 t = collect(-3:6/99:6) 
 
 using Gadfly      #the first time, do Pkg.add("Gadfly") to install the package
@@ -195,8 +193,8 @@ using Gadfly      #the first time, do Pkg.add("Gadfly") to install the package
 
 set_default_plot_size(20cm, 13cm)       #size of plots
 
-plot1 = plot(layer(x=t,y=MathLecD(t,1),Geom.line,Theme(default_color=color("red"),line_width=2px)),
-             layer(x=t,y=MathLecD(t,0.5),Geom.line,Theme(default_color=color("blue"))),
+plot1 = plot(layer(x=t,y=MathLecD(t,1),Geom.line,Theme(default_color=colorant"red",line_width=2px)),
+             layer(x=t,y=MathLecD(t,0.5),Geom.line,Theme(default_color=colorant"blue")),
              Guide.title("Results MathLecD"),
              Guide.xlabel("t"),
              Guide.ylabel("my output value"),
@@ -244,17 +242,17 @@ for j = 1:length(c)                      #create loss2 column by column
   loss2[:,j] = 2*b.^2 + (c[j]-4)^2 - 0.0*b.*(c[j]-4) 
 end
 
-plot3a = plot(x=b,y=loss1,Geom.line,Theme(default_color=color("red"),line_width=2px),
+plot3a = plot(x=b,y=loss1,Geom.line,Theme(default_color=colorant"red",line_width=2px),
              Guide.title("Line plot"),Guide.xlabel("b"),
              Scale.x_continuous(minvalue=-3.5,maxvalue=3.5),
              Scale.y_continuous(minvalue=0,maxvalue=20))
 display(plot3a)
 
-plot3b = plot(x=b,y=loss1,Geom.bar,Theme(default_color=color("orange")),
+plot3b = plot(x=b,y=loss1,Geom.bar,Theme(default_color=colorant"orange"),
              Guide.title("Bar chart"),Guide.xlabel("b"))
 display(plot3b)
 
-plot3c = plot(x=b,y=loss1,Geom.step,Theme(default_color=color("black"),line_width=4px),
+plot3c = plot(x=b,y=loss1,Geom.step,Theme(default_color=colorant"black",line_width=4px),
              Guide.title("Step chart"),Guide.xlabel("b"))
 display(plot3c)
 
