@@ -23,11 +23,6 @@ function OlsDiagnosticsFn(y,x,u,m=1)
 #  Paul.Soderlind@unisg.ch  
 #------------------------------------------------------------------------------
 
-#if (nargin < 4) || isempty(m)
-#  m = 1
-#end
-
-
   ux = excise([y u x])
   y  = ux[:,1]
   u  = ux[:,2]
@@ -48,27 +43,22 @@ function OlsDiagnosticsFn(y,x,u,m=1)
   pval         = 1 - cdf(Chisq(m),BPStat)
   BoxPierce    = [BPStat pval m]
 
-
   udiff  = u - lagnPs(u)
   dwStat = mean(excise(udiff).^2,1)/Stdu^2
   pval   = NaN
   DW     = [dwStat pval]
   
-  
-  #psi = []                              #matrix of cross products of x
-  psi =  Array(Int,T,0)
+  psi =  Array(Int,T,0)                    #matrix of cross products of x
   for i = 1:k
     for j = i:k
       psi = [psi (x[:,i].*x[:,j])]         #All cross products, incl own
     end
   end
   
-  
   (b,res,yhat,Covb,R2,) = OlsFn(u.^2,psi)   #White's test for heteroskedasticity
   WhiteStat = T*R2/(1-R2)
   pval      = 1 - cdf(Chisq(size(psi,2)-1),WhiteStat)
   White     = [WhiteStat pval (size(psi,2)-1)]
-  
   
   (b,res,yhat,Covb,R2,) = OlsFn(y,x)           #test of regression
   RegrStat = T*R2/(1-R2)
@@ -77,7 +67,5 @@ function OlsDiagnosticsFn(y,x,u,m=1)
 
   return AutoCorr,DW,BoxPierce,White,Regr
 
-
 end
 #------------------------------------------------------------------------------
-
