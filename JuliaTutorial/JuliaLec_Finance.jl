@@ -63,7 +63,7 @@ VaR95 = -(mu - 1.64*sqrt(vol2))            #VaR at 95% level
 
 YearFrac = floor(ym/100) + (mod(ym,100)-1)/12    #eg 1990.92 for Dec 1990
 
-plot1 = plot(x=YearFrac,y=VaR95,Geom.line,Theme(default_color=color("blue")),
+plot1 = plot(x=YearFrac,y=VaR95,Geom.line,Theme(default_color=colorant"blue"),
              Scale.x_continuous(minvalue=1978,maxvalue=2012),
              Scale.y_continuous(minvalue=0,maxvalue=11),
              Guide.xticks(ticks=[1980,1990,2000,2010]),
@@ -106,8 +106,8 @@ end
 SR_T    = sqrt((mu-Rf)'Sigma_1*(mu-Rf))          #Sharpe ratio of Tangency portfolio 
 CML_std = sqrt(((mu_p-Rf)./SR_T).^2)             #std according to CLM
 
-plot1 = plot(layer(x=sqrt(Var_p),y=mu_p,Geom.line(preserve_order=true),Theme(default_color=color("red"))),
-             layer(x=CML_std,y=mu_p,Geom.line(preserve_order=true),Theme(default_color=color("blue"))),
+plot1 = plot(layer(x=sqrt(Var_p),y=mu_p,Geom.line(preserve_order=true),Theme(default_color=colorant"red")),
+             layer(x=CML_std,y=mu_p,Geom.line(preserve_order=true),Theme(default_color=colorant"blue")),
              Guide.title("Mean-variance frontier"),
              Guide.xlabel("Std"),
              Guide.ylabel("mean"))
@@ -120,9 +120,9 @@ include("MyFunctions.jl")     #load in file with some functions
                               
 Var_no_ss, = MeanVarNoSSPs(mu,Sigma,mu_p)   #see MyFunctions.jl file
 
-plot1 = plot(layer(x=sqrt(Var_p),y=mu_p,Geom.line(preserve_order=true),Theme(default_color=color("red"))),
-             layer(x=CML_std,y=mu_p,Geom.line(preserve_order=true),Theme(default_color=color("blue"))),
-             layer(x=sqrt(Var_no_ss),y=mu_p,Geom.line(preserve_order=true),Theme(default_color=color("green"))),
+plot1 = plot(layer(x=sqrt(Var_p),y=mu_p,Geom.line(preserve_order=true),Theme(default_color=colorant"red")),
+             layer(x=CML_std,y=mu_p,Geom.line(preserve_order=true),Theme(default_color=colorant"blue")),
+             layer(x=sqrt(Var_no_ss),y=mu_p,Geom.line(preserve_order=true),Theme(default_color=colorant"green")),
              Guide.title("Mean-variance frontier"),
              Guide.xlabel("Std"),
              Guide.ylabel("mean"),
@@ -154,7 +154,7 @@ println("\n","call price according to Black-Scholes: ",round(c1,3))
 
 X = linspace(7,13,51)
 c = OptionBlackSPs(10,X,0.5,0.1,sigma)
-plot1 = plot(x=X,y=c,Geom.line,Theme(default_color=color("red")),
+plot1 = plot(x=X,y=c,Geom.line,Theme(default_color=colorant"red"),
              Guide.title("Black-Scholes call option price"),
              Guide.xlabel("strike price"),
              Guide.ylabel("option price"))
@@ -185,7 +185,7 @@ end
 
 println(round([X iv],4))
 
-plot1 = plot(x=X,y=iv,Geom.line,Theme(default_color=color("red")),
+plot1 = plot(x=X,y=iv,Geom.line,Theme(default_color=colorant"red"),
              Guide.title("Implied volatility, Bunds options April 6, 1994"),
              Guide.xlabel("strike price"),
              Guide.ylabel(" "))
