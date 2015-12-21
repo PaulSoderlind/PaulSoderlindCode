@@ -43,12 +43,12 @@ function OlsDiagnosticsFn(y,x,u,m=1)
   pval         = 1 - cdf(Chisq(m),BPStat)
   BoxPierce    = [BPStat pval m]
 
-  udiff  = u - lagnPs(u)
+  udiff  = u - [NaN;u[1:end-1]]
   dwStat = mean(excise(udiff).^2,1)/Stdu^2
   pval   = NaN
   DW     = [dwStat pval]
   
-  psi =  Array(Int,T,0)                    #matrix of cross products of x
+  psi = Array(Float64,T,0)                    #matrix of cross products of x
   for i = 1:k
     for j = i:k
       psi = [psi (x[:,i].*x[:,j])]         #All cross products, incl own
