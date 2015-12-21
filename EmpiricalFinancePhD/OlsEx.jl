@@ -20,7 +20,7 @@ include("jlFiles/OlsFn.jl")
 include("jlFiles/Ols2Fn.jl")
 include("jlFiles/OlsDiagnosticsFn.jl")
 include("jlFiles/excise.jl")
-include("jlFiles/lagnPs.jl")
+#include("jlFiles/lagnPs.jl")
 
 using StatsBase, Distributions
 #------------------------------------------------------------------------------
