@@ -1,10 +1,10 @@
 #------------------ a hash sign makes the rest of line a comment -------------
 #
 #
-# (0)  This file should work well with Julia 0.4. Open up Julia.exe
+# (0)  This file should work well with Julia 0.4. Open up Julia.exe.
 #
 # (1)  At the prompt, you may change directory by typing
-#      cd("directory_name") (e.g. cd("e:/mystuff") and hit Return
+#      cd("directory_name") (e.g. cd("e:/mystuff") and hit Return.
 #
 # (2)  Don't know in which directory you are? Type pwd() and hit Return.
 #
@@ -14,7 +14,7 @@
 #
 # (5)  To execute this program from the command line: type include("JuliaLec.jl")
 #      and hit Return. If you want to stop execution on line 35 (say), then
-#      add error() on that line
+#      add error() on that line.
 #
 # (6)  Leave Julia: type exit() and hit Return.
 #
