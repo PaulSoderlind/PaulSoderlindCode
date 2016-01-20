@@ -1,4 +1,4 @@
-function MeanVarNoSSPs(mu,Sigma,mu_p) 
+function MeanVarNoSSPs(mu,Sigma,mu_p)
 #MeanVarNoSSPs     Calculate mean variance frontier when no short sales are allowed
 #
 #
@@ -18,8 +18,8 @@ function MeanVarNoSSPs(mu,Sigma,mu_p)
 #
 #  Notice:  (a) uses quadprog from MathProgBase
 #           (b) with a riskfree asset, put zeros row j and column j in Sigma
-#               
-#             
+#
+#
 #
 #  Paul.Soderlind@unisg.ch   27 October 2005, to Julia Nov 2015
 #------------------------------------------------------------------------------
@@ -32,18 +32,18 @@ function MeanVarNoSSPs(mu,Sigma,mu_p)
   lb   = zeros(N,1)              #w >= 0
   ub   = ones(N,1)               #w <= 1
   Aeq  = [ones(1,N);mu']         #1'w=1, mu'w = mu_p
-  
+
   w_p   = fill(NaN,(K,N))
   Var_p = fill(NaN,K)                       #to store results in
-  for i = vv 
+  for i = vv
     beq  = [1;mu_p[i]]
     Sol = quadprog(zeros(N),Sigma,Aeq,'=',beq,zeros(N),ones(N),IpoptSolver(print_level=1))
     w_i = Sol.sol
     if Sol.status == :Optimal
       w_p[i,:] = w_i'
       Var_p[i] = (w_i'*Sigma*w_i)[1]
-    end 
-  end     
+    end
+  end
 
   return  Var_p,w_p
 
