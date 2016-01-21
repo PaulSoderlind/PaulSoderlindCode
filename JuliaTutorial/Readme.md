@@ -1,5 +1,7 @@
-Readme for JuliaLec
-===================
+Readme for JuliaTutorial
+========================
+
+This folder contains my Julia tutorial (aimed at students in finance and economics).
 
 1. JuliaLec.jl: the main file. Instructions are found at the top of that file.
     * JuliaLecData.csv contains data used in the main file
