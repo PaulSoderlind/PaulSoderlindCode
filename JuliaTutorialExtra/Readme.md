@@ -9,3 +9,5 @@ Readme for JuliaTutorialExtra
 
 4. readXlsTsT.jl: example of how to load data from an xls file. Use the file readXlsTsT_Data.xlsx
 
+5. writeToFileTsT.jl: example of how to write results to a text file
+
