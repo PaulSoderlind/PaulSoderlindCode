@@ -200,9 +200,8 @@ plot1 = plot(layer(x=t,y=MathLecD(t,1),Geom.line,Theme(default_color=colorant"re
              Guide.manual_color_key(" ",
                           ["From MathLecD(t,1)","MathLecD(t,0.5)"],
                           ["red", "blue"]))
-display(plot1)                                   #show plot in browser
-#draw(PDF("Fig1.pdf",15cm,10.5cm),plot1)     #save pdf: need to do Pkg.add("Cairo")
-draw(SVG("Fig1.svg",15cm,10.5cm),plot1)      #save svg file with the plot
+display(plot1)                               #show plot in browser
+draw(SVG("Fig1.svg",15cm,10.5cm),plot1)      #save svg, use inkscape to covert (if needed)
 
 
 println("\n","---------------- Solving (non-linear) equations --------------","\n")
