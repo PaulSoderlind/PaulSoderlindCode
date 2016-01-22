@@ -13,4 +13,6 @@ This folder contains my Julia tutorial (aimed at students in finance and economi
 
 4. JuliaLec_TrickyStuff.jl: illustrates some tricky things with Julia (at least for an old Matlab user)
 
-5. JuliaLec_MorePlots.jl: contains more advanced plot examples (using another plotting package, PyPlot)
+5. JuliaLec_TrickyStuff.ipynb: is a jupyter notebook version of JuliaLec_TrickyStuff.jl
+
+6. JuliaLec_MorePlots.jl: contains more advanced plot examples (using another plotting package, PyPlot)
