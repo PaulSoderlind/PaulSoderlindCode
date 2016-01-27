@@ -26,7 +26,7 @@
 #      see
 #      http://statsbasejl.readthedocs.org/en/latest/
 #      http://distributionsjl.readthedocs.org/en/latest/
-#      https://github.com/JuliaLang/Gadfly.jl
+#      http://gadflyjl.org/
 #      https://github.com/JuliaLang/Roots.jl
 #      https://github.com/JuliaOpt/Optim.jl
 #
@@ -100,10 +100,11 @@ println("\n","----------------------  Load data from ascii file ------------","\
 
 xx   = readdlm("JuliaLecData.csv",',',header=true)
 x    = xx[1]
+println("Column headers: ",xx[2])
 println("first four lines of x:")
 println(x[1:4,:])
 
-Rme = x[:,2]                    #picking out first column
+Rme = x[:,2]                    #picking out second column
 Rf  = x[:,3]
 R   = x[:,4] +                  #commands continue on the next line
       0.0
@@ -137,6 +138,16 @@ println(round(cov(x),3))
 using Distributions  #the first time, do Pkg.add("Distributions") to install the package
 println("\n","5th percentile of N(0,1) ")      #lots of statistics functions
 println(round(quantile(Normal(0,1),0.05),3))
+
+
+println("\n","-------------------- Comparing things --------------------------","\n")
+
+x = collect(linspace(-1.5,0.5,5))       #vector: -1.5,-1.0,-0.5,0,0.5
+println("x values: ",x)
+vv = -1 .< x .<= 0                      #true for x values (-1,0], boolean
+println("x is in (-1,0]: ",vv)
+x2 = x[vv]
+println("x values in (-1,0]: ",x2)
 
 
 println("\n","-------------------- Writing a loop --------------------------","\n")
