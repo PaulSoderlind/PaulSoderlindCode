@@ -9,6 +9,8 @@ This repository has the following separate sub projects:
 
 3. EmpiricalFinancePhD: Julia code for a PhD course in empirical finance at UNISG (unpolished)
 
+4. FittingNfromHist: Julia code for fitting N(mu,sigma2) from a histogram
+
 4. JuliaTutorial: a Julia tutorial aimed at finance students
 
 5. JuliaTutorialExtra: the next steps after the JuliaTutorial (debugger, load data, etc)
