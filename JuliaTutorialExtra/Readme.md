@@ -3,13 +3,9 @@ Readme for JuliaTutorialExtra
 
 1. DebugTsT.jl:  example of how to work with the debugger
 
-2. loadCsvTsT.jl: example of how to load data from csv file and possibly fix missing values. Uses the files loadCsvTsT_Data.csv and readdlmFixPs.jl
+2. loadDataTsT.jl: example of how to load data from csv, mat and excel files and possibly fix missing values. (Comment out any material you do not need.) Uses the file readdlmFixPs.jl and the Data folder.
 
-3. loadMatTsT.jl: example of how to load in data from a (Matlab) mat file. Uses the file loadMatTsT_Data.mat
+3. NaNTsT.jl: example of how to trim off rows with NaNs
 
-4. NaNTsT.jl: example of how to trim off rows with NaNs
-
-5. readXlsTsT.jl: example of how to load data from an xls file. Use the file readXlsTsT_Data.xlsx
-
-6. writeToFileTsT.jl: example of how to write results to a text file
+4. writeToFileTsT.jl: example of how to write results to a text file
 
