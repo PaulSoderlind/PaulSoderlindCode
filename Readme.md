@@ -17,7 +17,7 @@ This repository has the following separate sub projects:
 
 6. LStar: Julia code for LSTAR regressions
 
-7. SolvingReModels: Julia code for solve RE models
+7. SolvingReModels: Julia code for solving RE models
 
 
 To download use "Download ZIP" (upper right). This gives you a zip file with all the subfolders. (No, as of yet there is no simple way of downloading a single subfolder.)
