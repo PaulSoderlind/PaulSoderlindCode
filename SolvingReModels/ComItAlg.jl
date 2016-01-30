@@ -37,8 +37,6 @@ function ComItAlg(A,B,Q,R,U,bet,n1,n2,cutoff)
 #             Sum{ (bet^t)*[x(t)'Q*x(t)+2x(t)'U*u(t)+u(t)'R*u(t)],t=0,1,... }
 #
 #
-#  Notice:  Updated version, uses the new built-in function ordqz
-#
 #
 #  Paul Söderlind, Paul.Soderlind@unisg.ch, Aug 2000, to Julia Jan 2016
 #----------------------------------------------------------------------------
