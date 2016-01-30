@@ -11,26 +11,19 @@
 #
 #
 #
-#
-#  This example file and the procedures were created by translating Gauss
-#  code to MatLab code.
-#
-#  This program can be used with both MatLab and Octave. Two differences are
-#  exploited: some details in how to make graphs and in what qz can do (Octave's
-#  has built-in ordering). The command exist('OCTAVE_VERSION') allows the program
-#  to see if MatLab or Octave is used.
-#
+#  This example file and the procedures were created by translating MatLab code
+#  to Julia.
 #
 #
 #  Paul Soderlind (Paul.Soderlind@unisg.ch), 20 June 2000, to Julia Jan 2016
 #----------------------------------------------------------------------------
-using Debug, PyPlot
+
+using PyPlot
 
 include("Fuhrer1.jl")
 include("SimpRulT.jl")
 include("Var1SimPs.jl")
 include("ComitAlg.jl")
-include("DiscAlg2.jl")
 include("DiscAlg.jl")
 #-----------------------------------------------------------------------
 
