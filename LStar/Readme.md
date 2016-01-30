@@ -11,4 +11,5 @@ Julia code for LSTAR regressions
 
 4. CTData.csv: FX data used in the example
 
-5. CarryTradeCRS201002.pdf: paper using this approach 
+5. CarryTradeCRS201002.pdf: paper using this approach, published as 
+Charlotte Christiansen, Angelo Ranaldo and Paul Söderlind, "The Time-Varying Systematic Risk of Carry Trade Strategies," Journal of Financial and Quantitative Analysis, 46, 1107-1125, 2011. 
