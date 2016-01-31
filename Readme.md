@@ -17,9 +17,11 @@ This repository has the following separate sub projects:
 
 6. LStar: Julia code for LSTAR regressions
 
-7. SolvingReModels: Julia code for solving RE models
+7. NelsonSiegel: Julia code for estimating extended Nelson-Siegel model
+
+8. SolvingReModels: Julia code for solving RE models
 
 
 To download use "Download ZIP" (upper right). This gives you a zip file with all the subfolders. (No, as of yet there is no simple way of downloading a single subfolder.)
 
-The code typically follows my lecture notes or papers. So far, there is little error checking.
+The code typically follows my lecture notes/papers. So far, are few attempts at speeding up or error checking.
