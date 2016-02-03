@@ -1,4 +1,4 @@
-function NumJac3Ps(fun,b0,h=[],Method=99) 
+function NumJac3Ps(fun::Function,b0,h=[],Method=99)
 #NumJac3Ps    Numerical Jacobian
 #
 #
@@ -8,9 +8,9 @@ function NumJac3Ps(fun,b0,h=[],Method=99)
 #
 #  Input:    fun         function to differentiate, generates nx1 output
 #            b0          kx1 vector of paramaters, fun(b)
-#            h           (optional) scalar or kx1 vector, pertubation of b, 
+#            h           (optional) scalar or kx1 vector, pertubation of b,
 #                        [] gives a good default
-#            Method      (optional) 1: forward derivatives; 2: backward derivatives 
+#            Method      (optional) 1: forward derivatives; 2: backward derivatives
 #                        else: central derivatives
 #
 #  Output:   Jac         nxk matrix of derivatives, Jac(i,j) = df[i]/db[j]
@@ -18,7 +18,7 @@ function NumJac3Ps(fun,b0,h=[],Method=99)
 #
 #
 #  Notice: fun(b0) must be well define. For instance, it must work even if b0 is
-#          an 1-element array 
+#          an 1-element array
 #
 #
 #  Paul.Soderlind@unisg.ch   2007, to Julia Nov 2015
@@ -43,11 +43,11 @@ function NumJac3Ps(fun,b0,h=[],Method=99)
     bup   = b0 + h
     hh    = bup - bdown
   end
-  
-  
+
+
   b0 = collect(b0)                            #-> column vector
   k  = length(b0)                             #no. of parameters in fun(b)
-  
+
   f0 = fun(b0)                               #value of function at b0
   n = length(f0)                             #no. of outputs of fun
 
@@ -70,7 +70,7 @@ function NumJac3Ps(fun,b0,h=[],Method=99)
       Jac[:,i] = (fplus-fminus)/hh[i]
     end
   end   #i
-  
+
   return Jac
 
 end
