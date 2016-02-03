@@ -3,7 +3,7 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
 #
 #
 #
-#  Usage:    (b,res,yhat,Covb,R2,T) = OlsPs(y,x[,ExciseIt[,UnExciseIt[,SkipCovbIt]]]]) 
+#  Usage:    (b,res,yhat,Covb,R2,T) = OlsPs(y,x[,ExciseIt[,UnExciseIt[,SkipCovbIt]]]])
 #
 #  Input:    y            Tx1 or Txn matrix of the dependent variables
 #            x            Txk matrix of regressors (including deterministic ones)
@@ -21,54 +21,53 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
 #
 #
 #
-#  Calls on:  excisePs  
+#  Calls on:  excisePs
 #
 #
 #
 #  Paul.Soderlind@unisg.ch, Jan 2001, Jun 2005, to Julia Oct 2015
 #----------------------------------------------------------------------------
- 
+
   T = size(y,1)
   n = size(y,2)
-  
-  if ExciseIt 
+
+  if ExciseIt
     (yx,vvNaN,vvNaNR,vvNoNaNR) = excisePs([y x])
     y = yx[:,1:n]
     x = yx[:,n+1:end]
-  end 
+  end
   yx = nothing
-  
+
   Ty = size(y,1)
   Tx = size(x,1)
   k  = size(x,2)
 
-  if Tx != Ty 
+  if Tx != Ty
     error("y and x must have same number of observations")
-  end 
-  if any(isnan([y x])) 
+  end
+  if any(isnan([y x]))
     error("NaN in x or y")
-  end 
+  end
 
-  
-  if Ty >= k 
+  if Ty >= k
     b      = x\y
     yhat2  = x*b
     res2   = y - yhat2
     Covres = cov(res2)*(Ty-1)/Ty
     if SkipCovbIt
       Covb = NaN
-    else 
+    else
       Covb   = kron(Covres,inv(x'x))
-    end 
+    end
     R2 = 1 - var(res2,1)./var(y,1)
-  else 
+  else
     b      = NaN
     yhat2  = NaN
     res2   = NaN
     Covb   = NaN
     R2     = NaN
-  end 
-  
+  end
+
   if UnExciseIt        #put fitted value and residual in Tyxn matrix
     yhat             = fill(NaN,(T,n))
     res              = fill(NaN,(T,n))
@@ -77,8 +76,8 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
   else
     yhat = yhat2
     res  = res2
-  end 
-  
+  end
+
   return b,res,yhat,Covb,R2,T
 
 end
