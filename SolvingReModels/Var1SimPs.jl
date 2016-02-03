@@ -36,7 +36,7 @@ function Var1SimPs(A,epsilon,T,x0=0.0)
   for t = 1:T                                     #loop over time periods
     x1      = A*x1_t_1 + epsilon[t,:]'
     xM[t,:] = x1'
-    x1_t_1  = x1
+    x1_t_1  = x1 + 0.0
   end
 
   return xM
