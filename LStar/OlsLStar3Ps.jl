@@ -1,5 +1,5 @@
 function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
-#OlsLStar3Ps  LSTAR LS of y on (x0,w), y = (1-G)*b1*x0 + G*b2*x0 + d*w, 
+#OlsLStar3Ps  LSTAR LS of y on (x0,w), y = (1-G)*b1*x0 + G*b2*x0 + d*w,
 #             G = 1./(1+exp(-g*(z-c)))
 #
 #
@@ -18,8 +18,8 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
 #            gcKeep       (optional) 2x1, [g,c], if an element is a NaN, then this parameter is estimated
 #            xwzHat       (optional) Tz x(k+kw+1) x nPred, [x0,w,z] values at which to calculate predicted values
 #
-#  Output:   fnOutput     heterogenous (Any[]) array with 
-#              [1]  sse          scalar, loss fn value at point estimate   
+#  Output:   fnOutput     heterogeneous (Any[]) array with
+#              [1]  sse          scalar, loss fn value at point estimate
 #              [2]  theta        (2+2k+kw)x1, (1+2k+kw)x1 or (0+2k+kw)x1, parameter estimates:
 #                                [g;c;b;d],[c;b;d],[g;b;d] or [b;d],
 #                                b is a (k+k)x1 vector for x0, the first k elements are for z=-Inf
@@ -38,7 +38,6 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
 #              [13] yHatLH       Tz x 3 x nPred matrix of pedicted values, [yHat from b1,yHat from b2,G]
 #
 #  Calls on: excise, OlsPs, NewEst3Ps, NumJac3Ps
-#            
 #
 #
 #  Notice:  (a) z is NOT standardized inside this function
@@ -52,19 +51,17 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
 
   Ng = length(gM)
   Nc = length(cM)
-  
+
   k  = size(x0,2)
   kw = size(w,2)
-  
-  
+
   if ExciseIt
     yx = excise([y x0 w z])
     y  = yx[:,1]                   #[1,k,kw,1]
-    x0 = yx[:,2:1+k]                          
+    x0 = yx[:,2:1+k]
     w  = yx[:,2+k:1+k+kw]          #works even if Kw=0 since 3:2 creates []
     z  = yx[:,end]
   end
-
 
   sseM = fill(NaN,(Ng,Nc))             #calculate sse in loop over g and c values
   for i = 1:Ng
@@ -77,7 +74,6 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
   (i,j) = ind2sub(size(sseM),vvMin)
   (g,c,b,par0,) = OlsLStar3Par(gcKeep,[NaN NaN NaN],[gM[i] cM[j]])
 
-
   if !isempty(par0)
     Sol = optimize(par->OlsLStar3LossPs(par,y,x0,w,z,gcKeep),par0)
     parX = Sol.minimum
@@ -88,12 +84,11 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
   else
     parX = []
   end
-  
+
   #fnOutput = Any[sse,theta,Stdtheta,Covtheta,b,Stdb_ols,R2,Gquant,gc]
   fnOutput  = OlsLStar3LossAllPs(parX,y,x0,w,z,gcKeep,1)
-  theta     = fnOutput[2]  
-  Covtheta  = fnOutput[4]           
-
+  theta     = fnOutput[2]
+  Covtheta  = fnOutput[4]
 
   bDiff      = fill(NaN,k)                             #calculate and test b2-b1=0
   tstatbDiff = fill(NaN,k)
@@ -109,8 +104,7 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
   end
   slopeDiff = [bDiff tstatbDiff]
 
-
-  if isempty(xwzHat) || all(isnan(xwzHat)) 
+  if isempty(xwzHat) || all(isnan(xwzHat))
     yHat   = []
     yHatLH = []
   else                                  #predicted values
@@ -128,7 +122,7 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
   end
 
   #fnOutput = Any[sse,theta,Stdtheta,Covtheta,b,Stdb_ols,R2,Gquant,gc]
-  push!(fnOutput,sseM,yHat,slopeDiff,yHatLH)                 
+  push!(fnOutput,sseM,yHat,slopeDiff,yHatLH)
   return fnOutput
 
 end
@@ -139,20 +133,20 @@ end
 function OlsLStar3PredPs(xwzHat,k,kw,theta,gcKeep)
 
   (g,c,b) = OlsLStar3Par(gcKeep,theta,[NaN NaN])
-  
+
   x0 = xwzHat[:,1:k]             #[k,kw,1]
   w  = xwzHat[:,1+k:k+kw]
   z  = xwzHat[:,end]
-  
+
   G  = 1./(1+exp(-g*(z-c)))
   x1 = x0.*repmat(1-G,1,k)
   x2 = x0.*repmat(G,1,k)
   x  = [x1 x2 w]
-  
+
   yHat = x*b
-  
+
   yHat2 = [zeros(size(x1)) x2 zeros(size(w))]*b        #constribution of x2 only
-  
+
   return yHat,yHat2,G
 
 end
@@ -163,11 +157,11 @@ end
 function OlsLStar3LossPs(par,y,x0,w,z,gcKeep=[])        #just sse from OlsLStar3LossAllPs
 
   fnOutput = OlsLStar3LossAllPs(par,y,x0,w,z,gcKeep,0)
-  sse = fnOutput[1]
-  
+  sse = 1.0 + fnOutput[1]
+
   return sse
-                                   
-end                                   
+
+end
 #------------------------------------------------------------------------------
 
 
@@ -176,7 +170,7 @@ function OlsLStar3LossAllPs(par,y,x0,w,z,gcKeep=[],DetailsIt=0)
 
   (g,c,) = OlsLStar3Par(gcKeep,par,[NaN NaN])
   (T,k) = size(x0)
-  
+
   G  = 1./(1+exp(-g*(z-c)))
   x1 = x0.*repmat(1-G,1,k)
   x2 = x0.*repmat(G,1,k)
@@ -186,7 +180,7 @@ function OlsLStar3LossAllPs(par,y,x0,w,z,gcKeep=[],DetailsIt=0)
   Stdb_ols              = sqrt(diag(Covb))
   sse                   = sum(res.^2)
   theta                 = [vec(par);b]
-    
+
   if DetailsIt == 1
     (mbar,m) = OlsLStar3MomCondAllPs(theta,y,x0,w,z,gcKeep)
     S0       = NewEst3Ps(m,0)                                    #ACov(sqrt(T)*mbar)
@@ -202,11 +196,11 @@ function OlsLStar3LossAllPs(par,y,x0,w,z,gcKeep=[],DetailsIt=0)
     Gquant   = []
     gc       = []
   end
-  
+
   fnOutput = Any[sse,theta,Stdtheta,Covtheta,b,Stdb_ols,R2,Gquant,gc]
   return fnOutput
-                                   
-end                                   
+
+end
 #------------------------------------------------------------------------------
 
 
@@ -214,7 +208,7 @@ end
 
 function OlsLStar3MomCondPs(theta,y,x0,w,z,gcKeep)   #just mbar from  OlsLStar3MomCondAllPs
 
-  mbar, = OlsLStar3MomCondAllPs(theta,y,x0,w,z,gcKeep) 
+  mbar, = OlsLStar3MomCondAllPs(theta,y,x0,w,z,gcKeep)
 
   return mbar
 
@@ -230,7 +224,7 @@ function OlsLStar3MomCondAllPs(theta,y,x0,w,z,gcKeep)   #moment conditions
 
   #(res,G,g,c,b,x) = OlsLStar3RegFuncPs(theta,y,x0,w,z,gcKeep)
   (g,c,b,par0_,EstType) = OlsLStar3Par(gcKeep,theta,[NaN NaN])
-  
+
   G   = 1./(1+exp(-g*(z-c)))
   x1  = x0.*repmat(1-G,1,k)
   x2  = x0.*repmat(G,1,k)
@@ -243,11 +237,11 @@ function OlsLStar3MomCondAllPs(theta,y,x0,w,z,gcKeep)   #moment conditions
   b1_b2x0 = x0*(b2-b1)
   dF_dg   = (1-G).*G.*(z-c).*b1_b2x0
   dF_dc   = (1-G).*G.*(-g).*b1_b2x0
-  
+
   mg = res.*dF_dg
   mc = res.*dF_dc
   mb = repmat(res,1,2*k+kw).*x
-  
+
   #(xx_,c_,b_,par0_,EstType) = OlsLStar3Par(gcKeep,theta,[NaN NaN])
   if EstType == 1
     m = -[mg mc mb]
@@ -260,7 +254,7 @@ function OlsLStar3MomCondAllPs(theta,y,x0,w,z,gcKeep)   #moment conditions
   else
     error("invalid case")
   end
-  
+
   mbar = mean(m,1)'
 
   return mbar,m
@@ -299,29 +293,8 @@ function OlsLStar3Par(gcKeep,theta,gcM)
   else
     error("invalid case")
   end
-  
+
   return g,c,b,par0,EstType
 
 end
 #------------------------------------------------------------------------------
-
-
-#------------------------------------------------------------------------------
-#function OlsLStar3RegFuncPs(theta,y,x0,w,z,gcKeep)
-#
-#  (g,c,b,) = OlsLStar3Par(gcKeep,theta,[NaN NaN])
-#  
-#  k = size(x0,2)
-#  
-#  G  = 1./(1+exp(-g*(z-c)))
-#  x1 = x0.*repmat(1-G,1,k)
-#  x2 = x0.*repmat(G,1,k)
-#  x  = [x1 x2 w]
-#  
-#  res = y - x*b
-#  
-#  return res,G,g,c,b,x
-#
-#end
-#------------------------------------------------------------------------------
-
