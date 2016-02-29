@@ -78,6 +78,6 @@ dN = Array(Date,T)
 for t = 1:T
   dN[t] = Date(data2[t,1])
 end
-println("\ndate part after convering days, together with numeric part")
+println("\nBoth dates (after conversion) and numeric part")
 println([dN x2])
 #------------------------------------------------------------------------------
