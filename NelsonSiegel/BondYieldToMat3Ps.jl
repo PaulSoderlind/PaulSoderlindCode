@@ -89,7 +89,7 @@ function BondYieldToMat3Ps(Q,c,t,Method=1,yLH=[-0.1;0.5],tol=1e-7,FaceValue=1)
     y = (yL + yH)/2
     while any((yH-yL) .> tol)              #iteration loop
       y = (yL + yH)/2                      #mid point for yield
-      println([yL,y,yH])
+      #println([yL y yH])
       Qs, = BondPrice3Ps(y,c,t,FaceValue)  #price at guessed yield
       vvH     = Qs .>= Q                   #logical where Qs >= Q  (decreasing function)
       yL[vvH] = y[vvH]                     # => root must be higher than y
