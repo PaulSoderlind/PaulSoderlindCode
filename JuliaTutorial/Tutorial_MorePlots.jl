@@ -6,6 +6,9 @@
 #  https://github.com/stevengj/PyPlot.jl
 #  for instruction on how to install what is needed.
 #
+#  A nice collection examples are available at
+#  https://gist.github.com/gizmaa/7214002
+#
 #  Notice: Restart Julia before running this file (at least if you have used
 #          another plotting package)
 #
