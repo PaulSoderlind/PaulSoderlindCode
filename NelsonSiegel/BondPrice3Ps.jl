@@ -9,16 +9,16 @@ function BondPrice3Ps(y,c,t,FaceValue=1)
 #  Usage:     [Q,dQ_dy] = BondPrice3Ps(y,c,t[,FaceValue]);
 #
 #  Input:
-#             y          nx1 vector, effective yield to maturity, e.g. 0.07
-#             c          scalar or n vector or mxn matrix , coupon rate and face value,
+#             y          n vector, effective yield to maturity, e.g. 0.07
+#             c          scalar or n vector or nxm matrix , coupon rate and face value,
 #                        e.g. 0.06 or 0.09/2
-#             t          mx1 vector, dates of coupon payments. Principal
+#             t          m vector, dates of coupon payments. Principal
 #                        is paid at the same time as the last coupon. Dates
 #                        should be expressed as fractions of the period.
 #             FaceValue  (optional) face value (default: 1)
 #
-#  Output:    Q      nx1 vector, bond price (eg. 1.01)
-#             dQ_dy  nx1 vector, derivative of bond price wrt. yield
+#  Output:    Q      n vector, bond price (eg. 1.01)
+#             dQ_dy  n vector, derivative of bond price wrt. yield
 #
 #
 #
@@ -31,9 +31,9 @@ function BondPrice3Ps(y,c,t,FaceValue=1)
 #
 #
 #
-#  Example:        t = (1:2)';
-#                  c = [0.09,0.10;
-#                       0.09,0.10];
+#  Example:        t = (1:2)'
+#                  c = [0.09 0.09;
+#                       0.10 0.10];
 #                  y = [0.0626;0.07];  gives Q = [1.05;1.05]
 #
 #
@@ -41,32 +41,30 @@ function BondPrice3Ps(y,c,t,FaceValue=1)
 #   Paul Soderlind (Paul.Soderlind@unisg.ch), June 2009, to Julia 2015
 # ----------------------------------------------------------------------------
 
-  t = collect(t)
   y = collect(y)
-  m = length(t)
+  t = collect(t)'
   n = length(y)
+  m = length(t)
 
-  y = repmat(y',m,1)                      #nx1 -> mxn
-  t = repmat(t ,1,n)                      #mx1 -> mxn matrix
+  y = repmat(y,1,m)                         #n -> nxm
+  t = repmat(t,n,1)                         #m -> nxm matrix
 
   if length(c) == 1                         #scalar c
-    c = fill(c,(m,n))
+    c = fill(c,(n,m))
   elseif length(c) == n                     #one c for each bond
-    c = repmat(vec(c)',m,1)
+    c = repmat(c,1,m)
   end
   if length(FaceValue) == 1
-    FaceValue = fill(FaceValue,(1,n))
+    FaceValue = fill(FaceValue,(n,1))
   end
 
-  c[end,:] = c[end,:] + vec(FaceValue)'     #add face value to last coupon payment
+  c[:,end] = c[:,end] + vec(FaceValue)     #add face value to last coupon payment
 
   cfac = c./((1+y).^t)                     #c/(1+y)^t1 + c/(1+y)^t2 + ...+ c/(1+y)^m
-  Q    = sum(cfac,1)                       #theoretical price
-  Q    = vec(Q)
+  Q    = sum(cfac,2)                       #theoretical price
 
   dcfac = cfac .* (-t./(1+y))      #derivative wrt ytm
-  dQ_dy = sum(dcfac,1)
-  dQ_dy = vec(dQ_dy)
+  dQ_dy = sum(dcfac,2)
 
   return Q,dQ_dy
 
