@@ -7,10 +7,6 @@
 #
 #
 #
-#  Note:     In MatLab. this function uses fminsearch for optimization.
-#            In Octave, it uses mdsmax from the Matrix Computation Toolbox, available
-#            (free) from http://www.maths.man.ac.uk/~higham/mctoolbox/.
-#
 #
 #
 #  Paul.Soderlind@unisg.ch, April 2002, to Julia Nov 2015
@@ -47,7 +43,6 @@ y  = [ 7.75;     6.835;    6.655;     6.41;      6.215;     6.195;
 #transform the data
 
 c  = c/100 # -> column vector, coupons and yields as 0.05 rather than 5
-tm = tm
 y  = y/100
 
 vvc    = c .== 0                #if bill, change from simple to effective rate
@@ -114,4 +109,3 @@ figure()
          "Estimated forward rate","Estimated yield to maturity"],loc=1)
   ylim(0.04,0.14)
 #----------------------------------------------------------------------------
-
