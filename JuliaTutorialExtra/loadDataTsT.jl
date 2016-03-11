@@ -74,7 +74,7 @@ println("\nNumeric part after changing -999.99 to NaN")
 println(x2)
 
 T  = size(data2,1)                           #convertind^g datetimes to dates
-dN = Array(Date,T)
+dN = Array{Date}(T)
 for t = 1:T
   dN[t] = Date(data2[t,1])
 end
