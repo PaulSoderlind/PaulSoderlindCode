@@ -168,7 +168,7 @@ function BondNSxLossPs(b,Qtc,s0,ytmLoss=0,weight=1)
     (s,f,d) = BondNSxPs(ti,b0,b1,b2,tau,b3,tau2)  #NSx: spot, forward, discount fn
     QNS[i]  = sum(d.*c[i]) + d[end]               #fitted bond price
     if ytmLoss == 1
-      QNS_i = BondYieldToMat3Ps(QNS[i],c[i],ti,1,0.05,1e-7)[1]  #fitted ytm
+      QNS_i = BondYieldToMat3Ps(QNS[i],c[i],ti,1,0.05,1e-7)  #fitted ytm
       QNS[i] = QNS_i[1]  #fitted ytm
     end
   end
