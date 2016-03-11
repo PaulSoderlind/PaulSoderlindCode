@@ -1,4 +1,4 @@
-function BondYieldToMat3Ps(Q,c,t,Method=1,yLH=0.05,tol=1e-7,FaceValue=1)
+function BondYieldToMat3Ps(Q,c,t,Method=1,yLH=[-0.1;0.5],tol=1e-7,FaceValue=1)
 #BondYieldToMat3Ps    Calculates yield to maturity from bond price (several methods available).
 #                     Can also be used for general IRR calculations. Works with arbitrary
 #                     coupon periods.
@@ -8,15 +8,15 @@ function BondYieldToMat3Ps(Q,c,t,Method=1,yLH=0.05,tol=1e-7,FaceValue=1)
 #
 #
 #  Input:     Q          nx1 vector, bond prices (for instance, 1.01)
-#             c          scalar or n vector or mxn matrix, c rate, e.g. 0.06, or 0.09/2
+#             c          scalar or n vector or nxm matrix, c rate, e.g. 0.06, or 0.09/2
 #             t          mx1 vector, dates of coupon payments. Principal
 #                        is paid at the same time as the last c. Dates
 #                        should be expressed as fractions of the period.
 #                        Example: coupons after 2,8, and 14 months with semi-annual coupons->
 #                        t = [0.333;0.333+1;0.333+2]
 #             Method     optional, 1: Newton-Raphson; 2: bisection [1]
-#             yLH        optional, if Method==1: scalar, yLH(1) is initial guess of roots
-#                                  if Method==2: 2x1 vector, yLH(1) is lower boundary and yLH(2) upper boundary
+#             yLH        optional, if Method==1: scalar, yLH[1] is initial guess of roots
+#                                  if Method==2: 2x1 vector, yLH[1] is lower boundary and yLH[2] upper boundary
 #             tol        optional, scalar, convergence criterion for y, [1e-7]
 #             FaceValue  optional, scalar, face value, default [1]
 #
@@ -50,7 +50,6 @@ function BondYieldToMat3Ps(Q,c,t,Method=1,yLH=0.05,tol=1e-7,FaceValue=1)
 #------------------------------------------------------------------------------
 
   n = length(Q)
-
   #--------------------------------------
 
   if Method == 1                   #Newton-Raphson
@@ -90,16 +89,16 @@ function BondYieldToMat3Ps(Q,c,t,Method=1,yLH=0.05,tol=1e-7,FaceValue=1)
     y = (yL + yH)/2
     while any((yH-yL) .> tol)              #iteration loop
       y = (yL + yH)/2                      #mid point for yield
-      #disp([yL,y,yH])
+      println([yL,y,yH])
       Qs, = BondPrice3Ps(y,c,t,FaceValue)  #price at guessed yield
       vvH     = Qs .>= Q                   #logical where Qs >= Q  (decreasing function)
       yL[vvH] = y[vvH]                     # => root must be higher than y
       vvL     = Qs .< Q                    #logical where Qs < Q
       yH[vvL] = y[vvL]                     # -> root must be lower than y
     end
+  #--------------------------------------
 
   end                                      #end different methods
-
   return y
 
 end
