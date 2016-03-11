@@ -69,22 +69,36 @@ figure(figsize=(10,10))
   ylabel("y")
 
 figure(figsize=(10,10))
-  plt[:hist](x,21)
+  PyPlot.plt[:hist](x,21)            #long name to avoid naming conflict
   grid("on")
   title("Histogram")
   xlabel("x")
 #------------------------------------------------------------------------------
 
-                                     #TIME SERIES PLOT
+x = randn(500,1)                       #TIME SERIES PLOT
 FirstDate = Date(2015,12,4)          #just faking some dates
-dN = Array(Date,length(x))
+dN = Array{Date}(length(x))
 for i = 1:length(dN)
   dN[i] = FirstDate + Dates.Day(i-1)       #add a day
 end
 
-figure(figsize=(35,35/1.41))
+figure(figsize=(35,35/1.41))          #basic time series plot
   plot_date(dN,cumsum(x),"k-")
   title("Cumulative x",fontsize=18)
+
+
+figure(figsize=(35,35/1.41))          #control tick marks
+ax1 = axes()
+  plot_date(dN,cumsum(x),"k-")
+  title("Cumulative x",fontsize=18)
+  majorlocator = matplotlib[:dates][:YearLocator]()
+  majorformatter = matplotlib[:dates][:DateFormatter]("%Y")
+  minorlocator = matplotlib[:dates][:MonthLocator](bymonth=2:13,bymonthday=1,interval=1)
+  minorformatter = matplotlib[:dates][:DateFormatter]("%b")
+  ax1[:xaxis][:set_major_locator](majorlocator)
+  ax1[:xaxis][:set_major_formatter](majorformatter)
+  ax1[:xaxis][:set_minor_locator](minorlocator)
+  ax1[:xaxis][:set_minor_formatter](minorformatter)
 #------------------------------------------------------------------------------
 
 using LaTeXStrings                 #add some LaTeX to the figure
@@ -94,9 +108,12 @@ t = collect(-3:6/99:6)
 PyPlot.matplotlib[:rc]("font", family="serif",size=10)  #font similar to LaTeX
 figure(figsize=(12,8.5))
   plot(b,loss1)
-  title("a title")
+  title(L"a title, $x$")
   xlabel("b")
   ylabel("log loss")
   text(-2.5,0.9,L"some text, $\ln(\mathrm{loss})$")
   text(-2.5,5,L"$\mu_2 = \int x^2 f(x) dx$")
 #------------------------------------------------------------------------------
+
+#close("all")      #closes all plot windows
+
