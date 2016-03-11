@@ -34,7 +34,7 @@ function NormalHistLoss(par,Probs,Bounds)
                           TheoryProb_x[2:n] - TheoryProb_x[1:n-1];
                           1.0 - TheoryProb_x[n]                  ]
 
-  loss = 10000*sum( (TheoryProb_Interval-Probs).^2 )  #loss function
+  loss = 1.0 + 10000*sum( (TheoryProb_Interval-Probs).^2 )  #loss function
 
   return loss
 
