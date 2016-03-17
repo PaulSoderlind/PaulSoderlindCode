@@ -78,22 +78,22 @@ figure(figsize=(10,10))
   xlabel("x")
 #------------------------------------------------------------------------------
 
-x = randn(500,1)                       #TIME SERIES PLOT
+z = randn(500,1)                       #TIME SERIES PLOT
 FirstDate = Date(2015,12,4)          #just faking some dates
-dN = Array{Date}(length(x))
+dN = Array{Date}(length(z))
 for i = 1:length(dN)
   dN[i] = FirstDate + Dates.Day(i-1)       #add a day
 end
 
 figure(figsize=(35,35/1.41))          #basic time series plot
-  plot_date(dN,cumsum(x),"k-")
-  title("Cumulative x",fontsize=18)
+  plot_date(dN,cumsum(z),"k-")
+  title("Cumulative z",fontsize=18)
 
 
 figure(figsize=(35,35/1.41))          #control tick marks
 ax1 = axes()
-  plot_date(dN,cumsum(x),"k-")
-  title("Cumulative x",fontsize=18)
+  plot_date(dN,cumsum(z),"k-")
+  title("Cumulative z",fontsize=18)
   majorlocator = matplotlib[:dates][:YearLocator]()
   majorformatter = matplotlib[:dates][:DateFormatter]("%Y")
   minorlocator = matplotlib[:dates][:MonthLocator](bymonth=2:13,bymonthday=1,interval=1)
@@ -111,12 +111,29 @@ t = collect(-3:6/99:6)
 PyPlot.matplotlib[:rc]("font", family="serif",size=10)  #font similar to LaTeX
 figure(figsize=(12,8.5))
   plot(b,loss1)
-  title(L"a title, $x$")
+  title(L"a title, $2 b^2 + 0.5$")
   xlabel("b")
   ylabel("log loss")
   text(-2.5,0.9,L"some text, $\ln(\mathrm{loss})$")
   text(-2.5,5,L"$\mu_2 = \int x^2 f(x) dx$")
 #------------------------------------------------------------------------------
 
-#close("all")      #closes all plot windows
+figure(figsize=(12,8.5))                      #subplots
+subplots_adjust(hspace = 0.4)
+subplot(221)
+  plot(b,loss1,"b-")
+  title(L"$2 b^2 + 0.5$")
+  xlabel(L"$b$")
 
+subplot(222)
+  plot(b,log(loss1),"r--")
+  title(L"$\ln(2 b^2 + 0.5)$")
+  xlabel(L"$b$")
+
+subplot(223)
+  plot(b,log(loss1).^2,"k:")
+  title(L"$[\ln(2 b^2 + 0.5)]^2$")
+  xlabel(L"$b$")
+#------------------------------------------------------------------------------
+
+#close("all")      #closes all plot windows
