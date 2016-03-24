@@ -24,4 +24,4 @@ This repository has the following separate sub projects:
 
 To download use "Download ZIP" (upper right). This gives you a zip file with all the subfolders. (No, as of yet there is no simple way of downloading a single subfolder.)
 
-The code typically follows my lecture notes/papers. So far, are few attempts at speeding up or error checking.
+The code typically follows my lecture notes/papers. So far, there are few attempts at speeding up or error checking.
