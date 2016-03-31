@@ -7,5 +7,4 @@ Readme for JuliaTutorialExtra
 
 3. NaNTsT.jl: example of how to trim off rows with NaNs
 
-4. writeToFileTsT.jl: example of how to write results to a text file
-
+4. printToFileTsT.jl: example of how to write results to a text file
