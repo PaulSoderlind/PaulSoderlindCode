@@ -3,10 +3,12 @@ Readme for DriscollKraay
 
 Julia code for panel regressions with Driscoll-Kraay standard errors
 
-1.  HszDk5cPs.jl is the main function
+1.  CompareWithHoechle2.jl: example file
 
-2.  excise.jl and HDirProdPs.jl are functions used by the main function
+2.  bidaskspread.jld: data from Hoechle 
 
-3.  HszTsT.jl: example file. Uses simulated data (in x.csv, yh.csv and z.csv)
+3.  HszDk5dwPs.jl: the main function
 
-4. DVMS.pdf: paper using this test
+4.  excisePs.jl and HDirProdPs.jl are functions used by the main function
+
+5.  DVMS.pdf: a paper using this method
