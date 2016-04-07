@@ -21,12 +21,22 @@ function excisePs(x)
 #------------------------------------------------------------------------------
 
   vvNaN      = isnan(x)             #1 if (i,j) is NaN
-  vvRow      = any(vvNaN,2)
-  vvNaNRow   = find(vvRow)          #rows with some NaNs
-  vvNoNaNRow = find(!vvRow)         #rows without any NaNs
+  vvNaNRow   = any(vvNaN,2)
+  vvNoNaNRow = !vvNaNRow            #rows without any NaNs
   z          = x[vvNoNaNRow,:]      #only keep rows with no NaNs. clumsy but works
 
   return z,vvNaN,vvNaNRow,vvNoNaNRow
 
 end
+#------------------------------------------------------------------------------
+
+
+
+
+#--------------------------OLD STUFF-------------------------------------------
+#  vvNaN      = isnan(x)             #1 if (i,j) is NaN
+#  vvRow      = any(vvNaN,2)
+#  vvNaNRow   = find(vvRow)          #rows with some NaNs
+#  vvNoNaNRow = find(!vvRow)         #rows without any NaNs
+#  z          = x[vvNoNaNRow,:]      #only keep rows with no NaNs. clumsy but works
 #------------------------------------------------------------------------------
