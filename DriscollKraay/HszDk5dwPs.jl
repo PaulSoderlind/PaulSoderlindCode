@@ -1,5 +1,5 @@
 function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
-#HszDk5dPs  LS and Driscoll-Kray standard errors for unbalanced panel, assuming
+#HszDk5dwPs LS and Driscoll-Kray standard errors for unbalanced panel, assuming
 #           x are the same across individuals, while z are time-varying individual
 #           characteristics. The effective regressors are kron(z,x).
 #
@@ -50,6 +50,7 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   end
 
   (T,N) = size(y,1,2)
+  K     = size(x,2)
   L     = size(z,3)
   #KL    = size(x,2)*L
   KL    = sum(vvzx .>0)
@@ -59,11 +60,12 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   xy = 0.0                            #Sum[x(t)*y(t),t=1:T]
   Nb = Array{Int}(T)                  #effective number of obs, after pruning NaNs
   for t = 1:T                            #loop over time
-    y_t   = y[t,:]'                        #dependent variable, Nx1
-    x0_t  = repmat(x[t,:],N,1)             #factors, NxK
-    z_t   = reshape(z[t,:,:],N,L)          #NxL, better than squeeze (cf 2-d arrays)
-    x_t   = HDirProdPs(z_t,x0_t)           #effective regressors, z_t is NxL, x_t is NxK
-    x_t   = x_t[:,vvzx]
+    y_t   = y[t,:]'                       #dependent variable, Nx1
+    #x0_t = repmat(x[t,:],N,1)            #factors, NxK
+    x0_t = x[t,:]                         #factors, 1xK
+    z_t  = reshape(z[t,:,:],N,L)          #NxL, better than squeeze (cf 2-d arrays)
+    x_t  = HDirProdPs(z_t,x0_t)           #effective regressors, z_t is NxL, x_t is 1xK
+    x_t  = x_t[:,vvzx]
     (yx_t,_,_,vvNoNaNRow) = excisePs([y_t x_t])   #pruning NaNs
     N_t   = size(yx_t,1)
     if ScaleByNtQ == 1
@@ -77,7 +79,8 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
       w_t   = ones(N_t,1)
     end
     if !isempty(yx_t)                    #don't accumulate [] to xx and xy (generates [])
-      yx_t = yx_t .* repmat(w_t,1,1+KL)  #put weights on observation i (in t)
+      #yx_t = yx_t .* repmat(w_t,1,1+KL) #put weights on observation i (in t)
+      yx_t = yx_t .* w_t                 #put weights on observation i (in t)
       y_t  = yx_t[:,1]
       x_t  = yx_t[:,2:end]
       xx   = xx + x_t'x_t/Nb[t]
@@ -101,7 +104,8 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   h_tLag   = zeros(m,KL)                #lag1;lag2;...,lagm
   for t = 1:T                            #loop over time
     y_t    = y[t,:]'
-    x0_t   = repmat(x[t,:],N,1)
+    #x0_t   = repmat(x[t,:],N,1)
+    x0_t   = x[t,:]
     z_t    = reshape(z[t,:,:],N,L)
     x_t    = HDirProdPs(z_t,x0_t)
     x_t    = x_t[:,vvzx]
@@ -117,7 +121,8 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
       w_t = ones(N_t,1)
     end
     if !isempty(rx_t)                    #don't accumulate [] to omega0DK
-      rx_t     = rx_t .* repmat(w_t,1,1+KL);  #put weights on observation i (in t)
+      #rx_t     = rx_t .* repmat(w_t,1,1+KL);  #put weights on observation i (in t)
+      rx_t     = rx_t .* w_t                   #put weights on observation i (in t)
       r_t      = rx_t[:,1]
       x_t      = rx_t[:,2:end]
       hi_t     = x_t.*repmat(r_t,1,KL)    #moment condition for (i,t)
