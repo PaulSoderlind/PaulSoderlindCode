@@ -24,18 +24,17 @@
 # (8)  This example file uses several (free) Julia packages. You find instructions
 #      in the code below (close to "using..."). For documentation of these packages,
 #      see
-#      http://statsbasejl.readthedocs.org/en/latest/
 #      http://distributionsjl.readthedocs.org/en/latest/
-#      http://gadflyjl.org/
 #      https://github.com/JuliaLang/Roots.jl
 #      https://github.com/JuliaOpt/Optim.jl
+#      http://gadflyjl.org/
 #
 # (9)  Installing/compiling packages takes a bit of time. The next run of
 #      the program is much faster. If you get warning messages while
 #      installing packages, restart Julia and hope for the best.
 #
 #
-#  Paul Söderlind (Paul.Soderlind at unisg.ch), October 2015, revised Dec 2015
+#  Paul Söderlind (Paul.Soderlind at unisg.ch), October 2015, revised April 2016
 #-------------------------------------------------------------------------
 
 
@@ -54,12 +53,12 @@ println(q)                        #case sensitive (q and Q are different)
 println("\n","first line of q: ",q[1,:])
 println("second column of q (printed compactly, with commas to indicate rows): ",q[:,2])
 
-p = collect(1:10:21)'
-println("\n","p is a row vector with a sequence starting at 1 ending in 21: ",p)
-
 z = q'                            #transposing
 println("\n","z is the transpose of q: ")
 println(z)
+
+p = collect(1:10:21)'
+println("\n","p is a row vector with a sequence starting at 1 ending in 21: ",p)
 
 z = [q;p]                         #overwriting old z with new
 println("\n","stacking q and p vertically")
@@ -84,8 +83,8 @@ y2 = q.*w                         #element-by-element multiplication
 println("\n","q.*w")
 println(y2)
 
-y3 = q'w                          #matrix multiplication
-println("\n","q'w")
+y3 = q'*w                          #matrix multiplication (can also do q'w)
+println("\n","q'*w")
 println(y3)
 
 
@@ -99,8 +98,8 @@ println("\n","----------------------  Load data from ascii file ------------","\
 #197904,0.05,0.8,3.27
 
 xx   = readdlm("MyData.csv",',',header=true)
-x    = xx[1]
-println("Column headers: ",xx[2])
+x    = xx[1]                       #xx[1] contains the data
+println("Column headers: ",xx[2])  #xx[2] contains the headers
 println("first four lines of x:")
 println(x[1:4,:])
 
@@ -119,26 +118,26 @@ x   = [ett Rme]                 #x is Tx2 matrix
 y   = Re                        #just to get standard OLS notation
 b   = inv(x'x)*x'y              #OLS
 b2  = x\y                       #also OLS, much quicker and numerically more stable
-b3  = linreg(x[:,2],y)          #a third version
+b3  = linreg(x[:,2],y)          #a third version (constant is automatically included)
 u   = y - x*b                   #OLS residuals
-R2  = 1 - var(u)/var(y)
+R2a = 1 - var(u)/var(y)         #avoid using name R2 (aleady in StatsBase package)
 println("OLS coefficients, regressing Re on constant and Rme, different calculations")
 println(round([b b2 b3],3))       #round(,3) rounds to 3 digits. Easier to look at
-println("R2: ",round(R2,3))
+println("R2: ",round(R2a,3))
 println("no. of observations: ",size(Re,1))
 
 x = randn(100,3)                  #matrix of random draws from N(0,1)
 println("\n","mean and std of random draws from N(0,1): ")
-println(round(mean(x,1),4))       #mean of each column in matrix, gives row vector
-println(round(std(x,1),4))
+mu    = mean(x,1)                 #mean of each column in matrix, gives row vector
+sigma = std(x,1)
+println(round([mu;sigma],3))
 
-using StatsBase      #the first time, do Pkg.add("StatsBase") to install the package
-println("\n","cov(x): ")          #lots of statistics functions
-println(round(cov(x),3))
+println("\n","cov(x): ")          #there are lots of statistics functions
+println(round(cov(x),3))          #for more, see the package StatsBase.jl
 
 using Distributions  #the first time, do Pkg.add("Distributions") to install the package
-println("\n","5th percentile of N(0,1) ")      #lots of statistics functions
-println(round(quantile(Normal(0,1),0.05),3))
+println("\n","5th percentile of N(0,1) and 95th of Chisquare(5)")      #lots of statistics functions
+println(round([quantile(Normal(0,1),0.05) quantile(Chisq(5),0.95)],3))
 
 
 println("\n","-------------------- Comparing things --------------------------","\n")
@@ -165,13 +164,13 @@ end
 println("\n","-------------------- Writing nested loops --------------------","\n")
 println("Pick out elements on and below diagonal from a square matrix x")
 
-x = reshape(1:9,3,3)  + 0.0       #generate square matrix, + 0.0 creates floats
+x = reshape(1:9,3,3)              #generate square matrix
 (m,n) = size(x)                   #find no. rows and columns
 println("\n","original matrix: ")
 println(x)
 
 nRows = round(Int,n*(n+1)/2)      #must be an integer, so use round()
-v = fill(NaN,(nRows,1))           #to put results in, initialized as NaNs
+v = fill(-999,(nRows,1))          #to put results in, initialized as -999
 k = 1                             #fill(value,integer,integer) so must convert
 for j = 1:n                       #loop over columns in x
   for i = j:n                     #loop over rows on and below diagonal
@@ -221,6 +220,7 @@ println("\n","---------------- Solving (non-linear) equations --------------","\
 using Roots        #the first time, do Pkg.add("Roots") to install the package
 x1 = fzero(x->MathLecD(x,1),[-1;1])     #notice that x->MathLecD(x,1)
                                         #defines a new function (of x only)
+                                        #[-1;1] searches roots in this interval
 println("at which x is MathLecD(x,1) = 0? ",round(x1,3))
 
 x1 = fzero(x->MathLecD(x,1),[1;3])  #now, try between 1 and 3
