@@ -33,9 +33,12 @@ function f2(A)
   return A
 end
 function f3(A)
-  B = deepcopy(A)
-  B[1:end] = B[1:end]*2
-  return B
+  #B = deepcopy(A)                    #works too
+  #B[1:end] = B[1:end]*2
+  #return B
+  A = A + 0
+  A[1:end] = A[1:end]*2
+  return A
 end
 x0 = [1;2]
 x1 = deepcopy(x0)
