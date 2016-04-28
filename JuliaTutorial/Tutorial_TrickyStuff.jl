@@ -10,7 +10,7 @@
 
 
 
-println("\n\n------- A = B means that A and B are the same forever-------","\n")
+println("\n\n---for arrays, A = B means that A and B are always the same--","\n")
 A = [2 2]
 B = A
 C = sum(B)
@@ -23,12 +23,43 @@ A and B are one and the same. Actually, if you instead changed B, then it
 would carry over to A as well. In contrast, C and D are not changed when A is:
 they are not the same as A.")
 
+println("\n\n---------------changing arrays in functions------------------","\n")
+function f1(A)
+  A[1:end] = A[1:end]*2
+  return A
+end
+function f2(A)
+  A = A*2
+  return A
+end
+function f3(A)
+  B = deepcopy(A)
+  B[1:end] = B[1:end]*2
+  return B
+end
+x0 = [1;2]
+x1 = deepcopy(x0)
+x2 = deepcopy(x0)
+x3 = deepcopy(x0)
+y1 = f1(x1)
+y2 = f2(x2)
+y3 = f3(x3)
+println("\noriginal x: ",x0,", new x after fn call: ",x1,", f1(x1): ",y1)
+println("\noriginal x: ",x0,", new x after fn call: ",x2,", f2(x2): ",y2)
+println("\noriginal x: ",x0,", new x after fn call: ",x3,", f3(x3): ",y3)
+println("\nNotice that when individual ELEMENTS of an array are changed inside a
+function, then this carries over to the array used in the function call. This is true
+also when we change all individual elements (as in f1()). It is not true when
+we work on the entire array (as in f2()) or change its shape. The solution
+to the problem with f1() is to do as in f3(): work on a copy of the input array.")
+
+
 
 println("\n\n------------------- 1x1 arrays are not scalars  ------------------")
 A = [1 2]
 b = [3]
 println("\nA and b: ",A," ",b)
-println("You cannot do A + b, if A is a Txn array and b is a 1x1 array.
+println("You cannot do A + b if A is a Txn array and b is a 1x1 array.
 Instead, use A .+ b: ",A .+ b)
 println("This works since b is expanded ('broadcasted') to have the same dimension as A")
 
@@ -53,7 +84,7 @@ println("\nvariables CREATED in a loop are not visible outside the loop
 Trying to print Tor after the loop would give an error message (try it)")
 
 println("\n","In contrast, variables CHANGED in a loop are visible outside the loop")
-Oden = []
+Oden = Float64[]
 for i = 1:5
   Oden = cos(i)
 end
