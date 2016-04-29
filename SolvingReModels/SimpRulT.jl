@@ -7,7 +7,7 @@ function SimpRulT(A,B,Q,R,U,bet,n1,n2,F,SigmaXX,x10,cutoff)
 #  Usage:    (M,C,J0) = SimpRulT(A,B,Q,R,U,bet,n1,n2,F,SigmaXX,x10,cutoff)
 #
 #  Input:     A,B,Q,R,U,bet,n1,n2: see ComItAlg
-#             F          kxn vector of decision rule
+#             F          kxn matrix, decision rule
 #             SigmaXX    n1xn1 covariance matrix of shocks
 #             X_0        n1x1 vector, initial values for predetermined
 #                        variables
@@ -75,4 +75,3 @@ function SimpRulT(A,B,Q,R,U,bet,n1,n2,F,SigmaXX,x10,cutoff)
 
 end
 #----------------------------------------------------------------------
-
