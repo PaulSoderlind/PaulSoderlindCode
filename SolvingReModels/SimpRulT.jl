@@ -69,7 +69,7 @@ function SimpRulT(A,B,Q,R,U,bet,n1,n2,F,SigmaXX,x10,cutoff)
   vecV = (eye(n1*n1) - kron(M',bet*M'))\vec(PQUURP)
   V    = reshape(vecV,n1,n1)                 #solves V = W + bet*M'*V*M
 
-  J0 =  x10'*V*x10 + (bet/(1-bet)) * sum(diag(V*SigmaXX,0))
+  J0 =  x10'V*x10 + (bet/(1-bet)) * trace(V*SigmaXX)
 
   return M,C,J0
 
