@@ -49,6 +49,7 @@ function BondPrice3Ps(y,c,t,FaceValue=1)
   y = repmat(y,1,m)                         #n -> nxm
   t = repmat(t,n,1)                         #m -> nxm matrix
 
+  c = c + 0.0                               #breaks link with c argument
   if length(c) == 1                         #scalar c
     c = fill(c,(n,m))
   elseif length(c) == n                     #one c for each bond
