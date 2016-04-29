@@ -27,12 +27,11 @@ function Fuhrer1(a1,ap,Varey,w,gamm,Varep,Dbig,qy,qpi,qf,bet)
 #----------------------------------------------------------------------------
 
                              #model->general setup
-  Ax = [ (  -1/(w*(1-w)^2)                        )
-         (  -gamm*a1/(w*(1-w)) - gamm/(1-w)^2     )
-         (  -1                                    )
-         (  -gamm*ap/(w*(1-w))                    )
+  Ax = [ (  -1/(w*(1-w)^2)                        );
+         (  -gamm*a1/(w*(1-w)) - gamm/(1-w)^2     );
+         (  -1                                    );
+         (  -gamm*ap/(w*(1-w))                    );
          (   2   ) ]'
-
 
   Ar = [ 0  0  0  ((1+Dbig)/Dbig)  (4/Dbig*(1-w) ) ]
   Ar =  Ar + 4/Dbig*w*Ax
@@ -50,7 +49,7 @@ function Fuhrer1(a1,ap,Varey,w,gamm,Varep,Dbig,qy,qpi,qf,bet)
          0  0  4*(1-w)   0   4*w    0;
          0  0  0         0   0      1  ]
 
-  Wbig = K'* diagm([qy;qpi;qf]) * K
+  Wbig = K'diagm([qy;qpi;qf])*K
   Q = Wbig[1:5,1:5]
   U = Wbig[1:5,6]
   R = Wbig[6,6]
