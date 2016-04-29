@@ -39,10 +39,10 @@ function DiscAlg(A,B,Q,R,U,bet,n1,n2,Vt1,Ct1,
   Ft1      = 1000
   ConvCrit = collect(ConvCrit)'             #to row vector
 
-  M = []
-  C = []
-  F = []
-  V = []
+  M = Float64[]
+  C = Float64[]
+  F = Float64[]
+  V = Float64[]
   Cdiff = 1000*ones(1+CritLags,2)
   iter  = 1
   while any(maximum(Cdiff,1) .> ConvCrit) & (iter < MaxIter)   #iterations
