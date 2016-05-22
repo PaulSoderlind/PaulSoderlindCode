@@ -19,7 +19,7 @@ function HDirProdPs(x,y)
 #             the z = HDirProdFn(x,y) gives
 #
 #             z = [ 5  6  1  10  12  2;
-#                  21 24  3  28  32  4];
+#                  21 24  3  28  32  4]
 #
 # Paul.Soderlind@unisg.ch, Oct 2015
 #----------------------------------------------------------------------------
@@ -27,9 +27,9 @@ function HDirProdPs(x,y)
   #T = size(x,1)       #rows and columns in x
   Kx = size(x,2)       #columns in x
   Ky = size(y,2)       #columns in y
-  
+
   z = repmat(y,1,Kx) .* kron(x,ones(1,Ky))
-  
+
   return z
 
 end
