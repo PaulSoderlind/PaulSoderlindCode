@@ -22,18 +22,19 @@ function NewEst3Ps(g,m)
 #
 #  Paul Soderlind (Paul.Soderlind@unisg.ch), to Julia Oct 2015
 #-----------------------------------------------------------------------
-  
+
   T = size(g,1)                     #g is Txq
   m = min(m,T-1)                    #number of lags
-  
-  g = g - repmat(mean(g,1),T,1)     #Normalizing to Eg=0
-  
+
+  g = g .- mean(g,1)                #Normalizing to Eg=0
+
   S = g'g/T                         #(qxT)*(Txq)
   for s = 1:m
     Omega_s = g[s+1:T,:]'g[1:T-s,:]/T   #same as Sum[g(t)*g(t-s)',t=s+1,T]
     S       = S + (1 - s/(m+1))*(Omega_s + Omega_s')
   end
-  
+
   return S
 
 end
+#-----------------------------------------------------------------------
