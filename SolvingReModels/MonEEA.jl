@@ -1,8 +1,7 @@
 #--------------------------------------------------------------------------
-#  MonEEA.m
+#  MonEEA.jl
 #
-#  Test program for the functions in ComItAlg.m, DiscAlg, and SimpRulT.m.
-#  These functions call on qzswitch.m (by Simms) and reorder.m (by Klein).
+#  Test program for the functions in ComItAlg.jl, DiscAlg, and SimpRulT.jl.
 #  The program also uses Var1SimPs to calculate impulse response functions.
 #
 #  The program uses a very simplified version of the model in
