@@ -12,12 +12,11 @@
 #  Paul.Soderlind@unisg.ch, April 2002, to Julia Nov 2015
 #------------------------------------------------------------------------------
 
-using PyPlot, Optim
+using Optim , PyPlot
 
 warn("you may have to change these paths")
+include("vecPs.jl")
 include("BondPrice3Ps.jl")
-include("BondYieldToMat3Ps.jl")
-include("BondNSxEstPs.jl")
 include("BondNSxPs.jl")
 
 
@@ -100,7 +99,7 @@ for i = 1:n                #loop over bonds
 end
 println("\nImplied spot rates (NSXbR): ",round(100*ytmx,2))
 #----------------------------------------------------------------------------
-                                           #plotting
+                                       #plotting
 figure()
   plot(tm,c,"+",tm,y,"s",tmFig,shx,"b--",tmFig,fhx,"r-",tm,ytmx,".")
   title("Swedish Interest Rates 29 Dec 1993")
