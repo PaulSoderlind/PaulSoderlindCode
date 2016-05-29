@@ -13,11 +13,11 @@ function NumJac3Ps(fun::Function,b0,h=[],Method=99)
 #            Method      (optional) 1: forward derivatives; 2: backward derivatives
 #                        else: central derivatives
 #
-#  Output:   Jac         nxk matrix of derivatives, Jac(i,j) = df[i]/db[j]
+#  Output:   Jac         nxk matrix of derivatives, Jac[i,j] = df[i]/db[j]
 #
 #
 #
-#  Notice: fun(b0) must be well define. For instance, it must work even if b0 is
+#  Notice: fun(b0) must be well defined. For instance, it must work even if b0 is
 #          an 1-element array
 #
 #
