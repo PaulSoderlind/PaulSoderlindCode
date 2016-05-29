@@ -21,7 +21,7 @@ include("jlFiles/garch11LL.jl")
 using Optim, PyPlot
 #------------------------------------------------------------------------------
 
-xx   = readdlm("Data/FFdSizePs.csv",',',header=true)      
+xx   = readdlm("Data/FFdSizePs.csv",',',header=true)
 x    = xx[1]
 ymd  = x[:,1]     #[YearMonthDay]
 y    = x[:,2]     #returns for the size portfolio we want to study
@@ -41,7 +41,7 @@ par0 = [0;mean(y,1);(var(y,1)/5);0.1;0.6]
 x1 = optimize(par->garch11LLLoss(par,yx),par0)   #do MLE by optimization with optimize, minimize -sum(LL)
 parHata = x1.minimum
 parHata[end-2:end] = abs(parHata[end-2:end])     #since the likelihood function uses abs(these values)
-println("\n Parameter estimates, own LL")
+println("\nParameter estimates")
 println(round(parHata,4))
 
 (loglik,s2,ER) = garch11LL(parHata,yx)
@@ -52,5 +52,5 @@ figure()
   title("VaR (95%)")
 
 CovRatio = mean((-y) .>= VaR95)                          #coverage ratio for VaR
-println("\n Coverage ratio for VaR(95%): ", round(CovRatio,3))
+println("\nCoverage ratio for VaR(95%): ",round(CovRatio,3))
 #------------------------------------------------------------------------------
