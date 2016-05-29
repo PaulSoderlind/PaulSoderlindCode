@@ -7,7 +7,8 @@ function lagnPs(x,n=1)
 #                 = lagnPs(x)
 #
 #  Input:    x     Txk matrix
-#            n     scalar, order of lag. For instance, 2 puts x(t-2) on row t; -3 puts x(t+3) on row t.
+#            n     scalar, order of lag. For instance, 2 puts x(t-2)
+#                  on row t; -3 puts x(t+3) on row t.
 #
 #  Output:   z     Txk matrix of lags
 #
@@ -15,29 +16,23 @@ function lagnPs(x,n=1)
 #
 #
 #
-#
-#  Paul.Soderlind@unisg.ch
+#  Paul.Soderlind@unisg.ch, to Julia Nov 2015
 #--------------------------------------------------------------------------
 
+  (T,k) = size(x,1,2)
 
-  T = size(x,1)
-  k = size(x,2)
-  
   if abs(n) >= T
     error("too many lags or leads")
   end
-  
+
   missings = fill(NaN,(abs(n),k))
   if n < 0                                    #leads
-    xlag = [ x[1-n:T,:]; missings ]
+    x = [ x[1-n:T,:]; missings ]
   elseif n > 0                                #lags
-    xlag = [ missings; x[1:T-n,:] ]
-  else                                        #concurrent
-    xlag = x
+    x = [ missings; x[1:T-n,:] ]
   end
-  
-  return xlag
+
+  return x
 
 end
 #--------------------------------------------------------------------------
-
