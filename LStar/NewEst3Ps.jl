@@ -26,7 +26,7 @@ function NewEst3Ps(g,m)
   T = size(g,1)                     #g is Txq
   m = min(m,T-1)                    #number of lags
 
-  g = g - repmat(mean(g,1),T,1)     #Normalizing to Eg=0
+  g = g .- mean(g,1)                #Normalizing to Eg=0
 
   S = g'g/T                         #(qxT)*(Txq)
   for s = 1:m
@@ -37,3 +37,4 @@ function NewEst3Ps(g,m)
   return S
 
 end
+#-----------------------------------------------------------------------
