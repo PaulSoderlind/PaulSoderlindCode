@@ -4,11 +4,11 @@ function excisePs(x)
 #
 #
 #
-#  Usage:    (x,vvNaN,vvNaNRow,vvNoNaNRow) = excisePs(x)
+#  Usage:    (z,vvNaN,vvNaNRow,vvNoNaNRow) = excisePs(x)
 #
 #  Input:   x           Txm   matrix
 #
-#  Output:  x           Sxm   matrix, S<=T, rows with any NaN are cut out
+#  Output:  z           Sxm   matrix, S<=T, rows with any NaN are cut out
 #           vvNaN       Txm   matrix, true if element (i,j) in x is a NaN
 #           vvNaNRow    Tx1   vector, indices of rows that have some NaNs
 #           vvNoNaNRow  Tx1   vector, indices of rows that have no NaNs
@@ -21,11 +21,14 @@ function excisePs(x)
 #------------------------------------------------------------------------------
 
   vvNaN      = isnan(x)             #1 if (i,j) is NaN
-  vvNaNRow   = any(vvNaN,2)
+  vvNaNRow   = vec(any(vvNaN,2))
   vvNoNaNRow = !vvNaNRow            #rows without any NaNs
-  z          = x[vvNoNaNRow,:]      #only keep rows with no NaNs. clumsy but works
 
-  return z,vvNaN,vvNaNRow,vvNoNaNRow
+  if any(vvNaNRow)                  #only keep rows with no NaNs
+    x = x[vvNoNaNRow,:]             #works also with 0.5.0, since bool
+  end
+
+  return x,vvNaN,vvNaNRow,vvNoNaNRow
 
 end
 #------------------------------------------------------------------------------
