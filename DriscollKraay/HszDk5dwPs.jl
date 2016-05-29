@@ -55,31 +55,28 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   #KL    = size(x,2)*L
   KL    = sum(vvzx .>0)
 
-
   xx = 0.0                            #Sum[x(t)*x(t)',t=1:T]
   xy = 0.0                            #Sum[x(t)*y(t),t=1:T]
   Nb = Array{Int}(T)                  #effective number of obs, after pruning NaNs
   for t = 1:T                            #loop over time
-    y_t   = y[t,:]'                       #dependent variable, Nx1
-    #x0_t = repmat(x[t,:],N,1)            #factors, NxK
-    x0_t = x[t,:]                         #factors, 1xK
+    y_t   = y[t:t,:]'                     #dependent variable, Nx1, (t without t in 0.5)
+    x0_t = x[t:t,:]                        #factors, 1xK (rely on broadcasting of .* below)
     z_t  = reshape(z[t,:,:],N,L)          #NxL, better than squeeze (cf 2-d arrays)
     x_t  = HDirProdPs(z_t,x0_t)           #effective regressors, z_t is NxL, x_t is 1xK
     x_t  = x_t[:,vvzx]
     (yx_t,_,_,vvNoNaNRow) = excisePs([y_t x_t])   #pruning NaNs
-    N_t   = size(yx_t,1)
+    N_t  = size(yx_t,1)
     if ScaleByNtQ == 1
       Nb[t] = N_t
       w_t   = ones(N_t,1)
     elseif ScaleByNtQ == 2
       Nb[t] = N
-      w_t   = wM[t,vvNoNaNRow]'
+      w_t   = wM[t:t,vvNoNaNRow]'
     else
       Nb[t] = N
       w_t   = ones(N_t,1)
     end
     if !isempty(yx_t)                    #don't accumulate [] to xx and xy (generates [])
-      #yx_t = yx_t .* repmat(w_t,1,1+KL) #put weights on observation i (in t)
       yx_t = yx_t .* w_t                 #put weights on observation i (in t)
       y_t  = yx_t[:,1]
       x_t  = yx_t[:,2:end]
@@ -103,9 +100,8 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   omegajDK = zeros(KL,KL,m)             #DK, lags 1 to m
   h_tLag   = zeros(m,KL)                #lag1;lag2;...,lagm
   for t = 1:T                            #loop over time
-    y_t    = y[t,:]'
-    #x0_t   = repmat(x[t,:],N,1)
-    x0_t   = x[t,:]
+    y_t    = y[t:t,:]'
+    x0_t   = x[t:t,:]
     z_t    = reshape(z[t,:,:],N,L)
     x_t    = HDirProdPs(z_t,x0_t)
     x_t    = x_t[:,vvzx]
@@ -121,7 +117,6 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
       w_t = ones(N_t,1)
     end
     if !isempty(rx_t)                    #don't accumulate [] to omega0DK
-      #rx_t     = rx_t .* repmat(w_t,1,1+KL);  #put weights on observation i (in t)
       rx_t     = rx_t .* w_t                   #put weights on observation i (in t)
       r_t      = rx_t[:,1]
       x_t      = rx_t[:,2:end]
@@ -130,7 +125,7 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
       omega0DK = omega0DK + h_t'h_t
       omega0W  = omega0W + hi_t'hi_t/Nb[t]^2
       for j = 1:m
-        omegajDK[:,:,j] = omegajDK[:,:,j] + h_t'h_tLag[j,:]    #h(t)*h(t-j)'
+        omegajDK[:,:,j] = omegajDK[:,:,j] + h_t'h_tLag[j:j,:]    #h(t)*h(t-j)'
       end
       h_tLag = [h_t;h_tLag[1:end-1,:]]  #update only if !isempty(rx_t), effectively disregarding t if no data
     end
@@ -145,7 +140,6 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
     Shatj = Shatj + (1-j/(m+1))*(omegajDK[:,:,j]+omegajDK[:,:,j]')/Tb^2
   end
 
-
   zx_1  = inv(xx)
   CovDK = zx_1 * Shat * zx_1'                      #covariance matrix, DK
   stdDK = sqrt( diag(CovDK) )                      #standard errors, DK
@@ -153,7 +147,6 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   stdW  = sqrt( diag(CovW) )                       #standard errors, White's
   CovDKj = zx_1 * Shatj * zx_1'                    #covariance matrix, DK with lags
   stdDKj = sqrt( diag(CovDKj) )                    #standard errors, DK with lags
-
 
   if yhatQ
     yy,   = excisePs([vec(yhat) vec(y)])
@@ -167,5 +160,4 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   return fnOutput
 
 end
-
 #------------------------------------------------------------------------------
