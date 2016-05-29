@@ -3,7 +3,7 @@ Readme for FittingNfromHist
 
 Julia code for fitting N(mu,sigma2) from a histogram. 
 
-1. EstimationEx.jl: example (try to run it). The other jl files are functions used in the example.
+1. EstimationEx.jl: example (try to run it). The other jl file contains functions used in the example.
 
 2. InfForc200204.pdf and AbelComm200504.pdf: papers using this approach, published as
 Paolo Giordani and Paul Söderlind, "Inflation Forecast Uncertainty," European Economic Review, 47, 1037-1059, 2003 and
