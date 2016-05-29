@@ -27,9 +27,9 @@ function HDirProdFn(x,y)
   #T = size(x,1)       #rows and columns in x
   Kx = size(x,2)       #columns in x
   Ky = size(y,2)       #columns in y
-  
+
   z = repmat(y,1,Kx) .* kron(x,ones(1,Ky))
-  
+
   return z
 
 end
