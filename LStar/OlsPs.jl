@@ -3,7 +3,7 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
 #
 #
 #
-#  Usage:    (b,res,yhat,Covb,R2,T) = OlsPs(y,x[,ExciseIt[,UnExciseIt[,SkipCovbIt]]]])
+#  Usage:    (b,res,yhat,Covb,R2a,T) = OlsPs(y,x[,ExciseIt[,UnExciseIt[,SkipCovbIt]]]])
 #
 #  Input:    y            Tx1 or Txn matrix of the dependent variables
 #            x            Txk matrix of regressors (including deterministic ones)
@@ -15,7 +15,7 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
 #            res          Tx1 or Txn matrix, residuals y - yhat
 #            yhat         Tx1 or Txn matrix, fitted values x*b
 #            Covb         matrix, covariance matrix of vec(b) =[beq1;beq2;...]
-#            R2           1xn vector, R2 values
+#            R2a          1xn vector, R2 values
 #            T            scalar, number of obs
 #
 #
@@ -28,15 +28,15 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
 #  Paul.Soderlind@unisg.ch, Jan 2001, Jun 2005, to Julia Oct 2015
 #----------------------------------------------------------------------------
 
-  T = size(y,1)
-  n = size(y,2)
+  (T,n) = size(y,1,2)
 
   if ExciseIt
-    (yx,vvNaN,vvNaNR,vvNoNaNR) = excisePs([y x])
+    (yx,_,_,vvNoNaNR) = excisePs([y x])
     y = yx[:,1:n]
     x = yx[:,n+1:end]
   end
   yx = nothing
+  _  = nothing
 
   Ty = size(y,1)
   Tx = size(x,1)
@@ -59,13 +59,13 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
     else
       Covb   = kron(Covres,inv(x'x))
     end
-    R2 = 1 - var(res2,1)./var(y,1)
+    R2a = 1 - var(res2,1)./var(y,1)
   else
     b      = NaN
     yhat2  = NaN
     res2   = NaN
     Covb   = NaN
-    R2     = NaN
+    R2a    = NaN
   end
 
   if UnExciseIt        #put fitted value and residual in Tyxn matrix
@@ -78,7 +78,7 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
     res  = res2
   end
 
-  return b,res,yhat,Covb,R2,T
+  return b,res,yhat,Covb,R2a,T
 
 end
 #------------------------------------------------------------------------------
