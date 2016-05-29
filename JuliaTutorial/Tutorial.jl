@@ -50,8 +50,8 @@ println(Q)                        #print matrix
 println("q is a matrix")
 println(q)                        #case sensitive (q and Q are different)
 
-println("\n","first line of q: ",q[1,:])
-println("second column of q (printed compactly, with commas to indicate rows): ",q[:,2])
+println("\n","first line of q: ",q[1:1,:])
+println("second column of q (printed compactly, with commas to indicate rows): ",q[:,2:2])
 
 z = q'                            #transposing
 println("\n","z is the transpose of q: ")
@@ -83,7 +83,7 @@ y2 = q.*w                         #element-by-element multiplication
 println("\n","q.*w")
 println(y2)
 
-y3 = q'*w                          #matrix multiplication (can also do q'w)
+y3 = q'*w                          #matrix multiplication (q'w is the same as q'*w)
 println("\n","q'*w")
 println(y3)
 
@@ -118,11 +118,10 @@ x   = [ett Rme]                 #x is Tx2 matrix
 y   = Re                        #just to get standard OLS notation
 b   = inv(x'x)*x'y              #OLS
 b2  = x\y                       #also OLS, much quicker and numerically more stable
-b3  = linreg(x[:,2],y)          #a third version (constant is automatically included)
 u   = y - x*b                   #OLS residuals
 R2a = 1 - var(u)/var(y)         #avoid using name R2 (aleady in StatsBase package)
 println("OLS coefficients, regressing Re on constant and Rme, different calculations")
-println(round([b b2 b3],3))       #round(,3) rounds to 3 digits. Easier to look at
+println(round([b b2],3))        #round(,3) rounds to 3 digits. Easier to look at
 println("R2: ",round(R2a,3))
 println("no. of observations: ",size(Re,1))
 
@@ -238,7 +237,7 @@ println(x1.minimum)
 
 #println("\n","------------------------- load xls file -------------------------------","\n")
 
-#can be done using Taro (which needs Java) or ExcelReaders (needs Python's xlrd),
+#can be done using Taro (which needs the Java) or ExcelReaders (needs Python's xlrd),
 #so it is for advanced users
 
 
