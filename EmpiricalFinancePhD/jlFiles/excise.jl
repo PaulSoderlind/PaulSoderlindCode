@@ -1,9 +1,12 @@
 function excise(x)
 
-  #vv = find(!any(isnan(x),2))       
-  vv = !any(isnan(x),2)
-  z  = x[vv,:]           #only keep rows with no NaNs
+  vv = vec(any(isnan(x),2))
 
-  return z
+  if any(vv)              #only keep rows with no NaNs
+    x = x[!vv,:]
+  end
+
+  return x
 
 end
+#------------------------------------------------------------------------------
