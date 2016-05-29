@@ -1,6 +1,6 @@
 function excise(x)
 
-  vv = any(isnan(x),2)
+  vv = vec(any(isnan(x),2))
 
   if any(vv)              #only keep rows with no NaNs
     x = x[!vv,:]
@@ -13,7 +13,7 @@ end
 
 function excise2mPs(x,y)
 
-  vv = any(isnan([x y]),2)
+  vv = vec(any(isnan([x y]),2))
 
   if any(vv)              #only keep rows with no NaNs
     x = x[!vv,:]
@@ -27,7 +27,7 @@ end
 
 function excise3mPs(x,y,z)
 
-  vv = any(isnan([x y z]),2)
+  vv = vec(any(isnan([x y z]),2))
 
   if any(vv)              #only keep rows with no NaNs
     x = x[!vv,:]
@@ -42,7 +42,7 @@ end
 
 function excise4mPs(x,y,z,w)
 
-  vv = any(isnan([x y z w]),2)
+  vv = vec(any(isnan([x y z w]),2))
 
   if any(vv)              #only keep rows with no NaNs
     x = x[!vv,:]
