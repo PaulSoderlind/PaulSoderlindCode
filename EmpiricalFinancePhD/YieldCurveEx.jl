@@ -16,14 +16,14 @@
 #  Paul.Soderlind@unisg.ch   Oct 2015
 #------------------------------------------------------------------------------
 
+using Optim, PyPlot
 
 include("jlFiles/VasicekABFn.jl")
 include("jlFiles/VasicekTsCsFn.jl")
 include("jlFiles/lagnPs.jl")
-using Optim, PyPlot
 #-----------------------------------------------------------------------------
 
-xx  = readdlm("Data/USCMRatesPs.csv",',',header=true)      
+xx  = readdlm("Data/USCMRatesPs.csv",',',header=true)
 y   = xx[1]
 
 YearMonth = 1970 + 1/24 + (1/12)*collect(0:size(y,1)-1)
@@ -32,7 +32,7 @@ y[:,1] = ((1-0.25*y[:,1]/100).^(-1/0.25) - 1)*100    #discount basis->effective
 y[:,2] = ((1-0.50*y[:,2]/100).^(-1/0.5) - 1)*100
 
 m      = [0.25 0.5 1 3 5 7 10]                             #time to maturity (in years)
-mMonth = round(Int64,m*12)                            #maturites, in months (integers)
+mMonth = round(Int,m*12)                            #maturites, in months (integers)
 y      = log(1+y/100)                    #continuously compounded interest rates
 y      = y/12                            #interest rates per month (the period length of data)
 
@@ -54,13 +54,12 @@ par0 = [-2.3;10;5.5;0.5;0.8]
                          #just testing the VasicekABFn function
 (ao,bo,xt,au,bu,yuHat) = VasicekABFn(1,0.5,0.9,0.02,nMo,nMu,yo)
 
-
 (MinusLL,yuHat,u,xt) = VasicekTsCsFn(par0,yo,yu,nMo,nMu)
 
                              #do MLE by optimization with optimize, minimize -sum(LL)
-x1 = optimize(par->VasicekTsCsLossFn(par,yo,yu,nMo,nMu),par0)        
+x1 = optimize(par->VasicekTsCsLossFn(par,yo,yu,nMo,nMu),par0)
 par1 = x1.minimum
-println("\n par0 and par1")
+println("\npar0 and par1")
 println(round([par0 par1],3))
                                                 #fitted yields at parameter estimates
 (MinusLL,yuHat,) = VasicekTsCsFn(par1,yo,yu,nMo,nMu)
@@ -90,13 +89,13 @@ figure()
 
 
 bOls = [ones(T,1) y[:,1]]\y                 #LS of yields on short yield
-alfa = bOls[1,:]
-beta = bOls[2,:]
+alfa = bOls[1:1,:]
+beta = bOls[2:2,:]
                          #rescaling Vasicek au and bu to be comaparable with OLS on yo
 bu_b = bu/bo             #y = au + bu*xt, but xt = (yo-ao)/bo
 au_b = au - bu/bo*ao     #y = au + bu*(yo-ao)/bo = y = au - bu*ao/bo + bu/bo*yo
-bu_b = [1;bu_b]'         #also yo
-au_b = [0;au_b]'
+bu_b = [1 bu_b]          #also yo
+au_b = [0 au_b]
 
 figure()
   ha = plot(m',[alfa' au_b']*1200)
