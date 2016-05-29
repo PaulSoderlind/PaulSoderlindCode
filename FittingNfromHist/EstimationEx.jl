@@ -18,7 +18,6 @@
 
 using Optim, PyPlot
 
-include("NormPdfPs.jl")
 include("NormalHistLoss.jl")
 
 
@@ -65,6 +64,15 @@ else
 end
 println("\nmean, std, active intervals")
 println(round(parM,3))
+#------------------------------------------------------------------------------
+
+function NormPdfPs(y,mu=0,s2=1)
+#NormPdfPs    Returns pdf value of normally distributed (univariate) variables
+  s = sqrt(s2)
+  z    = (y .- mu)./s
+  pdfy = exp(-0.5*z.^2)./(sqrt(2*pi)*s)   #pdf of y ~ N(mu,s^2)
+  return pdfy
+end
 #------------------------------------------------------------------------------
 
 if parM[3] >= 3                           #fitted N(mu,s^2)
