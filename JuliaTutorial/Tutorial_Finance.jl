@@ -29,11 +29,11 @@ b    = x\y                       #OLS
 u    = y - x*b                   #residuals
 covb = inv(x'x)*var(u)           #cov(b)
 stdb = sqrt(diag(covb))          #std(b)
-R2   = 1 - var(u)/var(y)
+R2a  = 1 - var(u)/var(y)
 
 println("OLS coefficients and std")
 println(round([b stdb],3))
-println("R2: ",round(R2,3))
+println("R2: ",round(R2a,3))
 println("no. of observations: ",T)
 
 
