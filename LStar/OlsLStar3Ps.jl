@@ -10,7 +10,7 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
 #
 #  Input:    y            Tx1, dependent variable
 #            x0           Txk, regressors that have regime shifts (including deterministic ones)
-#            w            Txkw, regressors that do not have regime shifts, can be empty, Array(Float64,T,0)
+#            w            Txkw, regressors that do not have regime shifts, can be empty, Array{Float64}(T,0)
 #            ExciseIt     bool, true: excise([y,x0,w,z])
 #            z            Tx1, argument of G(z) function
 #            gM           Ngx1, different values of g to try in a loop
@@ -29,7 +29,7 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
 #              [4]  Covtheta     cov(theta)
 #              [5]  b            coeffs from traditional LS (conditional on g and c)
 #              [6]  Stdb_ols     standard errors according to traditional LS (conditional on g and c)
-#              [7]  R2           scalar, coefficient of determination
+#              [7]  R2a          scalar, coefficient of determination
 #              [8]  Gquant       19x2, [linspace(0.01,0.99,99)',quantiles of G(z)]
 #              [9]  gc           1x2, [g,c] prespecified/estimated
 #              [10] sseM         NgxNc, sum of squared errors for different values of g and c
@@ -56,17 +56,13 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
   kw = size(w,2)
 
   if ExciseIt
-    yx = excise([y x0 w z])
-    y  = yx[:,1]                   #[1,k,kw,1]
-    x0 = yx[:,2:1+k]
-    w  = yx[:,2+k:1+k+kw]          #works even if Kw=0 since 3:2 creates []
-    z  = yx[:,end]
+    (y,x0,w,z) = excise4mPs(y,x0,w,z)
   end
 
   sseM = fill(NaN,(Ng,Nc))             #calculate sse in loop over g and c values
   for i = 1:Ng
     for j = 1:Nc
-      sse_ij   = OlsLStar3LossPs([gM[i] cM[j]],y,x0,w,z,[gM[i] cM[j]])
+      sse_ij    = OlsLStar3LossPs([gM[i] cM[j]],y,x0,w,z,[gM[i] cM[j]])
       sseM[i,j] = sse_ij
     end    #j
   end   #i
@@ -82,10 +78,10 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
       return
     end
   else
-    parX = []
+    parX = Float64[]
   end
 
-  #fnOutput = Any[sse,theta,Stdtheta,Covtheta,b,Stdb_ols,R2,Gquant,gc]
+  #fnOutput = Any[sse,theta,Stdtheta,Covtheta,b,Stdb_ols,R2a,Gquant,gc]
   fnOutput  = OlsLStar3LossAllPs(parX,y,x0,w,z,gcKeep,1)
   theta     = fnOutput[2]
   Covtheta  = fnOutput[4]
@@ -105,15 +101,14 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
   slopeDiff = [bDiff tstatbDiff]
 
   if isempty(xwzHat) || all(isnan(xwzHat))
-    yHat   = []
-    yHatLH = []
+    yHat   = Float64[]
+    yHatLH = Float64[]
   else                                  #predicted values
     nPred = size(xwzHat,3)
     yHatLH = fill(NaN,(size(xwzHat,1),3,nPred))
     for i = 1:nPred
-      (yHat,yHat2,G)  = OlsLStar3PredPs(xwzHat[:,:,i],k,kw,theta,gcKeep)
-      yHat1           = yHat - yHat2                        #contribution of [x1,w]
-      yHatLH[:,:,i]   = [yHat1 yHat2 G]
+      (yHat,yHat2,G) = OlsLStar3PredPs(xwzHat[:,:,i],k,kw,theta,gcKeep)
+      yHatLH[:,:,i]  = [(yHat - yHat2) yHat2 G]
     end
     yHat = OlsLStar3PredPs(xwzHat[:,:,1],k,kw,theta,gcKeep)
     if nPred == 1
@@ -121,7 +116,7 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
     end
   end
 
-  #fnOutput = Any[sse,theta,Stdtheta,Covtheta,b,Stdb_ols,R2,Gquant,gc]
+  #fnOutput = Any[sse,theta,Stdtheta,Covtheta,b,Stdb_ols,R2a,Gquant,gc]
   push!(fnOutput,sseM,yHat,slopeDiff,yHatLH)
   return fnOutput
 
@@ -154,7 +149,7 @@ end
 
 
 #------------------------------------------------------------------------------
-function OlsLStar3LossPs(par,y,x0,w,z,gcKeep=[])        #just sse from OlsLStar3LossAllPs
+function OlsLStar3LossPs(par,y,x0,w,z,gcKeep=Float64[])        #just sse from OlsLStar3LossAllPs
 
   fnOutput = OlsLStar3LossAllPs(par,y,x0,w,z,gcKeep,0)
   sse = 1.0 + fnOutput[1]
@@ -166,7 +161,7 @@ end
 
 
 #------------------------------------------------------------------------------
-function OlsLStar3LossAllPs(par,y,x0,w,z,gcKeep=[],DetailsIt=0)
+function OlsLStar3LossAllPs(par,y,x0,w,z,gcKeep=Float64[],DetailsIt=0)
 
   (g,c,) = OlsLStar3Par(gcKeep,par,[NaN NaN])
   (T,k) = size(x0)
@@ -176,7 +171,7 @@ function OlsLStar3LossAllPs(par,y,x0,w,z,gcKeep=[],DetailsIt=0)
   x2 = x0.*repmat(G,1,k)
   x  = [x1 x2 w]
 
-  (b,res,yhat,Covb,R2,) = OlsPs(y,x)
+  (b,res,yhat,Covb,R2a,) = OlsPs(y,x)
   Stdb_ols              = sqrt(diag(Covb))
   sse                   = sum(res.^2)
   theta                 = [vec(par);b]
@@ -184,20 +179,20 @@ function OlsLStar3LossAllPs(par,y,x0,w,z,gcKeep=[],DetailsIt=0)
   if DetailsIt == 1
     (mbar,m) = OlsLStar3MomCondAllPs(theta,y,x0,w,z,gcKeep)
     S0       = NewEst3Ps(m,0)                                    #ACov(sqrt(T)*mbar)
-    D0       = NumJac3Ps(x->OlsLStar3MomCondPs(x,y,x0,w,z,gcKeep),theta,[],3)  #gradient of mbar
+    D0       = NumJac3Ps(x->OlsLStar3MomCondPs(x,y,x0,w,z,gcKeep),theta,Float64[],3)  #gradient of mbar
     Covtheta = inv(D0)*S0*inv(D0)'/T                        #Cov(theta)
     Stdtheta = sqrt(diag(Covtheta))
     Gquant   = collect(linspace(0.01,0.99,99))
     Gquant   = [Gquant quantile(vec(excise(G)),Gquant)]
     gc       = [g c]
   else
-    Covtheta = []
-    Stdtheta = []
-    Gquant   = []
-    gc       = []
+    Covtheta = Float64[]
+    Stdtheta = Float64[]
+    Gquant   = Float64[]
+    gc       = Float64[]
   end
 
-  fnOutput = Any[sse,theta,Stdtheta,Covtheta,b,Stdb_ols,R2,Gquant,gc]
+  fnOutput = Any[sse,theta,Stdtheta,Covtheta,b,Stdb_ols,R2a,Gquant,gc]
   return fnOutput
 
 end
@@ -289,7 +284,7 @@ function OlsLStar3Par(gcKeep,theta,gcM)
     c = gcKeep[2]
     b = theta
     EstType = 4
-    par0    = []
+    par0    = Float64[]
   else
     error("invalid case")
   end
