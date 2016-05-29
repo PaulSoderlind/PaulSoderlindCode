@@ -41,15 +41,15 @@ z = (FXV - mean(FXV))/std(FXV)          #standardised regime variable
 #------------------------------------------------------------------------------
 
 gKeep = [NaN NaN]                       #set to NaN if estimated in NLS, otherwise imposed
-fnOutput = OlsLStar3Ps(Re_CT,[ones(T,1) SP Ty],Array(Float64,T,0),true,z,gM,cM,gKeep)
-#Any[sse,theta,Stdtheta,Covtheta,b,Stdb_ols,R2,Gquant,gc,sseM,yHat,slopeDiff,yHatLH]
+fnOutput = OlsLStar3Ps(Re_CT,[ones(T,1) SP Ty],Array{Float64}(T,0),true,z,gM,cM,gKeep)
+#Any[sse,theta,Stdtheta,Covtheta,b,Stdb_ols,R2a,Gquant,gc,sseM,yHat,slopeDiff,yHatLH]
 
 theta     = fnOutput[2]
 Stdtheta  = fnOutput[3]
 Covtheta  = fnOutput[4]
 b         = fnOutput[5]
 Stdb_ols  = fnOutput[6]
-R2        = fnOutput[7]
+R2a       = fnOutput[7]
 slopeDiff = fnOutput[12]
 
 
