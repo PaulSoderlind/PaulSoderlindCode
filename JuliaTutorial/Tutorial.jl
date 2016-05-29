@@ -238,7 +238,7 @@ println(x1.minimum)
 
 #println("\n","------------------------- load xls file -------------------------------","\n")
 
-#can be done using Taro (which needs the Java) or ExcelReaders (needs Python's xlrd),
+#can be done using Taro (which needs Java) or ExcelReaders (needs Python's xlrd),
 #so it is for advanced users
 
 
