@@ -19,7 +19,7 @@ include("jlFiles/NWFn.jl")
 include("jlFiles/SRFn.jl")
 #------------------------------------------------------------------------------
 
-xx   = readdlm("Data/FFmFactorsPs.csv",',',header=true)      
+xx   = readdlm("Data/FFmFactorsPs.csv",',',header=true)
 x    = xx[1]
 Rme  = x[:,2]/100
 T    = size(Rme,1)
@@ -40,7 +40,7 @@ println("Cov(params)")
 println(round(V,6))
                                   #delta method
 df = [ (mu_2/(mu_2 - mu.^2).^(3/2)) (-mu/(2*(mu_2 - mu.^2).^(3/2)))]
-println("\n","Analytical derivatives ",round(df,3))
+println("\nAnalytical derivatives ",round(df,3))
 
 par0 = [mu;mu_2]
 SR0  = SRFn(par0)       #Sharpe ratio, function
@@ -53,9 +53,9 @@ for j = 1:k              #loop over columns (parameters)
   btilde[j] = btilde[j] + Delta
   Jac[1,j]  = (SRFn(btilde)- SR0)/Delta
 end
-println("\n","Numerical derivatives, just for comparison ",round(Jac,3))
+println("\nNumerical derivatives, just for comparison ",round(Jac,3))
 
 Std_SR = sqrt(df*V*df'/T)
-println("\n","SR and its Std ",round([SR0 Std_SR],4))
+println("\nSR and its Std ",round([SR0 Std_SR],4))
 println("SR and 90% conf band ",round([SR0 (SR0-1.65*Std_SR) (SR0+1.65*Std_SR)],4))
 #----------------------------------------------------------------------------
