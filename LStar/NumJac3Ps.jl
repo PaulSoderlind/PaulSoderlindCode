@@ -45,7 +45,7 @@ function NumJac3Ps(fun::Function,b0,h=[],Method=99)
   end
 
 
-  b0 = collect(b0)                            #-> column vector
+  b0 = vec(collect(b0))                       #-> column vector
   k  = length(b0)                             #no. of parameters in fun(b)
 
   f0 = fun(b0)                               #value of function at b0
