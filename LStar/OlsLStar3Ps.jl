@@ -112,7 +112,7 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
     end
     yHat = OlsLStar3PredPs(xwzHat[:,:,1],k,kw,theta,gcKeep)
     if nPred == 1
-      yHatLH = squeeze(yHatLH,3)
+      yHatLH = reshape(yHatLH,size(xwzHat,1),3)     #better than squeeze(yHatLH,3)
     end
   end
 
