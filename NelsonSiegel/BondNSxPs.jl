@@ -49,7 +49,7 @@ end
 
 
 #------------------------------------------------------------------------------
-function BondNSxEstPs(par0,Q,tm,c,s0,ytmLoss=0,weight=1)
+function BondNSxEstPs(par0,Q,tm,c,s0,ytmLoss=0,weight=1.0)
 #BondNSxEstPs    Estimates parameters in (extended) Nelson-Siegel yield curve model by
 #              non-linear least squares (minimizing squared differences between
 #              actual and fitted bond prices or yield to maturities).
@@ -103,13 +103,20 @@ function BondNSxEstPs(par0,Q,tm,c,s0,ytmLoss=0,weight=1)
     end
   end
 
-  Sol = optimize(b->BondNSxLossPs(b,Qtc,s0,ytmLoss,weight),par0,ftol=1e-12,iterations=10000)
-  NSb = Sol.minimum
+  Sol = optimize(b->BondNSxLossPs(b,Qtc,s0,ytmLoss,weight),par0,x_tol=1e-6,iterations=10000)
+  NSb = Optim.minimizer(Sol)
   #println(Sol)
-  if !Sol.f_converged
+  if !Optim.converged(Sol)
     warn("no convergence")
     return
   end
+  #Sol = optimize(b->BondNSxLossPs(b,Qtc,s0,ytmLoss,weight),par0,ftol=1e-12,iterations=10000)
+  #NSb = Sol.minimum       #optim version < 0.5
+  #println(Sol)
+  #if !Sol.f_converged
+  #  warn("no convergence")
+  #  return
+  #end
 
   if length(NSb) == 3
     NSb[[1;3]] = abs(NSb[[1;3]])
@@ -134,7 +141,7 @@ end
 
 
 #------------------------------------------------------------------------------
-function BondNSxLossPs(b,Qtc,s0,ytmLoss=0,weight=1)
+function BondNSxLossPs(b,Qtc,s0,ytmLoss=0,weight=1.0)
 #BondNSxLossPs    Defines loss function for bond prices in extended Nelson-Siegel model.
 #                 Used for estimation of the parameters in the model by minimizing
 #                 Loss (squared price deviations, possibly with weights).
