@@ -57,13 +57,12 @@ elseif NActiveCat == 2        #if only two active intervals: N(MeanCrude,VarShep
 elseif NActiveCat > 2         #if three or more active intervals: N(estimate,estimate)
   par0 = [MeanCrude;sqrt(VarSheppard)]
   Sol = optimize(par->NormalHistLoss(par,Prob,CatBounds),par0)
-  par1 = Sol.minimum
+  par1 = Optim.minimizer(Sol)
   parM = [par1' NActiveCat]
 else
   parM = fill(NaN,(1,3))
 end
-println("\nmean, std, active intervals")
-println(round(parM,3))
+println("\nmean, std, no. active intervals: ",round(parM,3))
 #------------------------------------------------------------------------------
 
 function NormPdfPs(y,mu=0,s2=1)
