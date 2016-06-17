@@ -127,7 +127,7 @@ end
 #------------------------------------------------------------------------------
 function OlsLStar3PredPs(xwzHat,k,kw,theta,gcKeep)
 
-  (g,c,b) = OlsLStar3Par(gcKeep,theta,[NaN;NaN])
+  (g,c,b,) = OlsLStar3Par(gcKeep,theta,[NaN;NaN])
 
   x0 = xwzHat[:,1:k]             #[k,kw,1]
   w  = xwzHat[:,1+k:k+kw]
@@ -218,7 +218,7 @@ function OlsLStar3MomCondAllPs(theta,y,x0,w,z,gcKeep)   #moment conditions
   kw = size(w,2)
 
   #(res,G,g,c,b,x) = OlsLStar3RegFuncPs(theta,y,x0,w,z,gcKeep)
-  (g,c,b,par0_,EstType) = OlsLStar3Par(gcKeep,theta,[NaN NaN])
+  (g,c,b,_,EstType) = OlsLStar3Par(gcKeep,theta,[NaN;NaN])
 
   G   = 1./(1+exp(-g*(z-c)))
   x1  = x0.*repmat(1-G,1,k)
