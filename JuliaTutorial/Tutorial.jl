@@ -230,9 +230,9 @@ println("Yes, there are several roots. Just look at it (in plot).")
 println("\n","------------------------- Optimization -----------------------","\n")
 
 using Optim      #the first time, do Pkg.add("Optim") to install the package
-x1 = optimize(x->MathLecD(x,1),-2.0,3.0)
+Sol = optimize(x->MathLecD(x,1),-2.0,3.0)
 println("argmin MathLecD(x,1), optim finds it. ")
-println(x1.minimum)
+println(Optim.minimizer(Sol))
 
 
 #println("\n","------------------------- load xls file -------------------------------","\n")
