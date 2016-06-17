@@ -68,13 +68,13 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
   end   #i
   (minLoss,vvMin) = findmin(sseM)            #minimum loss, for which i
   (i,j) = ind2sub(size(sseM),vvMin)
-  (g,c,b,par0,) = OlsLStar3Par(gcKeep,[NaN NaN NaN],[gM[i] cM[j]])
+  (g,c,b,par0,) = OlsLStar3Par(gcKeep,[NaN;NaN;NaN],[gM[i];cM[j]])
 
   if !isempty(par0)
-    Sol = optimize(par->OlsLStar3LossPs(par,y,x0,w,z,gcKeep),par0)
-    parX = Sol.minimum
-    if !Sol.f_converged
-      println("\n","warning: no convergence")
+    Sol = optimize(par->OlsLStar3LossPs(par,y,x0,w,z,gcKeep),par0,x_tol=1e-6)
+    parX = Optim.minimizer(Sol)
+    if !Optim.converged(Sol)
+      warn("no convergence")
       return
     end
   else
@@ -127,7 +127,7 @@ end
 #------------------------------------------------------------------------------
 function OlsLStar3PredPs(xwzHat,k,kw,theta,gcKeep)
 
-  (g,c,b) = OlsLStar3Par(gcKeep,theta,[NaN NaN])
+  (g,c,b) = OlsLStar3Par(gcKeep,theta,[NaN;NaN])
 
   x0 = xwzHat[:,1:k]             #[k,kw,1]
   w  = xwzHat[:,1+k:k+kw]
@@ -163,7 +163,7 @@ end
 #------------------------------------------------------------------------------
 function OlsLStar3LossAllPs(par,y,x0,w,z,gcKeep=Float64[],DetailsIt=0)
 
-  (g,c,) = OlsLStar3Par(gcKeep,par,[NaN NaN])
+  (g,c,) = OlsLStar3Par(gcKeep,par,[NaN;NaN])
   (T,k) = size(x0)
 
   G  = 1./(1+exp(-g*(z-c)))
