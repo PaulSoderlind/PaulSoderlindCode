@@ -56,8 +56,8 @@ println(round([par_a sqrt(diag(V3/T))],4))
 #------------------------------------------------------------------------------
                                           #gbar'W*gbar
 W     = diagm([1;1;0;0])                  #weighting matrix
-x1    = optimize(par->Gmm4MomLossFn(par,x,W),par_a)
-par_b = x1.minimum
+Sol   = optimize(par->Gmm4MomLossFn(par,x,W),par_a)
+par_b = Optim.minimizer(Sol)
 g,    = Gmm4MomFn(par_b,x)              #Tx4, moment conditions, evaluated at point estimates
 S     = NWFn(g,1)                         #variance of sqrt(T)"gbar, NW with 1 lag
 V2    = inv(D'W*D)*D'W*S*W'D*inv(D'W*D)
@@ -74,15 +74,14 @@ while (Dpar > 1e-3) || (i < 2)    #require at least one iteration
   println("-------iteration  $i, old and new parameters--------")
   par_b           = par_c + 0.0     #important, par_b=par_c would make them always identical
   W               = inv(S)
-  x1              = optimize(par->Gmm4MomLossFn(par,x,W),par_b)   #use last estimates as starting point
-  par_c           = x1.minimum
+  Sol             = optimize(par->Gmm4MomLossFn(par,x,W),par_b)   #use last estimates as starting point
+  par_c           = Optim.minimizer(Sol)
   g,              = Gmm4MomFn(par_c,x)
   S               = NWFn(g,1)
   Dpar            = maximum(abs(par_c-par_b))
-  tst1 = (Dpar > 1e-5)
+  i               = i + 1
   println(round(par_b,4))
   println(round(par_c,4))
-  i = i + 1
 end
 
 V2 = inv(D'W*D)*D'W*S*W'D*inv(D'W*D)
