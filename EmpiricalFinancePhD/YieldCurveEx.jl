@@ -57,8 +57,8 @@ par0 = [-2.3;10;5.5;0.5;0.8]
 (MinusLL,yuHat,u,xt) = VasicekTsCsFn(par0,yo,yu,nMo,nMu)
 
                              #do MLE by optimization with optimize, minimize -sum(LL)
-x1 = optimize(par->VasicekTsCsLossFn(par,yo,yu,nMo,nMu),par0)
-par1 = x1.minimum
+Sol = optimize(par->VasicekTsCsLossFn(par,yo,yu,nMo,nMu),par0)
+par1 = Optim.minimizer(Sol)
 println("\npar0 and par1")
 println(round([par0 par1],3))
                                                 #fitted yields at parameter estimates
