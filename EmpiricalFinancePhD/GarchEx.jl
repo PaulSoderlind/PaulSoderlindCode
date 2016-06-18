@@ -38,8 +38,8 @@ x  = yx[:,2:3]
 par0 = [0;mean(y,1);(var(y,1)/5);0.1;0.6]
 (loglik,s2,yhat) = garch11LL(par0,yx)            #just testing the log lik
 
-x1 = optimize(par->garch11LLLoss(par,yx),par0)   #do MLE by optimization with optimize, minimize -sum(LL)
-parHata = x1.minimum
+Sol = optimize(par->garch11LLLoss(par,yx),par0)   #do MLE by optimization with optimize, minimize -sum(LL)
+parHata = Optim.minimizer(Sol)
 parHata[end-2:end] = abs(parHata[end-2:end])     #since the likelihood function uses abs(these values)
 println("\nParameter estimates")
 println(round(parHata,4))
