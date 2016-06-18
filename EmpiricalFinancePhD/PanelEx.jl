@@ -54,7 +54,7 @@ SR  = Avg./Std
 println("\nStats for the portfolios: Avg, Std, SR, alpha")
 println(round([Avg' Std' SR' b[1:1,:]'*252],3))
 
-println(round(b[1,:]*252,3))
+println(round(b[1:1,:]*252,3))
 R       = [1 0 0 0 -1 0 0 0]                       #testing if alpha(1) = alpha(2)
 a_diff  = R*vec(b)                                   #b(:) = vec(b)
 tstatLS = a_diff/sqrt(R*Covb*R')
