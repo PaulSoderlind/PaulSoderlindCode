@@ -9,17 +9,19 @@ This repository has the following separate sub projects:
 
 3. EmpiricalFinancePhD: Julia code for a PhD course in empirical finance at UNISG (unpolished)
 
-4. FittingNfromHist: Julia code for fitting N(mu,sigma2) from a histogram
+4. FinancialTheoryMSc: Julia code for an MSc course in finance at UNISG (unpolished)
 
-4. JuliaTutorial: a Julia tutorial aimed at finance students
+5. FittingNfromHist: Julia code for fitting N(mu,sigma2) from a histogram
 
-5. JuliaTutorialExtra: the next steps after the JuliaTutorial (debugger, load data, etc)
+6. JuliaTutorial: a Julia tutorial aimed at finance students
 
-6. LStar: Julia code for LSTAR regressions
+7. JuliaTutorialExtra: the next steps after the JuliaTutorial (debugger, load data, etc)
 
-7. NelsonSiegel: Julia code for estimating extended Nelson-Siegel model
+8. LStar: Julia code for LSTAR regressions
 
-8. SolvingReModels: Julia code for solving RE models
+9. NelsonSiegel: Julia code for estimating extended Nelson-Siegel model
+
+10. SolvingReModels: Julia code for solving RE models
 
 
 To download use "Download ZIP" (upper right). This gives you a zip file with all the subfolders. (No, as of yet there is no simple way of downloading a single subfolder.)
