@@ -41,6 +41,9 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
 #  Uses:     excisePs and HDirProdPs
 #
 #
+#  Notice:  potentially vulnerable to a "slice as view" change (y_t)
+#
+#
 #
 #  Paul.Soderlind@unisg.ch   May 2010, to Julia Oct 2015
 #------------------------------------------------------------------------------
@@ -55,34 +58,35 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   #KL    = size(x,2)*L
   KL    = sum(vvzx .>0)
 
-  xx = 0.0                            #Sum[x(t)*x(t)',t=1:T]
-  xy = 0.0                            #Sum[x(t)*y(t),t=1:T]
-  Nb = Array{Int}(T)                  #effective number of obs, after pruning NaNs
-  for t = 1:T                            #loop over time
-    y_t   = y[t:t,:]'                     #dependent variable, Nx1, (t without t in 0.5)
-    x0_t = x[t:t,:]                        #factors, 1xK (rely on broadcasting of .* below)
+  msg = " "
+  xx  = 0.0                            #Sum[x(t)*x(t)',t=1:T]
+  xy  = 0.0                            #Sum[x(t)*y(t),t=1:T]
+  Nb  = Array{Int}(T)                  #effective number of obs, after pruning NaNs
+  for t = 1:T                             #loop over time
+    y_t  = vec(y[t,:])                    #dependent variable, Nx1, works in both 0.4 and 0.5
+    x0_t = x[t:t,:]                       #factors, 1xK (rely on broadcasting of .* below)
     z_t  = reshape(z[t,:,:],N,L)          #NxL, better than squeeze (cf 2-d arrays)
     x_t  = HDirProdPs(z_t,x0_t)           #effective regressors, z_t is NxL, x_t is 1xK
     x_t  = x_t[:,vvzx]
-    (yx_t,_,_,vvNoNaNRow) = excisePs([y_t x_t])   #pruning NaNs
-    N_t  = size(yx_t,1)
+    (y_t,x_t,vvNaNRow) = excise2mPs(y_t,x_t)   #pruning NaNs
+    N_t  = size(y_t,1)
     if ScaleByNtQ == 1
       Nb[t] = N_t
-      w_t   = ones(N_t,1)
+      w_t   = ones(N_t)
     elseif ScaleByNtQ == 2
       Nb[t] = N
-      w_t   = wM[t:t,vvNoNaNRow]'
+      w_t   = vec(wM[t,!vvNaNRow])            #wM[t:t,vvNoNaNRow]'
     else
       Nb[t] = N
-      w_t   = ones(N_t,1)
+      w_t   = ones(N_t)
     end
-    if !isempty(yx_t)                    #don't accumulate [] to xx and xy (generates [])
-      yx_t = yx_t .* w_t                 #put weights on observation i (in t)
-      y_t  = yx_t[:,1]
-      x_t  = yx_t[:,2:end]
-      xx   = xx + x_t'x_t/Nb[t]
-      xy   = xy + x_t'y_t/Nb[t]
+    if !isempty(y_t)                     #don't accumulate [] to xx and xy (generates [])
+      y_t = y_t .* w_t                   #put weights on observation i (in t), y_t .* w_t
+      scale!(w_t,x_t)                    #x_t = x_t .* w_t
+      xx  = xx + x_t'x_t/Nb[t]
+      xy  = xy + x_t'y_t/Nb[t]
     end
+    msg = IterationPrintPs(t,T,msg,100)
   end
 
   Tb  = sum(Nb .> 0)                    #number of effective time periods
@@ -99,31 +103,28 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   omega0W  = zeros(KL,KL)               #White's
   omegajDK = zeros(KL,KL,m)             #DK, lags 1 to m
   h_tLag   = zeros(m,KL)                #lag1;lag2;...,lagm
-  for t = 1:T                            #loop over time
-    y_t    = y[t:t,:]'
+  for t = 1:T                           #loop over time
+    y_t    = vec(y[t,:])
     x0_t   = x[t:t,:]
     z_t    = reshape(z[t,:,:],N,L)
     x_t    = HDirProdPs(z_t,x0_t)
     x_t    = x_t[:,vvzx]
     yhat_t = x_t*theta
     r_t    = y_t - yhat_t
-    (rx_t,_,_,vvNoNaNRow) = excisePs([r_t x_t])
-    N_t = size(rx_t,1)
+    (r_t,x_t,vvNaNRow) = excise2mPs(r_t,x_t)
+    N_t = size(r_t,1)
     if ScaleByNtQ == 1
-      w_t = ones(N_t,1)
+      w_t = ones(N_t)
     elseif ScaleByNtQ == 2
-      w_t = wM[t,vvNoNaNRow]'
+      w_t = vec(wM[t,!vvNaNRow])          #wM[t:t,vvNoNaNRow]'
     else
-      w_t = ones(N_t,1)
+      w_t = ones(N_t)
     end
-    if !isempty(rx_t)                    #don't accumulate [] to omega0DK
-      rx_t     = rx_t .* w_t                   #put weights on observation i (in t)
-      r_t      = rx_t[:,1]
-      x_t      = rx_t[:,2:end]
-      hi_t     = x_t.*repmat(r_t,1,KL)    #moment condition for (i,t)
-      h_t      = sum(hi_t,1)/Nb[t]
+    if !isempty(r_t)                     #don't accumulate [] to omega0DK
+      scale!(vec(r_t .* w_t.^2),x_t)     #x_t is henceforth the moment condition
+      h_t      = sum(x_t,1)/Nb[t]        #for (i,t), x_t .* (r_t .* w_t.^2)
       omega0DK = omega0DK + h_t'h_t
-      omega0W  = omega0W + hi_t'hi_t/Nb[t]^2
+      omega0W  = omega0W + x_t'x_t/Nb[t]^2
       for j = 1:m
         omegajDK[:,:,j] = omegajDK[:,:,j] + h_t'h_tLag[j:j,:]    #h(t)*h(t-j)'
       end
@@ -132,7 +133,9 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
     if yhatQ
       yhat[t,:] = yhat_t'
     end
+    msg = IterationPrintPs(t,T,msg,100)
   end
+
   Shat  = omega0DK/Tb^2                   #estimate of S, DK
   Shatw = omega0W/Tb^2                    #estimate of S, White's
   Shatj = omega0DK/Tb^2

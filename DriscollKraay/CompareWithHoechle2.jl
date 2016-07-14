@@ -18,8 +18,9 @@
 #------------------------------------------------------------------------------
 
 using JLD                            #install the JLD package by Pkg.add("JLD")
-include("excisePs.jl")
+include("excise.jl")
 include("HDirProdPs.jl")
+include("iterationPrintPs.jl")
 include("HszDk5dwPs.jl")
 #------------------------------------------------------------------------------
 
@@ -37,7 +38,7 @@ Size  = xTN[:,:,8]
 println("\nPooled OLS")
 x   = [vec(aVol') vec(Size') vec(TRMS2') vec(TRMS') vec(ones(T,N)')]
 y   = vec(BA')           #stack rows in column vector
-yx, = excisePs([y x])     #prune NaNs
+yx  = excise([y x])     #prune NaNs
 y   = yx[:,1]
 x   = yx[:,2:end]
 
