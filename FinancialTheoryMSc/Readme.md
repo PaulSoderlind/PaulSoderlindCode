@@ -4,9 +4,9 @@ The .ipynb files are Julia notebooks. They use some data, which you find in the 
 
 # Instructions
 
-You use IJulia to edit and run these Julia notebooks. You can either install Julia/IJulia on your local computer (see https://sites.google.com/site/paulsoderlindecon/home/software for instructions) or you can use JuliaBox.org. The rest of these instructions are for the JuliaBox.org alternative.
+You use IJulia to edit and run these Julia notebooks. You can either install Julia/IJulia on your local computer (see https://sites.google.com/site/paulsoderlindecon/home/software for instructions) or you can use JuliaBox.com. The rest of these instructions are for the JuliaBox.com alternative.
 
-1. Log in at JuliaBox.org
+1. Log in at JuliaBox.com
 2. In the menu, go to Files. Upload the notebook for Chapter 1.
 3. In the menu, go to IJulia and open up the notebook by clicking on it. You can now start working. Using packages (Gadfly, Roots, Optim) may taker some time on the first run. If those packages do not work, follow the instructione below.
 
