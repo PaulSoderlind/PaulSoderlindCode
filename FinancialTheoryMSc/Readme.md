@@ -1,3 +1,7 @@
+# Introduction
+The .ipynb files are Julia notebooks. They use some data, which you find in the Data folder. The notebooks are meant to be used together with my lecture notes (pdf files). Actually, many of the examples in the lecture notes come from the calculations in the notebooks. 
+
+
 # Instructions
 
 You use IJulia to edit and run these Julia notebooks. You can either install Julia/IJulia on your local computer (see https://sites.google.com/site/paulsoderlindecon/home/software for instructions) or you can use JuliaBox.org. The rest of these instructions are for the JuliaBox.org alternative.
@@ -18,6 +22,7 @@ and hit enter.
 Then type 
 >using Gadfly
 and hit enter.
+For the notebooks you also need the packages "Roots" and "Optim".
 You can now leave julia (by typing exit() and hitting enter).
 
 ## Working with files
