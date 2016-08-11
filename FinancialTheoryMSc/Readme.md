@@ -25,6 +25,6 @@ and hit enter.
 For the notebooks you also need the packages "Roots" and "Optim".
 You can now leave julia (by typing exit() and hitting enter).
 
-## Working with files
+## Working with Files
 
 The IJulia tab allows you to create folders and delete files. For instance, create a subfolder called Data and then go to Files, click on the Data folder, and then upload the csv files to this subfolder.
