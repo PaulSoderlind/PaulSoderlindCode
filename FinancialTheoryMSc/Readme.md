@@ -16,11 +16,15 @@ You use IJulia to edit and run these Julia notebooks. You can either install Jul
 To install a package, do as follows:
 In the menu, go to Console and type in 
 >julia 
+
 and hit enter. At the julia prompt type (to install Gadfly)
 >Pkg.add("Gadfly") 
+
 and hit enter. 
 Then type 
+
 >using Gadfly
+
 and hit enter.
 For the notebooks you also need the packages "Roots" and "Optim".
 You can now leave julia (by typing exit() and hitting enter).
