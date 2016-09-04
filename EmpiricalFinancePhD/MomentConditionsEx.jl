@@ -18,7 +18,7 @@
 include("jlFiles/NWFn.jl")
 #------------------------------------------------------------------------------
 
-xx  = readdlm("Data/FFmFactorsPs.csv",',',header=true)   #start on line 2, column 1
+xx = readdlm("Data/FFmFactorsPs.csv",',',header=true)   #start on line 2, column 1
 x  = xx[1]
 ym = x[:,1]         #[yearmonth]
 x  = x[:,2]/100     #excess market returns
@@ -42,7 +42,7 @@ println(round([muHat sqrt(V/T)],4))
 
 println("\nAs an alternative, use NW for S")
 
-Sb = NWFn(g,1)            #Newey-West coariance matrix
+Sb = NWFn(g,1)            #Newey-West covariance matrix
 
 Vb = inv(D'inv(Sb)*D)
 

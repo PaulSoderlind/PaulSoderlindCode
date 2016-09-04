@@ -47,21 +47,22 @@ PortfER      = fill(NaN,(T,2))     #create portfolios as average across individu
 PortfER[:,1] = mean(ER[:,~D],2)   #Tx1, portfolio return = average individual return
 PortfER[:,2] = mean(ER[:,D],2)
 
+println("\n\nLS, group by group")
 Avg = mean(PortfER,1)*252          #average excess return on portfolios
 Std = std(PortfER,1)*sqrt(252)
 SR  = Avg./Std
 (b,res,yhat,Covb) = OlsFn(PortfER,[ones(T,1) Factors])
 println("\nStats for the portfolios: Avg, Std, SR, alpha")
-println(round([Avg' Std' SR' b[1:1,:]'*252],3))
+display(round([Avg' Std' SR' b[1:1,:]'*252],3))
 
-println(round(b[1:1,:]*252,3))
 R       = [1 0 0 0 -1 0 0 0]                       #testing if alpha(1) = alpha(2)
-a_diff  = R*vec(b)                                   #b(:) = vec(b)
+a_diff  = R*vec(b)                                 #b(:) = vec(b)
 tstatLS = a_diff/sqrt(R*Covb*R')
 println("\ndiff of annual alpha (inactive - 51+), tstat (LS)")
 println(round([a_diff*252 tstatLS],3))
 #------------------------------------------------------------------------------
 
+println("\n\npanel")
 (theta,CovDK,CovLS) = HszDkFn(ER,[ones(T,1) Factors],[~D D]+0.0)
 
 R       = [1 0 0 0 -1 0 0 0]                #testing if alpha(1) = alpha(2)

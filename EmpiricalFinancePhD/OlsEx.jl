@@ -71,8 +71,7 @@ println(round(sqrt(diag(V/T)),3))
 
 (b4,res,yhat_,CovbLS_,R2_,T_,CovbNW4) = Ols2Fn(Y,X,1)
 println("\nOLS with NW standard errors")
-println(round(b4,3))
-println(round(sqrt(diag(CovbNW4)),3))
+display(round([b4 sqrt(diag(CovbNW4))],3))
 
 R = [0 1 0;               #testing if b(2)=0 and b(3)=0
      0 0 1]
@@ -83,10 +82,9 @@ println("\ntest-statictic and 10% critical value of chi-square(2)")
 println([round(test_stat,3) 4.61])
 
 (AutoCorr,DW,BoxPierce,White,Regr) = OlsDiagnosticsFn(Y,X,u,2)     #diagnostics
-println("\ndiagnostics with std (and df): AutoCorr,DW,BoxPierce,White,Regr")
-println("AutoCorr")
-println(round(AutoCorr,3))
-println("DW: ",round(DW[1],3))
+println("\nDiagnostics, std (df)")
+println("AutoCorr of lag:")
+display([1:2 round(AutoCorr,3)])
 println("BoxPierce: ", round(BoxPierce,3))
 println("White: ",round(White,3))
 println("Test of all slopes: ",round(Regr,3))

@@ -23,8 +23,8 @@ include("jlFiles/VasicekTsCsFn.jl")
 include("jlFiles/lagnPs.jl")
 #-----------------------------------------------------------------------------
 
-xx  = readdlm("Data/USCMRatesPs.csv",',',header=true)
-y   = xx[1]
+xx = readdlm("Data/USCMRatesPs.csv",',',header=true)
+y  = xx[1]
 
 YearMonth = 1970 + 1/24 + (1/12)*collect(0:size(y,1)-1)
 
@@ -60,7 +60,7 @@ par0 = [-2.3;10;5.5;0.5;0.8]
 Sol = optimize(par->VasicekTsCsLossFn(par,yo,yu,nMo,nMu),par0)
 par1 = Optim.minimizer(Sol)
 println("\npar0 and par1")
-println(round([par0 par1],3))
+display(round([par0 par1],3))
                                                 #fitted yields at parameter estimates
 (MinusLL,yuHat,) = VasicekTsCsFn(par1,yo,yu,nMo,nMu)
 yhatTsCs = [yo yuHat]                      #also yo

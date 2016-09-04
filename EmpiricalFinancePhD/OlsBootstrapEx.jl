@@ -52,7 +52,7 @@ x  = yx[:,2:end]
 (bLS,res,yhat,Covb,) = OlsFn(y,x)              #OLS estimate and classical std errors
 StdbLS = sqrt(diag(Covb))
 println("\nLS coeffs and std")
-println(round([bLS';StdbLS'],3))
+display(round([bLS';StdbLS'],3))
 
 T = size(y,1)                 #no. obs and no. test assets
 n = size(y,2)
@@ -79,5 +79,5 @@ for i = 1:NSim                                       #loop over simulations
 end
 
 println("\nAverage bootstrap estimates and bootstrapped std")
-println(round([mean(bBoot,1); std(bBoot,1)],3))
+display(round([mean(bBoot,1); std(bBoot,1)],3))
 #------------------------------------------------------------------------------

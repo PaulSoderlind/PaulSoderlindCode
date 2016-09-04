@@ -83,13 +83,12 @@ if CrossValCalcIt == 1
     v_No_t = setdiff(1:T,t)
     for j = 1:Nh
       b_t       = KernRegNormalFn(y,x,x[t],hM[j],v_No_t)   #fitted b[x(t)]
-      tst       = (y[t] - b_t)^2
-      EPEM[t,j] = tst[1]
+      EPEM[t,j] = (y[t] - b_t[1])^2
     end
   end
   EPE = mean(EPEM,1)'
   println("h and EPE")
-  println(round([hM EPE],4))
+  display(round([hM EPE],4))
 
   figure()
     ha = plot(hM,EPE/minimum(EPE))

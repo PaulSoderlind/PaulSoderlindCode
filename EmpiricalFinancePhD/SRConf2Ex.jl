@@ -37,7 +37,7 @@ S = NWFn(g,1)                     #Var[sqrt(T)*gbar], Newey-West
 D = -1
 V = inv(D*inv(S)*D')              #Var[sqrt(T)*(mu,mu_2)]
 println("Cov(params)")
-println(round(V,6))
+display(round(V,6))
                                   #delta method
 df = [ (mu_2/(mu_2 - mu.^2).^(3/2)) (-mu/(2*(mu_2 - mu.^2).^(3/2)))]
 println("\nAnalytical derivatives ",round(df,3))

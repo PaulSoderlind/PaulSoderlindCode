@@ -19,14 +19,14 @@ x    = xx[1]
 Rme  = x[:,2]
 RSMB = x[:,3]                #small minus big firms
 RHML = x[:,4]                #high minus low book-to-market ratio
-Rf   = x[:,5]                    #interest rate
+Rf   = x[:,5]                #interest rate
 
 
-x = readdlm("Data/FF25Ps.csv",',')  #no header line: x is matrix
-R  = x[:,2:end]                  #returns for 25 FF portfolios
-Re = R - repmat(Rf,1,size(R,2))  #excess returns for the 25 FF portfolios
+x  = readdlm("Data/FF25Ps.csv",',')  #no header line: x is matrix
+R  = x[:,2:end]                      #returns for 25 FF portfolios
+Re = R .- Rf                         #excess returns for the 25 FF portfolios
 
-(T,n) = size(Re)                 #no. obs and  no. test assets
+(T,n) = size(Re,1,2)                 #no. obs and  no. test assets
 #------------------------------------------------------------------------------
 
                                            #FF, testing alphas
