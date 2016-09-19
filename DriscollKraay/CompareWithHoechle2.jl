@@ -47,7 +47,7 @@ res  = y - x*b
 Covb = inv(x'x)*var(res,1)[1]
 Stdb = sqrt(diag(Covb))
 println("b, Std and tstat from OLS")
-println(round([b Stdb b./Stdb],4))
+display(round([b Stdb b./Stdb],4))
 #------------------------------------------------------------------------------
 
 println("\nHszDk5dwPs, effectively weighting all periods equally, irrespective of number of obs")
@@ -58,7 +58,7 @@ theta    = fnOutput[1]
 stdDKj   = fnOutput[9]
 
 println("theta, std and t-stat")
-println(round([theta stdDKj theta./stdDKj],4))
+display(round([theta stdDKj theta./stdDKj],4))
 #------------------------------------------------------------------------------
 
 println("\nHszDk5dwPs, effectively weighting all obs equally")
@@ -69,5 +69,7 @@ theta    = fnOutput[1]
 stdDKj   = fnOutput[9]
 
 println("theta, std and t-stat")
-println(round([theta stdDKj theta./stdDKj],4))
+display(round([theta stdDKj theta./stdDKj],4))
+
+println("Compare the results to Table 2 in Hoechle, 2007, 'Robust Standard Errors...'")
 #------------------------------------------------------------------------------
