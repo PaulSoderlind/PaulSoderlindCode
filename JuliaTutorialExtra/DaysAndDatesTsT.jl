@@ -1,10 +1,12 @@
 #--------------------------building a calendar---------------------------------
 
-dNb      = Array{Date}(1)
-dNb[1]   = Date(2014,1,1)
-for i = 1:12
-  push!(dNb,dNb[end] + Dates.Month(1))     #build monthly calendar
-end
+#dNb      = Array{Date}(1)                   #clumsy way to build monthly calendar
+#dNb[1]   = Date(2014,1,1)
+#for i = 1:11
+#  push!(dNb,dNb[end] + Dates.Month(1))
+#end
+                                             #better way to build monthly calendar
+dNb = collect(Date(2014,1,1):Dates.Month(1):Date(2014,12,1))
 
 println("\nMy calendar and day of week:")
 for i = 1:length(dNb)
