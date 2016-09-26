@@ -37,7 +37,7 @@ function DiscAlg(A,B,Q,R,U,bet,n1,n2,Vt1,Ct1,
 
   n        = n1 + n2
   Ft1      = 1000
-  ConvCrit = collect(ConvCrit)'             #to row vector
+  ConvCrit = vec(collect(ConvCrit))'             #to row vector
 
   M = Float64[]
   C = Float64[]

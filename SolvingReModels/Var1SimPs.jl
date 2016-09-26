@@ -26,7 +26,7 @@ function Var1SimPs(A,epsilon,T,x0=0.0)
     epsilon2[1,:]  = vec(epsilon)'                #to accomodate T=1
     epsilon        = epsilon2
   end
-  if length(x0) == 1
+  if isa(x0,Number)                               #if scalar
     x0 = repmat([x0],n,1)
   end
 
@@ -35,7 +35,7 @@ function Var1SimPs(A,epsilon,T,x0=0.0)
   for t = 1:T                                     #loop over time periods
     x1      = A*x1_t_1 + epsilon[t:t,:]'          #[t] to keep as row vector
     xM[t,:] = x1'
-    x1_t_1  = x1 + 0.0
+    x1_t_1  = deepcopy(x1)
   end
 
   return xM

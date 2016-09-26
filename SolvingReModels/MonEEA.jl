@@ -75,7 +75,7 @@ figure()
   legend(["Output","Inflation","Short interest rate"])
 
 println("\nSimple rule: impulse response to a one std of price shock (y,pi,i)")
-println(round([tid ypii_Simp],3))
+display(round([tid ypii_Simp],3))
 #-----------------------------------------------------------------------
 
                                   #COMMITMENT
@@ -96,7 +96,7 @@ figure()
   legend(["Output","Inflation","Short interest rate"])
 
 println("\nCommitment: impulse response to a one std of price shock (y,pi,i)")
-println(round([tid ypii_Commit],3))
+display(round([tid ypii_Commit],3))
 #-----------------------------------------------------------------------
                                   #DISCRETION
 
@@ -118,6 +118,6 @@ figure()
   legend(["Output","Inflation","Short interest rate"])
 
 println("\nDiscretion: impulse response to a one std of price shock (y,pi,i)")
-println(round([tid ypii_Disc],3))
+display(round([tid ypii_Disc],3))
 #-----------------------------------------------------------------------
 
