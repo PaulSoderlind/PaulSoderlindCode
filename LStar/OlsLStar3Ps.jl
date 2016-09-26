@@ -56,7 +56,7 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
   kw = size(w,2)
 
   if ExciseIt
-    (y,x0,w,z) = excise4mPs(y,x0,w,z)
+    (y,x0,w,z,) = excise4mPs(y,x0,w,z)
   end
 
   sseM = fill(NaN,(Ng,Nc))             #calculate sse in loop over g and c values
@@ -66,8 +66,7 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
       sseM[i,j] = sse_ij
     end    #j
   end   #i
-  (minLoss,vvMin) = findmin(sseM)            #minimum loss, for which i
-  (i,j) = ind2sub(size(sseM),vvMin)
+  (i,j)         = ind2sub(size(sseM),indmin(sseM))    #minimum loss, for which i,j
   (g,c,b,par0,) = OlsLStar3Par(gcKeep,[NaN;NaN;NaN],[gM[i];cM[j]])
 
   if !isempty(par0)
@@ -93,7 +92,7 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
   Covb2 = Covtheta[vv,vv]
   for j = 1:k
     R             = zeros(length(b2),1)
-    vv            = [j j+k]      #location of b1 and b2 for same x0(:,j)
+    vv            = [j;j+k]      #location of b1 and b2 for same x0(:,j)
     R[vv]         = [-1;1]
     bDiff[j]      = (R'b2)[1]
     tstatbDiff[j] = (R'b2/sqrt(R'Covb2*R))[1]
@@ -112,7 +111,7 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
     end
     yHat = OlsLStar3PredPs(xwzHat[:,:,1],k,kw,theta,gcKeep)
     if nPred == 1
-      yHatLH = reshape(yHatLH,size(xwzHat,1),3)     #better than squeeze(yHatLH,3)
+      yHatLH = reshape(yHatLH,size(xwzHat,1),3) + 0    #better than squeeze(yHatLH,3)
     end
   end
 

@@ -7,9 +7,9 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
 #
 #  Input:    y            Tx1 or Txn matrix of the dependent variables
 #            x            Txk matrix of regressors (including deterministic ones)
-#            ExciseIt     (optional) scalar, if 1, excise([y,x])
-#            UnExciseIt   (optional) scalar, 1 if putting residuals and fitted values in Txn matrix
-#            SkipCovbIt   (optional) scalar, 1 if skipping calculation of Covb (sensitive inversion)
+#            ExciseIt     (optional) bool, true to doing excise([y,x])
+#            UnExciseIt   (optional) bool, true to put residuals and fitted values in Txn matrix
+#            SkipCovbIt   (optional) bool, true to skip calculation of Covb (sensitive inversion)
 #
 #  Output:   b            kxn matrix, regression coefficients
 #            res          Tx1 or Txn matrix, residuals y - yhat
@@ -31,12 +31,11 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
   (T,n) = size(y,1,2)
 
   if ExciseIt
-    (yx,_,_,vvNoNaNR) = excisePs([y x])
+    (yx,_,_,vvNoNaNR) = excisePs([y x])      #does not affect calling scope
     y = yx[:,1:n]
     x = yx[:,n+1:end]
+    (yx,_) = (nothing,nothing)
   end
-  yx = nothing
-  _  = nothing
 
   Ty = size(y,1)
   Tx = size(x,1)
@@ -61,11 +60,7 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
     end
     R2a = 1 - var(res2,1)./var(y,1)
   else
-    b      = NaN
-    yhat2  = NaN
-    res2   = NaN
-    Covb   = NaN
-    R2a    = NaN
+    (b,yhat2,res2,Covb,R2a) = (NaN,NaN,NaN,NaN,NaN)
   end
 
   if UnExciseIt        #put fitted value and residual in Tyxn matrix

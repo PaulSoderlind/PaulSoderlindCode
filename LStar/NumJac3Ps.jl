@@ -45,7 +45,7 @@ function NumJac3Ps(fun::Function,b0,h=[],Method=99)
   end
 
 
-  b0 = vec(collect(b0))                       #-> column vector
+  b0 = vec(collect(b0))                       #-> column vector, for bminus[i]
   k  = length(b0)                             #no. of parameters in fun(b)
 
   f0 = fun(b0)                               #value of function at b0
@@ -54,9 +54,9 @@ function NumJac3Ps(fun::Function,b0,h=[],Method=99)
 
   Jac = fill(NaN,(n,k))
   for i = 1:k                               #loop over parameters
-    bminus    = b0 + 0.0
+    bminus    = deepcopy(b0)
     bminus[i] = bdown[i]
-    bplus     = b0 + 0.0
+    bplus     = deepcopy(b0)
     bplus[i]  = bup[i]
     if Method == 1
       fplus    = fun(bplus)
@@ -70,6 +70,10 @@ function NumJac3Ps(fun::Function,b0,h=[],Method=99)
       Jac[:,i] = (fplus-fminus)/hh[i]
     end
   end   #i
+
+  if length(Jac) == 1                   #convert to scalar
+    Jac = Jac[1]
+  end
 
   return Jac
 
