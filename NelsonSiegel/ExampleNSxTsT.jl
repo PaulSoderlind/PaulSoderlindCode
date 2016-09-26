@@ -12,7 +12,7 @@
 #  Paul.Soderlind@unisg.ch, April 2002, to Julia Nov 2015
 #------------------------------------------------------------------------------
 
-using Optim , PyPlot
+using Optim, PyPlot
 
 warn("you may have to change these paths")
 include("vecPs.jl")
@@ -108,5 +108,5 @@ figure()
          "Estimated forward rate","Estimated yield to maturity"],loc=1)
   ylim(0.04,0.14)
 
- 1
+ println("done")
 #----------------------------------------------------------------------------

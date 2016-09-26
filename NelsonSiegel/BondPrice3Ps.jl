@@ -1,4 +1,4 @@
-function BondPrice3Ps(y,c,t,FaceValue=1)
+function BondPrice3Ps(y,c0,t,FaceValue=1)
 #BondPrice3Ps   Calculates price from the yield to maturity and the payment
 #               stream (arbitrary periods and coupons)
 #
@@ -6,11 +6,11 @@ function BondPrice3Ps(y,c,t,FaceValue=1)
 #
 #
 #
-#  Usage:     [Q,dQ_dy] = BondPrice3Ps(y,c,t[,FaceValue]);
+#  Usage:     [Q,dQ_dy] = BondPrice3Ps(y,c0,t[,FaceValue]);
 #
 #  Input:
 #             y          n vector, effective yield to maturity, e.g. 0.07
-#             c          scalar or n vector or nxm matrix , coupon rate and face value,
+#             c0         scalar or n vector or nxm matrix , coupon rate and face value,
 #                        e.g. 0.06 or 0.09/2
 #             t          m vector, dates of coupon payments. Principal
 #                        is paid at the same time as the last coupon. Dates
@@ -49,7 +49,7 @@ function BondPrice3Ps(y,c,t,FaceValue=1)
   y = repmat(y,1,m)                         #n -> nxm
   t = repmat(t',n,1)                        #m -> nxm matrix
 
-  c = c + 0.0                               #breaks link with c argument
+  c = deepcopy(c0)                          #breaks link with c0 argument
   if length(c) == 1                         #scalar c
     c = fill(c,(n,m))
   elseif length(c) == n                     #one c for each bond
@@ -58,12 +58,12 @@ function BondPrice3Ps(y,c,t,FaceValue=1)
   if length(FaceValue) == 1
     FaceValue = fill(FaceValue,(n,1))
   end
-  c[:,end] = c[:,end] + FaceValue          #add face value to last coupon payment
+  c[:,end] = c[:,end] + FaceValue           #add face value to last coupon payment
 
   cfac  = c./((1+y).^t)                     #c/(1+y)^t1 + c/(1+y)^t2 + ...+ c/(1+y)^m
   Q     = sum(cfac,2)                       #theoretical price
 
-  dcfac = cfac .* (-t./(1+y))              #derivative wrt ytm
+  dcfac = cfac .* (-t./(1+y))               #derivative wrt ytm
   dQ_dy = sum(dcfac,2)
 
   return Q,dQ_dy
@@ -179,7 +179,7 @@ end
 
 
 #------------------------------------------------------------------------------
-function BondDurationMacaulay3Ps(Q,c,t,Method=1,yLH=[-0.1;0.5],tol=1e-7,FaceValue=1)
+function BondDurationMacaulay3Ps(Q,c0,t,Method=1,yLH=[-0.1;0.5],tol=1e-7,FaceValue=1)
 #DurationMacaulay2Ps   Calculates Macaulay's duration. See also BondYieldToMat3Ps
 #
 #
@@ -189,7 +189,7 @@ function BondDurationMacaulay3Ps(Q,c,t,Method=1,yLH=[-0.1;0.5],tol=1e-7,FaceValu
 #  Usage:     (D,Da,Dmac,ytm) = BondDurationMacaulay3Ps(Q,c,t[,Method[,yLH[,tol[,FaceValue]]]])
 #
 #  Input:     Q         nx1 vector, bond prices (for instance, 1.01)
-#             c         scalar or n vector or nxm matrix, c rate, e.g. 0.06, or 0.09/2
+#             c0    scalar or n vector or nxm matrix, c rate, e.g. 0.06, or 0.09/2
 #             t         mx1 vector, dates of coupon payments. Principal
 #                       is paid at the same time as the last c. Dates
 #                       should be expressed as fractions of the period
@@ -235,9 +235,9 @@ function BondDurationMacaulay3Ps(Q,c,t,Method=1,yLH=[-0.1;0.5],tol=1e-7,FaceValu
 
   ytm = BondYieldToMat3Ps(Q,c,t,Method,yLH,tol,FaceValue)  #yield to maturity, effective interest rate
   y = repmat(ytm,1,m)          #n -> nxm, maturity x bond
-  t = repmat(t',n,1)            #m -> nxm
+  t = repmat(t',n,1)           #m -> nxm
 
-  c = c + 0.0                  #breaks link with c argument
+  c = deepcopy(c0)         #breaks link with c argument
   if length(c) == 1
     c = fill(c,(n,m))
   elseif length(c) == n
