@@ -65,8 +65,7 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   for t = 1:T                             #loop over time
     y_t  = vec(y[t,:])                    #dependent variable, Nx1, works in both 0.4 and 0.5
     x0_t = x[t:t,:]                       #factors, 1xK (rely on broadcasting of .* below)
-    z_t  = reshape(z[t,:,:],N,L)          #NxL, better than squeeze (cf 2-d arrays)
-    x_t  = HDirProdPs(z_t,x0_t)           #effective regressors, z_t is NxL, x_t is 1xK
+    x_t  = HDirProdPs(reshape(z[t,:,:],N,L),x0_t)  #effective regressors, z_t is NxL, x_t is 1xK
     x_t  = x_t[:,vvzx]
     (y_t,x_t,vvNaNRow) = excise2mPs(y_t,x_t)   #pruning NaNs
     N_t  = size(y_t,1)
@@ -106,8 +105,7 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   for t = 1:T                           #loop over time
     y_t    = vec(y[t,:])
     x0_t   = x[t:t,:]
-    z_t    = reshape(z[t,:,:],N,L)
-    x_t    = HDirProdPs(z_t,x0_t)
+    x_t    = HDirProdPs(reshape(z[t,:,:],N,L),x0_t)
     x_t    = x_t[:,vvzx]
     yhat_t = x_t*theta
     r_t    = y_t - yhat_t
