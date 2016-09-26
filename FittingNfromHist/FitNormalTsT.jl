@@ -81,7 +81,7 @@ if parM[3] >= 3                           #fitted N(mu,s^2)
     ha = bar(CatMid,Prob/BinWidth,color="yellow",align="center",width=BinWidth)
     xlim(-2,6)
     ylim(0,maximum(Prob/BinWidth)+0.03)
-    title("Histogram and fitted N(\mu,\sigma^2)")
+    title("Histogram and fitted \$N(\\mu,\\sigma^2)\$")
     hb = plot(y,pdfy)
 end
 #-------------------------------------------------------------------------------
