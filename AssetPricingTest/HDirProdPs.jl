@@ -1,6 +1,6 @@
 function HDirProdPs(x,y)
 #HDirProdFn    Calculates horizontal direct product of two matrices with equal number of rows.
-#              z[i,:] is the Kronecker product of x[i,:] and y[i,:]
+#              z[i,:] is the Kronecker product of x[i:i,:] and y[i:i,:]
 #
 #
 #  Usage:    z = HDirProdFn(x,y)

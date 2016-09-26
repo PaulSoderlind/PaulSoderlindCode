@@ -55,8 +55,8 @@ Indiv_b = fnOutput[2]
 
 println("\n 3x1, WaldStat for alpha, delta, alpha-delta ")
 println(round(Joint_b,2))
-println("\n 3xn, Individual t-stats for alpha, delta, alpha-delta ")
-println(round(Indiv_b,2))
+println("\n nx3, Individual t-stats for alpha, delta, alpha-delta ")
+display(round(Indiv_b',2))
 #----------------------------------------------------------
 
 

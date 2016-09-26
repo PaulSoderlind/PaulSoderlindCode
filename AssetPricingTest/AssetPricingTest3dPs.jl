@@ -51,8 +51,8 @@ function AssetPricingTest3dPs(Re1,Re2,f,h,bandwidth=0,q=0,CrossRegType="beta",vv
   K  = size(f,2)
   L  = size(h,2)
 
-  (Re1,Re2,f,h) = excise4mPs(Re1,Re2,f,h)
-  T             = size(Re1,1)                      #no. obs
+  (Re1,Re2,f,h,) = excise4mPs(Re1,Re2,f,h)
+  T              = size(Re1,1)                      #no. obs
 
   Ef   = mean(f,1)'
   Eh   = mean(h,1)'
