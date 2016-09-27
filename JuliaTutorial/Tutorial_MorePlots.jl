@@ -100,7 +100,7 @@ PyPlot.matplotlib[:rc]("font",size=18)
 figure(figsize=(35,35/1.41))          #control tick marks
 ax1 = axes()
   plot_date(dN,cumsum(z),"k-")
-  title("Cumulative z",fontsize=18)
+  title("Cumulative z with settings for tick marks",fontsize=18)
   majorlocator = matplotlib[:dates][:YearLocator]()
   majorformatter = matplotlib[:dates][:DateFormatter]("%Y")
   minorlocator = matplotlib[:dates][:MonthLocator](bymonth=2:13,bymonthday=1,interval=1)
@@ -115,10 +115,10 @@ using LaTeXStrings                 #add some LaTeX to the figure
 
 t = collect(-3:6/99:6)
 
-PyPlot.matplotlib[:rc]("font", family="serif",size=12)  #font similar to LaTeX
+PyPlot.matplotlib[:rc]("font",family="serif",size=12)  #font similar to LaTeX
 figure(figsize=(12,8.5))
   plot(b,loss1)
-  title(L"a title, $2 b^2 + 0.5$")
+  title(L"a title using LaTeX, $2 b^2 + 0.5$")
   xlabel("b")
   ylabel("log loss")
   text(-2.5,0.9,L"some text, $\ln(\mathrm{loss})$")

@@ -1,7 +1,7 @@
 #------------------ a hash sign makes the rest of line a comment -------------
 #
 #
-# (0)  This file should work well with Julia 0.4. Open up Julia.exe.
+# (0)  This file should work well with Julia 0.4 and 0.5. Open up Julia.exe.
 #
 # (1)  At the prompt, you may change directory by typing
 #      cd("directory_name") (e.g. cd("e:/mystuff") and hit Return.
@@ -24,6 +24,7 @@
 # (8)  This example file uses several (free) Julia packages. You find instructions
 #      in the code below (close to "using..."). For documentation of these packages,
 #      see
+#      https://github.com/JuliaLang/Formatting.jl
 #      http://distributionsjl.readthedocs.org/en/latest/
 #      https://github.com/JuliaLang/Roots.jl
 #      https://github.com/JuliaOpt/Optim.jl
@@ -37,6 +38,9 @@
 #  Paul Söderlind (Paul.Soderlind at unisg.ch), October 2015, revised April 2016
 #-------------------------------------------------------------------------
 
+import Formatting        #the first time, do Pkg.add("Formatting") to install the package
+include("printmat.jl")            #just function for prettier matrix printing
+
 
 println("\n","-------------------------- matrices --------------------------","\n")
                                   #println(x) prints x, where x is a matrix or
@@ -48,44 +52,46 @@ q = [ 1 2 3;                      #create 2x3 matrix
 println("\n","Q is a scalar. To print, use println()")    #"\n creates a line break"
 println(Q)                        #print matrix
 println("q is a matrix")
-println(q)                        #case sensitive (q and Q are different)
+printmat(q)                       #case sensitive (q and Q are different)
 
-println("\n","first line of q: ",q[1:1,:])
-println("second column of q (printed compactly, with commas to indicate rows): ",q[:,2:2])
-
+println("\n","first line of q: ")
+printmat(q[1:1,:])
+println("second column of q: ")
+printmat(q[:,2:2])
 z = q'                            #transposing
 println("\n","z is the transpose of q: ")
-println(z)
+printmat(z)
 
-p = collect(1:10:21)'
-println("\n","p is a row vector with a sequence starting at 1 ending in 21: ",p)
+p = collect(1:10:21)
+println("\n","p is a vector with a sequence starting at 1 ending in 21: ")
+printmat(p)
 
-z = [q;p]                         #overwriting old z with new
-println("\n","stacking q and p vertically")
-println(z)
+z = [q;p']                         #overwriting old z with new
+println("\n","stacking q and p' vertically:")
+printmat(z)
 
 z2 = [q q/10]                     #stacking q and q/10 horizontally
 println("\n","stacking q and q/10 horizontally")
-println(z2)
+printmat(z2)
 
 w = [ 10 11 12;                   #create another 2x3 matrix
       13 14 15 ]
 println("\n","q (again, so you do not forget it)")
-println(q)
+printmat(q)
 println("w, another matrix")
-println(w)
+printmat(w)
 
 y1 = q + w                        #matrix addition
 println("\n","q + w")
-println(y1)
+printmat(y1)
 
 y2 = q.*w                         #element-by-element multiplication
 println("\n","q.*w")
-println(y2)
+printmat(y2)
 
 y3 = q'*w                          #matrix multiplication (q'w is the same as q'*w)
 println("\n","q'*w")
-println(y3)
+printmat(y3)
 
 
 println("\n","----------------------  Load data from ascii file ------------","\n")
@@ -101,7 +107,7 @@ xx   = readdlm("MyData.csv",',',header=true)
 x    = xx[1]                       #xx[1] contains the data
 println("Column headers: ",xx[2])  #xx[2] contains the headers
 println("first four lines of x:")
-println(x[1:4,:])
+printmat(x[1:4,:])
 
 ym  = x[:,1]                    #yearmonth, like 200712
 Rme = x[:,2]                    #picking out second column
@@ -121,32 +127,35 @@ b2  = x\y                       #also OLS, much quicker and numerically more sta
 u   = y - x*b                   #OLS residuals
 R2a = 1 - var(u)/var(y)         #avoid using name R2 (aleady in StatsBase package)
 println("OLS coefficients, regressing Re on constant and Rme, different calculations")
-println(round([b b2],3))        #round(,3) rounds to 3 digits. Easier to look at
+printmat(round([b b2],3))        #round(,3) rounds to 3 digits. Easier to look at
 println("R2: ",round(R2a,3))
 println("no. of observations: ",size(Re,1))
 
 x = randn(100,3)                  #matrix of random draws from N(0,1)
-println("\n","mean and std of random draws from N(0,1): ")
+println("\n","mean and std of 100x3 random draws from N(0,1): ")
 mu    = mean(x,1)                 #mean of each column in matrix, gives row vector
 sigma = std(x,1)
-println(round([mu;sigma],3))
+printmat(round([mu;sigma],3))
 
 println("\n","cov(x): ")          #there are lots of statistics functions
-println(round(cov(x),3))          #for more, see the package StatsBase.jl
+printmat(round(cov(x),3))          #for more, see the package StatsBase.jl
 
 using Distributions  #the first time, do Pkg.add("Distributions") to install the package
 println("\n","5th percentile of N(0,1) and 95th of Chisquare(5)")      #lots of statistics functions
-println(round([quantile(Normal(0,1),0.05) quantile(Chisq(5),0.95)],3))
+printmat(round([quantile(Normal(0,1),0.05) quantile(Chisq(5),0.95)],3))
 
 
 println("\n","-------------------- Comparing things --------------------------","\n")
 
 x = collect(linspace(-1.5,0.5,5))       #vector: -1.5,-1.0,-0.5,0,0.5
-println("x values: ",x)
+println("x values: ")
+printmat(x)
 vv = -1 .< x .<= 0                      #true for x values (-1,0], boolean
-println("x is in (-1,0]: ",vv)
+println("true if x is in (-1,0]: ")
+printmat(vv)
 x2 = x[vv]
-println("x values in (-1,0]: ",x2)
+println("x values that are in (-1,0]: ")
+printmat(x2)
 
 
 println("\n","-------------------- Writing a loop --------------------------","\n")
@@ -166,7 +175,7 @@ println("Pick out elements on and below diagonal from a square matrix x")
 x = reshape(1:9,3,3)              #generate square matrix
 (m,n) = size(x)                   #find no. rows and columns
 println("\n","original matrix: ")
-println(x)
+printmat(x)
 
 nRows = round(Int,n*(n+1)/2)      #must be an integer, so use round()
 v = fill(-999,(nRows,1))          #to put results in, initialized as -999
@@ -177,9 +186,8 @@ for j = 1:n                       #loop over columns in x
     k = k + 1                     #update index in v
   end
 end
-
 println("vech of the matrix (stack elements on and below diagonal): ")
-println(v)
+printmat(v)
 
 
 println("\n","---------------------- Functions -----------------------------","\n")
@@ -222,7 +230,7 @@ x1 = fzero(x->MathLecD(x,1),[-1;1])     #notice that x->MathLecD(x,1)
                                         #[-1;1] searches roots in this interval
 println("at which x is MathLecD(x,1) = 0? ",round(x1,3))
 
-x1 = fzero(x->MathLecD(x,1),[1;3])  #now, try between 1 and 3
+x1 = fzero(x->MathLecD(x,1),[1;3])      #now, try between 1 and 3
 println("at which x is MathLecD(x,1) = 0? ",round(x1,3))
 println("Yes, there are several roots. Just look at it (in plot).")
 

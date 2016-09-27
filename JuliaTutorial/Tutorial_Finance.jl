@@ -3,11 +3,14 @@
 #
 #
 #
-#  Paul Söderlind (Paul.Soderlind at unisg.ch), Dec 2015
+#  Paul Söderlind (Paul.Soderlind at unisg.ch), Dec 2015 and later
 #-------------------------------------------------------------------------
 
+
                                   #do Pkg.add("package name") if needed
+import Formatting
 using StatsBase, Gadfly, Roots, MathProgBase, Ipopt
+include("printmat.jl")            #just function for prettier matrix printing
 
 set_default_plot_size(20cm, 13cm)
 
@@ -32,7 +35,7 @@ stdb = sqrt(diag(covb))          #std(b)
 R2a  = 1 - var(u)/var(y)
 
 println("OLS coefficients and std")
-println(round([b stdb],3))
+printmat(round([b stdb],3))
 println("R2: ",round(R2a,3))
 println("no. of observations: ",T)
 
@@ -42,7 +45,7 @@ println("\n","---------------------- Autocorrelations ------------------","\n")
 plags = 1:5
 xCorr = autocor(Re,plags)
 println("\n lag autocorrr and its t-stat of excess returns")
-println(round([plags xCorr sqrt(T)*xCorr],3))
+printmat(round([plags xCorr sqrt(T)*xCorr],3))
 
 
 println("\n","------------------------ Value at Risk -------------------","\n")
@@ -161,7 +164,7 @@ display(plot1)
 
                                 #simple (crude) way to solve for implied vol
 iv = Roots.fzero(sigma->OptionBlackSPs(10,10,0.5,0.1,sigma)-c1,[-1;1])
-println("Implied volatility (should be the same as above): ",round(iv,3))
+println("Implied volatility for theoretical case (should be the same as above): ",round(iv,3))
 
 #  LIFFE Bunds option data, trade date April 6, 1994
 X = [                        #strike prices; Mx1 vector
@@ -181,8 +184,8 @@ iv = fill(NaN,N)
 for i = 1:N
   iv[i] = Roots.fzero(sigma->OptionBlackSPs(exp(-m*r)*F,X[i],m,r,sigma)-C[i],[-1;1])
 end
-
-println(round([X iv],4))
+println("Strike and iv for data: ")
+printmat(round([X iv],4))
 
 plot1 = plot(x=X,y=iv,Geom.line,Theme(default_color=colorant"red"),
              Guide.title("Implied volatility, Bunds options April 6, 1994"),

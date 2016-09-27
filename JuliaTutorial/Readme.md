@@ -3,12 +3,13 @@ Readme for JuliaTutorial
 
 This folder contains my Julia tutorial (aimed at students in finance and economics).
 
-1. Tutorial.jl: the main file. Instructions are found at the top of that file.
-    * MyData.csv contains data used in the main file
+1. Tutorial.jl: the main file. Instructions are found at the top of that file. It calls on the following files:
+    * printmat.jl which is a function for printing arrays (matrices) in a pretty way
+    * MyData.csv which contains data used in the main file
 
 2. Tutorial.ipynb is a jupyter notebook version of the main file. You can click it to see it online.
    To use it with your local Julia installation do the following: (a) start Julia; 
-   (b) cd(file location) ;(c) using IJulia; (d) notebook()
+   (b) cd(file location) ;(c) using IJulia; (d) notebook(dir=pwd())
 
 3. Tutorial_Finance.jl: some typical finance calculations
     * MyFunctions.jl contains some functions used in Tutorial_Finance.jl
