@@ -14,8 +14,6 @@ This folder contains my Julia tutorial (aimed at students in finance and economi
 3. Tutorial_Finance.jl: some typical finance calculations
     * MyFunctions.jl contains some functions used in Tutorial_Finance.jl
 
-4. Tutorial_TrickyStuff.jl: illustrates some tricky things with Julia (at least for an old Matlab user)
+4. Tutorial_TrickyStuff.ipynb: illustrates some tricky things with Julia (at least for an old Matlab user)
 
-5. Tutorial_TrickyStuff.ipynb: is a jupyter notebook version of JuliaLec_TrickyStuff.jl
-
-6. Tutorial_MorePlots.jl: contains more advanced plot examples (using another plotting package, PyPlot)
+5. Tutorial_MorePlots.jl: contains more advanced plot examples (using another plotting package, PyPlot)
