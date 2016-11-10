@@ -30,7 +30,7 @@ function Var1SimPs(A,epsilon,T,x0=0.0)
     x0 = repmat([x0],n,1)
   end
 
-  x1_t_1 = vec(x0)                                #starting vector
+  x1_t_1 = vec(collect(x0))                       #starting vector
   xM     = fill(NaN,(T,n))                        #to put results in
   for t = 1:T                                     #loop over time periods
     x1      = A*x1_t_1 + epsilon[t:t,:]'          #[t] to keep as row vector
