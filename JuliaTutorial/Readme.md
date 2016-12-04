@@ -18,4 +18,4 @@ The files are:
 
 4. Tutorial_TrickyStuff.ipynb: illustrates some tricky things with Julia (at least for an old Matlab user)
 
-5. Tutorial_MorePlots.jl: contains more advanced plot examples (using another plotting package, PyPlot). Still no notebook for this.
+5. Tutorial_MorePlots.ipynb: contains more advanced plot examples (using another plotting package, PyPlot).
