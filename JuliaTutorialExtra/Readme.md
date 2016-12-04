@@ -9,6 +9,6 @@ The .ipynb files are Julia notebooks.
 
 3. Tutorial_NaNs.ipynb: example of how to trim off rows with NaNs
 
-4. printToFile.ipynb: example of how to write results to a text file
+4. Tutorial_PrintToFile.ipynb: example of how to write results to a text file
 
 5. readdlmFixPs.jl and printmat.jl: utility functions for loading data and pretty printing of arrays (used in the other files)
