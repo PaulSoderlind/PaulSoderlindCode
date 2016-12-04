@@ -4,6 +4,8 @@ The .ipynb files are Julia notebooks. They use some data, which you find in the 
 
 # Instructions
 
+If you just want to see a notebook, click on it.  Sometimes it renders better if you activate the nbviewer (see the symbol in the upper right corner once you have opened the file).
+
 You use IJulia to edit and run these Julia notebooks. You can either install Julia/IJulia on your local computer (see https://sites.google.com/site/paulsoderlindecon/home/software for instructions) or you can use JuliaBox.com. The rest of these instructions are for the JuliaBox.com alternative.
 
 1. Log in at JuliaBox.com
