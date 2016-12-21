@@ -8,8 +8,8 @@ function NWFn(g,m)
 
   S = g'g/T                         #(qxT)*(Txq)
   for s = 1:m
-    Omega_s = g[s+1:T,:]'g[1:T-s,:]/T   #same as Sum[g(t)*g(t-s)',t=s+1,T]
-    S       = S  +  ( 1 - s/(m+1) ) * (Omega_s + Omega_s')
+    Gamma_s = g[s+1:T,:]'g[1:T-s,:]/T   #same as Sum[g(t)*g(t-s)',t=s+1,T]
+    S       = S  +  ( 1 - s/(m+1) ) * (Gamma_s + Gamma_s')
   end
 
   return S
