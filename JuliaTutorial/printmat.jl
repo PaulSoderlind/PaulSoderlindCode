@@ -1,26 +1,18 @@
 #------------------------------------------------------------------------------
-function printmat(x,width=10,prec=3,Numfmt="f",NoPrinting=false)
-#printmat   Prints all elements of matrix with a predefined formatting.
-#           Uses the package Formatting (import Formatting)
+function printmat(x,NoPrinting=false)
+#printmat   Prints all elements of matrix with hard coded formatting.
 #
-#
-#
+##
 #  Input:      x           numerical matrix to print
-#              width       (optional) scalar, width of printed cells. [10]
-#              prec        (optional) scalar, precision of printed cells. []
-#              Numfmt      (optional) string, format of numerical cells, ["f"]
 #              NoPrinting  (optional) bool, true: no printing, just return formatted string
 #
 #  Output:     str         (if NoPrinting) string, (otherwise nothing)
 #
 #
-#  Uses:  import Formatting
-#
-#
-#  Paul.Soderlind@unisg.ch, May 2016
+#  Paul.Soderlind@unisg.ch, Jan 2017
 #------------------------------------------------------------------------------
 
-  if isa(x,String)                      #strings need special treatment
+  if typeof(x) <: String                      #strings need special treatment
     str = string(x,"\n")
     if NoPrinting
       return str
@@ -38,15 +30,6 @@ function printmat(x,width=10,prec=3,Numfmt="f",NoPrinting=false)
   end
 
   eltype_x = eltype(x)
-                                                        #floats or intergers
-  if any([eltype_x <: AbstractFloat eltype_x <: Signed eltype_x <: Unsigned])
-    if eltype_x <: Integer
-      prec = 0
-    end
-    fmt2a = string("%",string(width),".",string(prec),Numfmt)  #fmt numerical data
-  else                                 #assume strings
-    fmt2a = string("%",string(width),"s")
-  end
 
   (m,n,p) = size(x,1,2,3)
 
@@ -58,7 +41,15 @@ function printmat(x,width=10,prec=3,Numfmt="f",NoPrinting=false)
     end
     for i = 1:m
       for j = 1:n
-        s = s * Formatting.sprintf1(fmt2a,x[i,j,k])
+        if eltype_x <: AbstractFloat
+          s = s * @sprintf("%10.3f",x[i,j,k])
+        elseif eltype_x <: Signed || eltype_x <: Unsigned || eltype_x <: BigInt
+          s = s * @sprintf("%10.0f",x[i,j,k])
+        elseif eltype_x <: Bool
+          s = s * @sprintf("%10s",x[i,j,k])
+        else
+          s = s * @sprintf("%10s",x[i,j,k])
+        end
       end
       s = s * @sprintf("%s\n","")
     end
@@ -71,6 +62,45 @@ function printmat(x,width=10,prec=3,Numfmt="f",NoPrinting=false)
     println(str)
     return nothing
   end
+
+end
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+function printlnPs(z...)
+#printmat   Subsitute for println by hard coded formatting.
+#
+#
+#  Input:      z           string, numbers and arrays to print
+#
+#
+#  Paul.Soderlind@unisg.ch, Jan 2017
+#------------------------------------------------------------------------------
+
+  for x in z                              #loop over inputs in z...
+    if typeof(x) <: String                      #plain string, no array of strings
+      print(x)
+    else
+      eltype_x = eltype(x)
+      m = length(x)
+      s = ""
+      for i = 1:m
+        if eltype_x <: AbstractFloat
+          s = s * @sprintf("%10.3f",x[i])
+        elseif eltype_x <: Signed || eltype_x <: Unsigned || eltype_x <: BigInt
+          s = s * @sprintf("%10.0f",x[i])
+        elseif eltype_x <: Bool
+          s = s * @sprintf("%10s",x[i])
+        else
+          s = s * @sprintf("%10s",x[i])
+        end
+      end
+      print(s)
+    end
+  end
+
+  print("\n")
 
 end
 #------------------------------------------------------------------------------

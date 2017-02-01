@@ -15,13 +15,11 @@ This repository has the following separate sub projects:
 
 6. JuliaTutorial: a Julia tutorial aimed at finance students
 
-7. JuliaTutorialExtra: the next steps after the JuliaTutorial (load data, work NaNs, etc)
+7. LStar: Julia code for LSTAR regressions
 
-8. LStar: Julia code for LSTAR regressions
+8. NelsonSiegel: Julia code for estimating the extended Nelson-Siegel model
 
-9. NelsonSiegel: Julia code for estimating the extended Nelson-Siegel model
-
-10. SolvingReModels: Julia code for solving RE models
+9. SolvingReModels: Julia code for solving RE models
 
 
 To download use "Download ZIP" (upper right). This gives you a zip file with all the subfolders. (No, as of yet there is no simple way of downloading a single subfolder.)
