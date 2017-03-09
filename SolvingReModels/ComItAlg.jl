@@ -38,7 +38,7 @@ function ComItAlg(A,B,Q,R,U,bet,n1,n2,cutoff)
 #
 #
 #
-#  Paul Söderlind, Paul.Soderlind@unisg.ch, Aug 2000, to Julia Jan 2016
+#  Paul SÃ¶derlind, Paul.Soderlind@unisg.ch, Aug 2000, to Julia Jan 2016
 #----------------------------------------------------------------------------
 
   Q = (Q + Q')/2                #to make symmetric
@@ -68,7 +68,7 @@ function ComItAlg(A,B,Q,R,U,bet,n1,n2,cutoff)
   D = [ D11  D14  D12  D13 ]
 
   GS = schurfact(G,D)
-  logconA = abs(GS[:beta]) .<= (abs(GS[:alpha])*cutoff) #selecting stable eigenvalues
+  logconA = abs.(GS[:beta]) .<= (abs.(GS[:alpha])*cutoff) #selecting stable eigenvalues
   ordschur!(GS,logconA)                                 #reordering, stable first
   S = GS[:S]
   T = GS[:T]

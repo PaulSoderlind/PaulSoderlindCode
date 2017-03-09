@@ -21,7 +21,7 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
 #
 #
 #
-#  Calls on:  excisePs
+#  Calls on:  excise2mPs
 #
 #
 #
@@ -31,10 +31,8 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
   (T,n) = size(y,1,2)
 
   if ExciseIt
-    (yx,_,_,vvNoNaNR) = excisePs([y x])      #does not affect calling scope
-    y = yx[:,1:n]
-    x = yx[:,n+1:end]
-    (yx,_) = (nothing,nothing)
+    (y,x,vvNaNRow) = excise2mPs(y,x)      #not changed inside fn
+    vvNoNaNR       = broadcast(!,vvNaNRow)
   end
 
   Ty = size(y,1)
@@ -44,12 +42,16 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
   if Tx != Ty
     error("y and x must have same number of observations")
   end
-  if any(isnan([y x]))
+  if any(isnan.([y x]))
     error("NaN in x or y")
+  end
+  if ndims(x) == 1               #T vector to (T,1) matrix, could also do reshape(x,T,1)
+    x = x[:,:]
   end
 
   if Ty >= k
-    b      = x\y
+    b = x\y
+    #ndims(x) == 1 ? yhat2  = x*b[1] : yhat2  = x*b  #if? then: else. to handle x is vector
     yhat2  = x*b
     res2   = y - yhat2
     Covres = cov(res2)*(Ty-1)/Ty
@@ -71,6 +73,10 @@ function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
   else
     yhat = yhat2
     res  = res2
+  end
+
+  if n == 1                #if only one regression
+    R2a = R2a[1]
   end
 
   return b,res,yhat,Covb,R2a,T

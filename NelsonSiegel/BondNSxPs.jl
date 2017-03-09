@@ -34,13 +34,13 @@ function BondNSxPs(m,b0,b1,b2,tau,b3=0.0,tau2=1.0)
 #----------------------------------------------------------------------------*/
 
                                                  #forward rate
-  f =  b0 + b1*exp(-m/tau) + b2*(m/tau).*exp(-m/tau) + b3*(m/tau2).*exp(-m/tau2)
+  f =  b0 + b1*exp.(-m/tau) + b2*(m/tau).*exp.(-m/tau) + b3*(m/tau2).*exp.(-m/tau2)
 
-  s =  b0 + b1*(1 - exp(-m/tau))./(m/tau) +
-            b2*((1 - exp(-m/tau)) ./(m/tau)  - exp(-m/tau)) +
-            b3*((1 - exp(-m/tau2))./(m/tau2) - exp(-m/tau2))        #spot rate
+  s =  b0 + b1*(1 - exp.(-m/tau))./(m/tau) +
+            b2*((1 - exp.(-m/tau)) ./(m/tau)  - exp.(-m/tau)) +
+            b3*((1 - exp.(-m/tau2))./(m/tau2) - exp.(-m/tau2))        #spot rate
 
-  d = exp(-s.*m)             #discount function
+  d = exp.(-s.*m)             #discount function
 
   return s,f,d
 
@@ -95,7 +95,7 @@ function BondNSxEstPs(par0,Q,tm,c,s0,ytmLoss=0,weight=1.0)
 
   if length(par0) == 4          #standard Nelson-Siegel
     if !isempty(s0)             #b1 = s0 - b0 is then imposed by BondNSxLossPs
-      par0 = par0([1;3;4])
+      par0 = par0[[1;3;4]]
     end
   elseif length(par0) == 6      #extended Nelson-Siegel
     if !isempty(s0)             #b1 = s0 - b0 is imposed by BondNSxLossPs
@@ -110,28 +110,21 @@ function BondNSxEstPs(par0,Q,tm,c,s0,ytmLoss=0,weight=1.0)
     warn("no convergence")
     return
   end
-  #Sol = optimize(b->BondNSxLossPs(b,Qtc,s0,ytmLoss,weight),par0,ftol=1e-12,iterations=10000)
-  #NSb = Sol.minimum       #optim version < 0.5
-  #println(Sol)
-  #if !Sol.f_converged
-  #  warn("no convergence")
-  #  return
-  #end
 
   if length(NSb) == 3
-    NSb[[1;3]] = abs(NSb[[1;3]])
+    NSb[[1;3]] = abs.(NSb[[1;3]])
   elseif length(NSb) == 4
-    NSb[[1;4]] = abs(NSb[[1;4]])
+    NSb[[1;4]] = abs.(NSb[[1;4]])
   elseif length(NSb) == 5
-    NSb[[1;3;5]] = abs(NSb[[1;3;5]])
+    NSb[[1;3;5]] = abs.(NSb[[1;3;5]])
   elseif length(NSb) == 6
-    NSb[[1;4;6]] = abs(NSb[[1;4;6]])
+    NSb[[1;4;6]] = abs.(NSb[[1;4;6]])
   end
 
   if length(NSb) == 3          #standard NS with restriction
-    NSb = [NSb[1]; (s0-NSb[1]); NSb[2:3]]
+    NSb = [NSb[1]; s0-NSb[1]; NSb[2:3]]
   elseif length(NSb) == 5      #extended NS with restriction
-    NSb = [NSb[1]; (s0-NSb[1]); NSb[2:5]]
+    NSb = [NSb[1]; s0-NSb[1]; NSb[2:5]]
   end
 
   return NSb
@@ -189,33 +182,13 @@ function BondNSxLossPs(b,Qtc,s0,ytmLoss=0,weight=1.0)
   n = length(c)           #number of bonds
 
   if length(b) == 3             #standard Nelson-Siegel with restriction b1 = s0-b0
-    b0   = abs(b[1])
-    b1   = s0 - b0
-    b2   =     b[2]
-    tau  = abs(b[3])
-    b3   = 0.0
-    tau2 = 1.0
+    (b0,b1,b2,tau,b3,tau2) = (abs(b[1]),s0-abs(b[1]),b[2],abs(b[3]),0.0,1.0)
   elseif length(b) == 4         #standard Nelson-Siegel
-    b0   = abs(b[1])
-    b1   =     b[2]
-    b2   =     b[3]
-    tau  = abs(b[4])
-    b3   = 0.0
-    tau2 = 1.0
+   (b0,b1,b2,tau,b3,tau2) = (abs(b[1]),b[2],b[3],abs(b[4]),0.0,1.0)
   elseif length(b) == 5         #extended Nelson-Siegel with restriction b1 = s0 - b0
-    b0   = abs(b[1])
-    b1   = s0 - b0
-    b2   =     b[2]
-    tau  = abs(b[3])
-    b3   =     b[4]
-    tau2 = abs(b[5])
+    (b0,b1,b2,tau,b3,tau2) = (abs(b[1]),s0-abs(b[1]),b[2],abs(b[3]),b[4],abs(b[5]))
   elseif length(b) == 6         #extended Nelson-Siegel
-    b0   = abs(b[1])
-    b1   =     b[2]
-    b2   =     b[3]
-    tau  = abs(b[4])
-    b3   =     b[5]
-    tau2 = abs(b[6])
+   (b0,b1,b2,tau,b3,tau2) = (abs(b[1]),b[2],b[3],abs(b[4]),b[5],abs(b[6]))
   end
 
   QNS = fill(NaN,n)

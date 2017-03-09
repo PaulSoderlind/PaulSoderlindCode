@@ -23,7 +23,7 @@ function Var1SimPs(A,epsilon,T,x0=0.0)
 
   if length(epsilon) == n
     epsilon2       = zeros(T,n)                   #non-zero only in first period
-    epsilon2[1,:]  = vec(epsilon)'                #to accomodate T=1
+    epsilon2[1,:]  = vec(epsilon)                 #to accomodate T=1
     epsilon        = epsilon2
   end
   if isa(x0,Number)                               #if scalar
@@ -33,8 +33,8 @@ function Var1SimPs(A,epsilon,T,x0=0.0)
   x1_t_1 = vec(collect(x0))                       #starting vector
   xM     = fill(NaN,(T,n))                        #to put results in
   for t = 1:T                                     #loop over time periods
-    x1      = A*x1_t_1 + epsilon[t:t,:]'          #[t] to keep as row vector
-    xM[t,:] = x1'
+    x1      = A*x1_t_1 + epsilon[t,:]             #[t,:] gives column vec in 0.5+
+    xM[t,:] = x1
     x1_t_1  = deepcopy(x1)
   end
 

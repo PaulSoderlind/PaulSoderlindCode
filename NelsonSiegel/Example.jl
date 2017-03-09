@@ -15,7 +15,7 @@
 using Optim, PyPlot
 
 warn("you may have to change these paths")
-include("vecPs.jl")
+include("vecScalarPs.jl")
 include("BondPrice3Ps.jl")
 include("BondNSxPs.jl")
 
@@ -59,7 +59,7 @@ parX0 = [0.1045;-0.03;-0.0562;1.2;0;0.5]       #starting guess
 tmFig = collect(linspace(1e-8,maximum(tm),1001))   #maturities to plot
 (shx,fhx,dhx) = BondNSxPs(tmFig,parX0[1],parX0[2],parX0[3],parX0[4],parX0[5],parX0[6])
 
-println("\nImplied spot rates (test): ",round(100*shx[[1:3;end-3:end]],3))
+println("\nImplied spot rates (test): ",round.(100*shx[[1:3;end-3:end]],3))
 figure()
   plot(tmFig,shx)
 #----------------------------------------------------------------------------
@@ -77,16 +77,16 @@ else
     NSXbR = BondNSxEstPs(parX0,pdat,tm,c,log(1+y[1]))
   end
 end
-println("\nEstimates: ",round(NSXbR,3))
+println("\nEstimates: ",round.(NSXbR,3))
 #----------------------------------------------------------------------------
 
 #calculate implied rates (spot, forward, yield to maturity) to plot
 
 tmFig = collect(linspace(1e-8,maximum(tm),101))   #maturities to plot
 (shx,fhx,dhx) = BondNSxPs(tmFig,NSXbR[1],NSXbR[2],NSXbR[3],NSXbR[4],NSXbR[5],NSXbR[6])
-shx = exp(shx) - 1     #effective interest rate
-fhx = exp(fhx) - 1
-println("\nImplied spot rates (NSXbR): ",round(100*shx[[1:3;end-3:end]],3))
+shx = exp.(shx) - 1     #effective interest rate
+fhx = exp.(fhx) - 1
+println("\nImplied spot rates (NSXbR): ",round.(100*shx[[1:3;end-3:end]],3))
 
 n    = length(c)
 ytmx = fill(NaN,n)
@@ -97,7 +97,7 @@ for i = 1:n                #loop over bonds
   ytmx_i  = BondYieldToMat3Ps(Qx,c[i],ti,1,0.05,1e-7)
   ytmx[i] = ytmx_i[1]
 end
-println("\nImplied spot rates (NSXbR): ",round(100*ytmx,3))
+println("\nImplied spot rates (NSXbR): ",round.(100*ytmx,3))
 #----------------------------------------------------------------------------
                                        #plotting
 figure()

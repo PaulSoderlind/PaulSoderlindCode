@@ -29,7 +29,7 @@ function DiscAlg(A,B,Q,R,U,bet,n1,n2,Vt1,Ct1,
 #                      k is number of elements in u(t)
 #
 #
-#  Paul Söderlind, Paul.Soderlind@unisg.ch, Aug 2000, to Julia Jan 2016
+#  Paul SÃ¶derlind, Paul.Soderlind@unisg.ch, Aug 2000, to Julia Jan 2016
 #-----------------------------------------------------------------------
 
   Q = (Q + Q')/2                #to make symmetric
@@ -49,8 +49,8 @@ function DiscAlg(A,B,Q,R,U,bet,n1,n2,Vt1,Ct1,
 
     (M,C,F,V) = DiscAlg2(A,B,Q,R,U,bet,n1,n2,Ct1,Vt1)  #solve period t
 
-    Vdiff = maximum(Vweight.*abs(V-Vt1))        #changes t+1 -> t
-    Fdiff = maximum(Fweight.*abs(F-Ft1))
+    Vdiff = maximum(Vweight.*abs.(V-Vt1))        #changes t+1 -> t
+    Fdiff = maximum(Fweight.*abs.(F-Ft1))
     Cdiff = [ Cdiff;
               Vdiff Fdiff ]
     Cdiff = Cdiff[2:size(Cdiff,1),:]                   #latest is last
@@ -96,7 +96,7 @@ function DiscAlg2(A,B,Q,R,U,bet,n1,n2,Ct1,Vst1)
 #             Fs             kxn1 matrix,
 #             Vs             n1xn1 matrix,
 #
-#  Paul Söderlind, Paul.Soderlind@unisg.ch, Aug 2000, to Julia Jan 2016
+#  Paul SÃ¶derlind, Paul.Soderlind@unisg.ch, Aug 2000, to Julia Jan 2016
 #-----------------------------------------------------------------------
 
   n = n1 + n2

@@ -1,6 +1,6 @@
 function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
 #OlsLStar3Ps  LSTAR LS of y on (x0,w), y = (1-G)*b1*x0 + G*b2*x0 + d*w,
-#             G = 1./(1+exp(-g*(z-c)))
+#             G = 1./(1+exp.(-g*(z-c)))
 #
 #
 #
@@ -56,7 +56,7 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
   kw = size(w,2)
 
   if ExciseIt
-    (y,x0,w,z,) = excise4mPs(y,x0,w,z)
+    (y,x0,w,z,) = excise4mPs(y,x0,w,z)   #not changed inside fn.
   end
 
   sseM = fill(NaN,(Ng,Nc))             #calculate sse in loop over g and c values
@@ -95,11 +95,11 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],xwzHat=[])
     vv            = [j;j+k]      #location of b1 and b2 for same x0(:,j)
     R[vv]         = [-1;1]
     bDiff[j]      = (R'b2)[1]
-    tstatbDiff[j] = (R'b2/sqrt(R'Covb2*R))[1]
+    tstatbDiff[j] = (R'b2)[1]/sqrt.(R'Covb2*R)[1]
   end
   slopeDiff = [bDiff tstatbDiff]
 
-  if isempty(xwzHat) || all(isnan(xwzHat))
+  if isempty(xwzHat) || all(isnan.(xwzHat))
     yHat   = Float64[]
     yHatLH = Float64[]
   else                                  #predicted values
@@ -132,7 +132,7 @@ function OlsLStar3PredPs(xwzHat,k,kw,theta,gcKeep)
   w  = xwzHat[:,1+k:k+kw]
   z  = xwzHat[:,end]
 
-  G  = 1./(1+exp(-g*(z-c)))
+  G  = 1./(1+exp.(-g*(z-c)))
   x1 = x0.*repmat(1-G,1,k)
   x2 = x0.*repmat(G,1,k)
   x  = [x1 x2 w]
@@ -165,13 +165,13 @@ function OlsLStar3LossAllPs(par,y,x0,w,z,gcKeep=Float64[],DetailsIt=0)
   (g,c,) = OlsLStar3Par(gcKeep,par,[NaN;NaN])
   (T,k) = size(x0)
 
-  G  = 1./(1+exp(-g*(z-c)))
+  G  = 1./(1+exp.(-g*(z-c)))
   x1 = x0.*repmat(1-G,1,k)
   x2 = x0.*repmat(G,1,k)
   x  = [x1 x2 w]
 
   (b,res,yhat,Covb,R2a,) = OlsPs(y,x)
-  Stdb_ols              = sqrt(diag(Covb))
+  Stdb_ols              = sqrt.(diag(Covb))
   sse                   = sum(res.^2)
   theta                 = [vec(par);b]
 
@@ -180,7 +180,7 @@ function OlsLStar3LossAllPs(par,y,x0,w,z,gcKeep=Float64[],DetailsIt=0)
     S0       = NewEst3Ps(m,0)                                    #ACov(sqrt(T)*mbar)
     D0       = NumJac3Ps(x->OlsLStar3MomCondPs(x,y,x0,w,z,gcKeep),theta,Float64[],3)  #gradient of mbar
     Covtheta = inv(D0)*S0*inv(D0)'/T                        #Cov(theta)
-    Stdtheta = sqrt(diag(Covtheta))
+    Stdtheta = sqrt.(diag(Covtheta))
     Gquant   = collect(linspace(0.01,0.99,99))
     Gquant   = [Gquant quantile(vec(excise(G)),Gquant)]
     gc       = [g c]
@@ -219,7 +219,7 @@ function OlsLStar3MomCondAllPs(theta,y,x0,w,z,gcKeep)   #moment conditions
   #(res,G,g,c,b,x) = OlsLStar3RegFuncPs(theta,y,x0,w,z,gcKeep)
   (g,c,b,_,EstType) = OlsLStar3Par(gcKeep,theta,[NaN;NaN])
 
-  G   = 1./(1+exp(-g*(z-c)))
+  G   = 1./(1+exp.(-g*(z-c)))
   x1  = x0.*repmat(1-G,1,k)
   x2  = x0.*repmat(G,1,k)
   x   = [x1 x2 w]
@@ -260,7 +260,7 @@ end
 #------------------------------------------------------------------------------
 function OlsLStar3Par(gcKeep,theta,gcM)
 
-  if isempty(gcKeep) || all(isnan(gcKeep))       #gcKeep=[] or [NaN,NaN], estimate both g and c
+  if isempty(gcKeep) || all(isnan.(gcKeep))       #gcKeep=[] or [NaN,NaN], estimate both g and c
     g = abs(theta[1])
     c = theta[2]
     b = theta[3:end]
@@ -278,7 +278,7 @@ function OlsLStar3Par(gcKeep,theta,gcM)
     b = theta[2:end]
     EstType = 3
     par0    = gcM[1]
-  elseif all(!isnan(gcKeep))                    #gcKeep=[1.5,-0.75], don't estimate g or c
+  elseif all(broadcast(!,isnan.(gcKeep)))        #gcKeep=[1.5,-0.75], don't estimate g or c
     g = gcKeep[1]
     c = gcKeep[2]
     b = theta

@@ -48,9 +48,9 @@ fnOutput = OlsLStar3Ps(Re_CT,[ones(T,1) SP Ty],Array{Float64}(T,0),true,z,gM,cM,
 
 println("\n","theta is [g;c;b_low;b_high;slopes without regimes]")
 println("[theta Stdtheta]")
-display(round([theta Stdtheta],4))
+display(round.([theta Stdtheta],4))
 
 println("\n","difference of slope (high minus low state), t-stat")
-display(round(slopeDiff,4))
+display(round.(slopeDiff,4))
 println("-----------------------------------------------------")
 

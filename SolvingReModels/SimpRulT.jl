@@ -29,7 +29,7 @@ function SimpRulT(A,B,Q,R,U,bet,n1,n2,F,SigmaXX,x10,cutoff)
   n = n1 + n2
 
   GS = schurfact(eye(n),A)
-  logconA = abs(GS[:beta]) .<= (abs(GS[:alpha])*cutoff) #selecting stable eigenvalues
+  logconA = abs.(GS[:beta]) .<= (abs.(GS[:alpha])*cutoff) #selecting stable eigenvalues
   ordschur!(GS,logconA)                                 #reordering, stable first
   S = GS[:S]
   T = GS[:T]

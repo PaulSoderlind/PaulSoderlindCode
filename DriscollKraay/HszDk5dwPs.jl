@@ -10,7 +10,7 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
 #
 #  Input:    y             TxN matrix with the dependent variable, y(t,i) is for period t, individual i
 #            x             TxK matrix with K factors that are common for all investors, should
-#                          at least contain Tx1 matrix ones(T,1)
+#                          at least contain Tx1 matrix ones(T)
 #            z             TxNxL matrix with L (time-varying) individual characteristics, should
 #                          at least contain TxNx1 array of ones, ones(T,N,1)
 #            yhatQ         (optional) scalar, 1: generate and report fitted values
@@ -38,7 +38,7 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
 #
 #
 #
-#  Uses:     excisePs and HDirProdPs
+#  Uses:     excise1mPs, excise2mPs and HDirProdPs
 #
 #
 #  Notice:  potentially vulnerable to a "slice as view" change (y_t)
@@ -74,7 +74,7 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
       w_t   = ones(N_t)
     elseif ScaleByNtQ == 2
       Nb[t] = N
-      w_t   = vec(wM[t,!vvNaNRow])            #wM[t:t,vvNoNaNRow]'
+      w_t   = vec(wM[t,broadcast(!,vvNaNRow)])            #wM[t:t,vvNoNaNRow]'
     else
       Nb[t] = N
       w_t   = ones(N_t)
@@ -114,7 +114,7 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
     if ScaleByNtQ == 1
       w_t = ones(N_t)
     elseif ScaleByNtQ == 2
-      w_t = vec(wM[t,!vvNaNRow])          #wM[t:t,vvNoNaNRow]'
+      w_t = vec(wM[t,broadcast(!,vvNaNRow)])          #wM[t:t,vvNoNaNRow]'
     else
       w_t = ones(N_t)
     end
@@ -143,14 +143,14 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
 
   zx_1  = inv(xx)
   CovDK = zx_1 * Shat * zx_1'                      #covariance matrix, DK
-  stdDK = sqrt( diag(CovDK) )                      #standard errors, DK
+  stdDK = sqrt.( diag(CovDK) )                      #standard errors, DK
   CovW  = zx_1 * Shatw * zx_1'                     #covariance matrix, White's
-  stdW  = sqrt( diag(CovW) )                       #standard errors, White's
+  stdW  = sqrt.( diag(CovW) )                       #standard errors, White's
   CovDKj = zx_1 * Shatj * zx_1'                    #covariance matrix, DK with lags
-  stdDKj = sqrt( diag(CovDKj) )                    #standard errors, DK with lags
+  stdDKj = sqrt.( diag(CovDKj) )                    #standard errors, DK with lags
 
   if yhatQ
-    yy,   = excisePs([vec(yhat) vec(y)])
+    yy,  = excise1mPs([vec(yhat) vec(y)])
     R2a  = cor(yy[:,1],yy[:,2])^2
   else
     R2a  = Float64[]

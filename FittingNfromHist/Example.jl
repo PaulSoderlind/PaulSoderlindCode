@@ -18,6 +18,10 @@
 
 using Optim, PyPlot
 
+if VERSION >= v"0.5.9"
+  using SpecialFunctions
+end
+
 include("NormalHistLoss.jl")
 
 
@@ -62,14 +66,14 @@ elseif NActiveCat > 2         #if three or more active intervals: N(estimate,est
 else
   parM = fill(NaN,(1,3))
 end
-println("\nmean, std, no. active intervals: ",round(parM,3))
+println("\nmean, std, no. active intervals: ",round.(parM,3))
 #------------------------------------------------------------------------------
 
 function NormPdfPs(y,mu=0,s2=1)
 #NormPdfPs    Returns pdf value of normally distributed (univariate) variables
   s = sqrt(s2)
   z    = (y .- mu)./s
-  pdfy = exp(-0.5*z.^2)./(sqrt(2*pi)*s)   #pdf of y ~ N(mu,s^2)
+  pdfy = exp.(-0.5*z.^2)./(sqrt(2*pi)*s)   #pdf of y ~ N(mu,s^2)
   return pdfy
 end
 #------------------------------------------------------------------------------

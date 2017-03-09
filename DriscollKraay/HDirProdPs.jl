@@ -3,7 +3,7 @@ function HDirProdPs(x,y)
 #              z[i,:] is the Kronecker product of x[i:i,:] and y[i:i,:]
 #
 #
-#  Usage:    z = HDirProdFn(x,y)
+#  Usage:    z = HDirProdPs(x,y)
 #
 #  Input:    x      T x Kx matrix
 #            y      T x Ky matrix
@@ -16,7 +16,7 @@ function HDirProdPs(x,y)
 #             y = [5 6 1;
 #                  7 8 1]
 #
-#             the z = HDirProdFn(x,y) gives
+#             then z = HDirProdPs(x,y) gives
 #
 #             z = [ 5  6  1  10  12  2;
 #                  21 24  3  28  32  4]
@@ -24,11 +24,10 @@ function HDirProdPs(x,y)
 # Paul.Soderlind@unisg.ch, Oct 2015
 #----------------------------------------------------------------------------
 
-  #T = size(x,1)       #rows and columns in x
   Kx = size(x,2)       #columns in x
   Ky = size(y,2)       #columns in y
 
-  z = repmat(y,1,Kx) .* kron(x,ones(1,Ky))
+  z = repmat(y,1,Kx) .* kron(x,ones(Int,1,Ky))  #Int: more general, small perf penalty
 
   return z
 

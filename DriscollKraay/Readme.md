@@ -3,7 +3,7 @@ Readme for DriscollKraay
 
 Julia code for panel regressions with Driscoll-Kraay standard errors
 
-1.  CompareWithHoechle2.jl: example file
+1.  Example.jl: example file
 
 2.  bidaskspread.jld: data from Hoechle 
 

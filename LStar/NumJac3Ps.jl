@@ -28,12 +28,12 @@ function NumJac3Ps(fun::Function,b0,h=[],Method=99)
 
   if isempty(h)
     if any(Method == [1,2])
-      h   = sqrt(eps64)*max(abs(b0),1)
+      h   = sqrt.(eps64)*max.(abs.(b0),1)
       bdown = b0 - h
       bup   = b0 + h
       h     = bup - b0
     else
-      h     = eps64^(1/3)*max(abs(b0),1)
+      h     = eps64^(1/3)*max.(abs.(b0),1)
       bdown = b0 - h
       bup   = b0 + h
       hh    = bup - bdown

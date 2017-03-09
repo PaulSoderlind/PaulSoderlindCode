@@ -3,7 +3,7 @@ Readme for LStar
 
 Julia code for LSTAR regressions
 
-1. LStarTsT.jl: example (try to run it)
+1. Example.jl: example (try to run it)
 
 2. OlsLStar3Ps.jl: main function
 

@@ -28,7 +28,7 @@ function NormalHistLoss(par,Probs,Bounds)
   s2 = par[2]^2
 
   xnorm        = (Bounds-mu)./sqrt(s2)                 #(x-mu)/s
-  TheoryProb_x = 0.5 + 0.5*erf(xnorm/sqrt(2))          #theoretical Pr( z<=x(i) )
+  TheoryProb_x = 0.5 + 0.5*erf.(xnorm/sqrt(2))          #theoretical Pr( z<=x(i) )
 
   TheoryProb_Interval = [ TheoryProb_x[1]                        ;
                           TheoryProb_x[2:n] - TheoryProb_x[1:n-1];
