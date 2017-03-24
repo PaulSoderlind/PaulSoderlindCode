@@ -12,3 +12,6 @@ Julia code for panel regressions with Driscoll-Kraay standard errors
 4.  excise.jl, HDirProdPs.jl and iterationPrintPs.jl are functions used by the main function
 
 5.  DVMS.pdf: a paper using this method
+
+6. The current version has been tested on Julia 0.5.1 and 0.6-pre.alpha.
+
