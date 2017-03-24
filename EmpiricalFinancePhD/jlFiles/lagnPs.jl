@@ -3,7 +3,7 @@ function lagnPs(x,n=1)
 #
 #
 #
-#  Usage:    xlag = lagnPs(x,n) or
+#  Usage:    z    = lagnPs(x,n) or
 #                 = lagnPs(x)
 #
 #  Input:    x     Txk matrix
@@ -27,12 +27,14 @@ function lagnPs(x,n=1)
 
   missings = fill(NaN,(abs(n),k))
   if n < 0                                    #leads
-    x = [ x[1-n:T,:]; missings ]
+    z = [ x[1-n:T,:]; missings ]
+  elseif n == 0                               #no lag or lead
+    z = deepcopy(x)
   elseif n > 0                                #lags
-    x = [ missings; x[1:T-n,:] ]
+    z = [ missings; x[1:T-n,:] ]
   end
 
-  return x
+  return z
 
 end
 #--------------------------------------------------------------------------

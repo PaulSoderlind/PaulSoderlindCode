@@ -36,7 +36,7 @@ function OlsDiagnosticsFn(y,x,u,m=1)
   rho = autocor(u,1:m)
 
   AutoCorrStat = sqrt(T)*rho
-  pval         = 2*(1 - cdf(Normal(0,1),abs(AutoCorrStat)))
+  pval         = 2*(1 - cdf(Normal(0,1),abs.(AutoCorrStat)))
   AutoCorr     = [AutoCorrStat pval]
 
   BPStat       = T*sum(rho.^2,1)
@@ -56,12 +56,12 @@ function OlsDiagnosticsFn(y,x,u,m=1)
   end
 
   (b,res,yhat,Covb,R2a,) = OlsFn(u.^2,psi)   #White's test for heteroskedasticity
-  WhiteStat = T*R2a/(1-R2a)
+  WhiteStat = T*R2a./(1-R2a)
   pval      = 1 - cdf(Chisq(size(psi,2)-1),WhiteStat)
   White     = [WhiteStat pval (size(psi,2)-1)]
 
   (b,res,yhat,Covb,R2a,) = OlsFn(y,x)           #test of regression
-  RegrStat = T*R2a/(1-R2a)
+  RegrStat = T*R2a./(1-R2a)
   pval     = 1 - cdf(Chisq(size(x,2)-1),RegrStat)
   Regr     = [RegrStat pval (size(x,2)-1)]
 
