@@ -69,7 +69,7 @@ end
 
 #------------------------------------------------------------------------------
 function printlnPs(z...)
-#printmat   Subsitute for println by hard coded formatting.
+#printlnPs   Subsitute for println by hard coded formatting.
 #
 #
 #  Input:      z           string, numbers and arrays to print
