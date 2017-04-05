@@ -13,8 +13,6 @@ On the files:
 
 1. The .jl files are functions uses in some of the notebooks
 
-2. Tutorial_00_QuickTour.ipynb gives a very quick overview (aimed at people who already know matlab, python or similar languages)
+2. Tutorial_ChapterNumber_Topic.ipynb are (relatively) short notebooks organised around specific topics.
 
-3. Tutorial_ChapterNumber_Topic.ipynb are (relatively) short notebooks organised around specific topics.
-
-4. The current version is tested on Julia 0.5.1.
+3. The current version is tested on Julia 0.5.1.
