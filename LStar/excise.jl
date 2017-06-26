@@ -6,7 +6,7 @@ function excise(x)
   vv = vec(any(isnan.(x),2))
 
   if any(vv)              #only keep rows with no NaNs
-    vvb = broadcast(!,vv)               #use .~vv in 0.6?
+    vvb = broadcast(!,vv)               #use .!vv in 0.6?
     x = x[vvb,:]                        #use view(x,vvb,:) in the future?
   end
 

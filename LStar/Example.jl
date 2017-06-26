@@ -16,9 +16,9 @@
 
 include("readdlmFixPs.jl")            #CHANGE THESE PATHS to where you put the files
 include("excise.jl")
+include("FindNoNaNPs.jl")
 include("OlsPs.jl")
 include("NewEst3Ps.jl")
-include("NumJac3Ps.jl")
 include("OlsLStar3Ps.jl")
 
 using Optim
@@ -34,23 +34,52 @@ Ty    = x[:,5]                         #treasury return
 T = size(Re_CT,1)
 
 gM = collect(linspace(1,4,15))
-cM = collect(linspace(-1,1,17))
+cM = collect(linspace(-2,3,21))
 
 z = (FXV - mean(FXV))/std(FXV)          #standardised regime variable
 #------------------------------------------------------------------------------
 
-gKeep = [NaN NaN]                       #set to NaN if estimated in NLS, otherwise imposed
-fnOutput = OlsLStar3Ps(Re_CT,[ones(T,1) SP Ty],Array{Float64}(T,0),true,z,gM,cM,gKeep)
-#Any[sse,theta,Stdtheta,Covtheta,b,Stdb_ols,R2a,Gquant,gc,sseM,yHat,slopeDiff,yHatLH]
+gcKeep = [NaN;NaN]                       #(gamma,c) set to NaN if estimated in NLS, otherwise imposed
+#gcKeep = [3.0;NaN]                      #try to uncomment this to restrict gamma to 3
+#gcKeep = [NaN;1.3]                      #or this
 
-(_,theta,Stdtheta,Covtheta,b,Stdb_ols,R2a,_,_,_,_,slopeDiff,_) = fnOutput
+(theta,Stdtheta,fnOutput) = OlsLStar3Ps(Re_CT,[ones(T) SP Ty],Array{Float64}(T,0),true,z,gM,cM,gcKeep)
 
+(Covtheta,slopeDiff,R2a,T,gcHat,G,sseM,sse,b,Stdb_ols) = fnOutput
 
-println("\n","theta is [g;c;b_low;b_high;slopes without regimes]")
+if all(isnan.(gcKeep))
+  println("\n","theta is [g;c;b_low;b_high;(slopes without regimes, if any)]")
+elseif isnan.(gcKeep) == [true;false]
+  println("\n","theta is [g;b_low;b_high;(slopes without regimes, if any)]")
+elseif isnan.(gcKeep) == [false;true]
+  println("\n","theta is [c;b_low;b_high;(slopes without regimes, if any)]")
+end
 println("[theta Stdtheta]")
-display(round.([theta Stdtheta],4))
+display(round.([theta Stdtheta],3))
 
-println("\n","difference of slope (high minus low state), t-stat")
-display(round.(slopeDiff,4))
+println("\n","difference of slope (b, high minus low state), t-stat")
+display(round.(slopeDiff,3))
 println("-----------------------------------------------------")
+
+#------------------------------------------------------------------------------
+
+#Plot of the loss function. Comment out this if you do not have PyPlot installed.
+
+
+using PyPlot
+close("all")
+
+PyPlot.matplotlib[:rc]("mathtext",fontset="stix")
+PyPlot.matplotlib[:rc]("font",family="STIXGeneral",style="normal",size=18)
+fig = figure(figsize=(16,16/1.2))
+ax = gca(projection="3d")
+  surf(gM,cM,sseM',rstride=2,cstride=2,cmap=ColorMap("summer"),alpha=0.8)
+  scatter(gcHat[1],gcHat[2],zs=minimum(sseM),s=200,color="k")
+  ax[:view_init](elev=20.0, azim=10)
+  title("Sum of squared residuals (optimum at dot)")
+  xlabel(L"$\gamma$")
+  ylabel(L"$c$")
+
+#------------------------------------------------------------------------------
+
 
