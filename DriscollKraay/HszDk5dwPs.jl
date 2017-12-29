@@ -55,26 +55,24 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   (T,N) = size(y,1,2)
   K     = size(x,2)
   L     = size(z,3)
-  #KL    = size(x,2)*L
   KL    = sum(vvzx .>0)
 
   msg = " "
-  xx  = 0.0                            #Sum[x(t)*x(t)',t=1:T]
-  xy  = 0.0                            #Sum[x(t)*y(t),t=1:T]
-  Nb  = Array{Int}(T)                  #effective number of obs, after pruning NaNs
+  xx  = zeros(KL,KL)                   #Sum[x(t)*x(t)',t=1:T]
+  xy  = zeros(KL)                      #Sum[x(t)*y(t),t=1:T]
+
+  Nb  = zeros(Int,T)                   #effective number of obs, after pruning NaNs
   for t = 1:T                             #loop over time
-    y_t  = vec(y[t,:])                    #dependent variable, Nx1, works in both 0.4 and 0.5
-    x0_t = x[t:t,:]                       #factors, 1xK (rely on broadcasting of .* below)
-    x_t  = HDirProdPs(reshape(z[t,:,:],N,L),x0_t)  #effective regressors, z_t is NxL, x_t is 1xK
+    x_t  = HDirProdPs(reshape(z[t,:,:],N,L),x[t:t,:])  #effective regressors, z_t is NxL, x_t is 1xK
     x_t  = x_t[:,vvzx]
-    (y_t,x_t,vvNaNRow) = excise2mPs(y_t,x_t)   #pruning NaNs
+    (y_t,x_t,vvNaNRow) = excise2mPs(y[t,:],x_t)   #pruning NaNs
     N_t  = size(y_t,1)
     if ScaleByNtQ == 1
       Nb[t] = N_t
       w_t   = ones(N_t)
     elseif ScaleByNtQ == 2
       Nb[t] = N
-      w_t   = vec(wM[t,broadcast(!,vvNaNRow)])            #wM[t:t,vvNoNaNRow]'
+      w_t   = wM[t,.!vvNaNRow]
     else
       Nb[t] = N
       w_t   = ones(N_t)
@@ -82,8 +80,8 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
     if !isempty(y_t)                     #don't accumulate [] to xx and xy (generates [])
       y_t = y_t .* w_t                   #put weights on observation i (in t), y_t .* w_t
       scale!(w_t,x_t)                    #x_t = x_t .* w_t
-      xx  = xx + x_t'x_t/Nb[t]
-      xy  = xy + x_t'y_t/Nb[t]
+      xx = xx + x_t'x_t/Nb[t]
+      xy = xy + x_t'y_t/Nb[t]
     end
     msg = IterationPrintPs(t,T,msg,100)
   end
@@ -103,18 +101,16 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
   omegajDK = zeros(KL,KL,m)             #DK, lags 1 to m
   h_tLag   = zeros(m,KL)                #lag1;lag2;...,lagm
   for t = 1:T                           #loop over time
-    y_t    = vec(y[t,:])
-    x0_t   = x[t:t,:]
-    x_t    = HDirProdPs(reshape(z[t,:,:],N,L),x0_t)
+    x_t    = HDirProdPs(reshape(z[t,:,:],N,L),x[t:t,:])
     x_t    = x_t[:,vvzx]
     yhat_t = x_t*theta
-    r_t    = y_t - yhat_t
+    r_t    = y[t,:] - yhat_t
     (r_t,x_t,vvNaNRow) = excise2mPs(r_t,x_t)
     N_t = size(r_t,1)
     if ScaleByNtQ == 1
       w_t = ones(N_t)
     elseif ScaleByNtQ == 2
-      w_t = vec(wM[t,broadcast(!,vvNaNRow)])          #wM[t:t,vvNoNaNRow]'
+      w_t = wM[t,.!vvNaNRow]
     else
       w_t = ones(N_t)
     end
