@@ -24,7 +24,7 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],NWm=0)
 #                                and the second k elements for z=Inf
 #                                d are coefficiets for w (no regimes)
 #            Stdtheta     "", standard errors of theta
-#            fnOutput     heterogeneous array with
+#            fnOutput     named tuple with
 #              [1]  Covtheta     cov(theta)
 #              [2]  slopeDiff    matrix, [b tstat]
 #              [3]  R2a          scalar, coefficient of determination
@@ -102,7 +102,10 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],NWm=0)
   end
   slopeDiff = cat(bDiff,tstatbDiff,dims=2)
 
-  fnOutput = [Covtheta,slopeDiff,R2a,T,gcHat,G,sseM,sse,b,Stdb_ols]
+  #fnOutput = [Covtheta,slopeDiff,R2a,T,gcHat,G,sseM,sse,b,Stdb_ols]
+  fnOutput = (Covtheta=Covtheta,slopeDiff=slopeDiff,R2a=R2a,T=T,
+              gcHat=gcHat,G=G,sseM=sseM,sse=sse,b=b,Stdb_ols=Stdb_ols)
+
   return theta, Stdtheta, fnOutput
 
 end

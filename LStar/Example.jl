@@ -45,8 +45,6 @@ gcKeep = [NaN;NaN]                       #(gamma,c) set to NaN if estimated in N
 w = zeros(T,0)
 (theta,Stdtheta,fnOutput) = OlsLStar3Ps(Re_CT,[ones(T) SP Ty],w,true,z,gM,cM,gcKeep)
 
-(Covtheta,slopeDiff,R2a,T,gcHat,G,sseM,sse,b,Stdb_ols) = fnOutput
-
 if all(isnan.(gcKeep))
   println("\n","theta is [g;c;b_low;b_high;(slopes without regimes, if any)]")
 elseif isnan.(gcKeep) == [true;false]
@@ -58,13 +56,12 @@ println("[theta Stdtheta]")
 display(round.([theta Stdtheta],digits=3))
 
 println("\n","difference of slope (b, high minus low state), t-stat")
-display(round.(slopeDiff,digits=3))
+display(round.(fnOutput.slopeDiff,digits=3))
 println("-----------------------------------------------------")
 
 #------------------------------------------------------------------------------
 
 #Plot of the loss function. Comment out this if you do not have PyPlot installed.
-
 
 using PyPlot
 close("all")
@@ -74,8 +71,8 @@ PyPlot.matplotlib[:rc]("font",family="STIXGeneral",style="normal",size=18)
 PyPlot.PyObject(PyPlot.axes3D)          #to activate mplot3
 fig = figure(figsize=(16,16/1.2))
 ax = gca(projection="3d")
-  surf(gM,cM,copy(sseM'),rstride=2,cstride=2,cmap=ColorMap("summer"),alpha=0.8)
-  scatter(gcHat[1],gcHat[2],zs=minimum(sseM),s=200,color="k")
+  surf(gM,cM,copy(fnOutput.sseM'),rstride=2,cstride=2,cmap=ColorMap("summer"),alpha=0.8)
+  scatter(fnOutput.gcHat[1],fnOutput.gcHat[2],zs=minimum(fnOutput.sseM),s=200,color="k")
   ax[:view_init](elev=20.0, azim=10)
   title("Sum of squared residuals (optimum at dot)")
   xlabel(L"$\gamma$")
