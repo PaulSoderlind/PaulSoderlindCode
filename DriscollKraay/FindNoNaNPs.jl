@@ -28,11 +28,7 @@ function FindNoNaNPs(Keepdim,x...)
 
   vvM = falses(T,xNum)
   for i = 1:xNum                             #loop over inputs
-    if VERSION < v"0.7-"
-      vvM[:,i] = any(isnan.(x[i]),dims=dims)
-    else
-      vvM[:,i] = any(isnan.(x[i]) .| ismissing.(x[i]),dims=dims)
-    end
+    vvM[:,i] = any(isnan.(x[i]) .| ismissing.(x[i]),dims=dims)
   end
 
   vvb = vec(.!any(vvM,dims=2))      #rows witout NaN/missing in any of the x matrices

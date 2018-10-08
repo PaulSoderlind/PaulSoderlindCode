@@ -56,9 +56,9 @@ display(round.([b Stdb b./Stdb],digits=4))
 println("\nHszDk5dwPs, effectively weighting all obs equally")
 x = ones(T)
 z = cat(aVol,Size,TRMS2,TRMS,ones(T,N),dims=3)
-fnOutput = HszDk5dwPs(BA,x,z,false,8,0)
-theta    = fnOutput[1]
-stdDKj   = fnOutput[9]
+fnO = HszDk5dwPs(BA,x,z,false,8,0)
+theta    = fnO.theta
+stdDKj   = fnO.stdDKj
 
 println("theta, std and t-stat")
 display(round.([theta stdDKj theta./stdDKj],digits=4))
@@ -69,9 +69,9 @@ println("Compare the results to Table 2 in Hoechle, 2007, 'Robust Standard Error
 println("\nHszDk5dwPs, effectively weighting all periods equally, irrespective of number of obs")
 x = ones(T,1)
 z = cat(aVol,Size,TRMS2,TRMS,ones(T,N),dims=3)
-fnOutput = HszDk5dwPs(BA,x,z,false,8,true)
-theta    = fnOutput[1]
-stdDKj   = fnOutput[9]
+fnO = HszDk5dwPs(BA,x,z,false,8,true)
+theta    = fnO.theta
+stdDKj   = fnO.stdDKj
 
 println("theta, std and t-stat")
 display(round.([theta stdDKj theta./stdDKj],digits=4))
