@@ -72,7 +72,7 @@ ypii_Simp = [x[:,2]  (4*(1-w)*x[:,3]+4*w*x[:,5]) uu]
 println("\nSimple rule: impulse response to a one std of price shock (y,pi,i)")
 display(round.([1:Tbig ypii_Simp],digits=3))
 
-#comment out this is PyPlot is not installed
+#comment out this if PyPlot is not installed
 figure()
   plot(1:Tbig,ypii_Simp)
   title("Simple rule: impulse response to a one std of price shock")
@@ -92,7 +92,7 @@ ypii_Commit = [x[:,2] (4*(1-w)*x[:,3]+4*w*x[:,5]) uu]
 println("\nCommitment: impulse response to a one std of price shock (y,pi,i)")
 display(round.([1:Tbig ypii_Commit],digits=3))
 
-#comment out this is PyPlot is not installed
+#comment out this if PyPlot is not installed
 figure()
   plot(1:Tbig,ypii_Commit)
   title("Commitment: impulse response to a one std of price shock")
@@ -113,7 +113,7 @@ ypii_Disc = [x[:,2] (4*(1-w)*x[:,3]+4*w*x[:,5]) uu]
 println("\nDiscretion: impulse response to a one std of price shock (y,pi,i)")
 display(round.([1:Tbig ypii_Disc],digits=3))
 
-#comment out this is PyPlot is not installed
+#comment out this if PyPlot is not installed
 
 figure()
   plot(1:Tbig,ypii_Disc)
