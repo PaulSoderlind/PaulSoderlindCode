@@ -87,12 +87,12 @@ println("\nImplied spot rates (NSXbR): ",round.(100*shx[[1:3;end-3:end]],digits=
 n    = length(c)
 ytmx = fill(NaN,n)
 for i = 1:n                #loop over bonds
+  local ti,s,f,d,Qx
   ti      = collect(mod(tm[i],1):tm[i])
   (s,f,d) = BondNSxPs(ti,NSXbR[1],NSXbR[2],NSXbR[3],NSXbR[4],NSXbR[5],NSXbR[6])
   Qx      = sum(d.*c[i]) + d[end]
-  println(ti)
-  ytmx_i  = BondYieldToMatPs(Qx,c[i],ti,1,1,0.05,1e-7)
-  ytmx[i] = ytmx_i[1]
+  #println(ti)
+  ytmx[i] = BondYieldToMatPs(Qx,c[i],ti,1,1,0.05,1e-7)[1]
 end
 println("\nImplied spot rates (NSXbR): ",round.(100*ytmx,digits=3))
 #----------------------------------------------------------------------------
