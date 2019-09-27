@@ -14,4 +14,4 @@ Julia code for LSTAR regressions
 5. CarryTradeCRS201002.pdf: paper using this approach, published as 
 Charlotte Christiansen, Angelo Ranaldo and Paul Söderlind, "The Time-Varying Systematic Risk of Carry Trade Strategies," Journal of Financial and Quantitative Analysis, 46, 1107-1125, 2011. 
 
-6. The current version has been tested on Julia 0.7.0 and 1.0.0.
+6. The current version has been tested on Julia 1.0.0 - 1.2.0.

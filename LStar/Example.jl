@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------
-#  LStarTest.jl
+#  Example.jl
 #
 #  Test of LSTAR code used in "Carry Trade" paper.
 #
@@ -66,14 +66,12 @@ println("-----------------------------------------------------")
 using PyPlot
 close("all")
 
-PyPlot.matplotlib[:rc]("mathtext",fontset="stix")
-PyPlot.matplotlib[:rc]("font",family="STIXGeneral",style="normal",size=18)
 PyPlot.PyObject(PyPlot.axes3D)          #to activate mplot3
 fig = figure(figsize=(16,16/1.2))
 ax = gca(projection="3d")
   surf(gM,cM,copy(fnOutput.sseM'),rstride=2,cstride=2,cmap=ColorMap("summer"),alpha=0.8)
   scatter(fnOutput.gcHat[1],fnOutput.gcHat[2],zs=minimum(fnOutput.sseM),s=200,color="k")
-  ax[:view_init](elev=20.0, azim=10)
+  ax.view_init(elev=20.0, azim=10)
   title("Sum of squared residuals (optimum at dot)")
   xlabel(L"$\gamma$")
   ylabel(L"$c$")
