@@ -2,7 +2,7 @@
 #  Example.jl
 #
 #  Test program for the functions in ComItAlg.jl, DiscAlg, and SimpRulT.jl.
-#  The program also uses Var1SimPs to calculate impulse response functions.
+#  The program also uses VAR1SimPs to calculate impulse response functions.
 #
 #  The program uses a very simplified version of the model in
 #  Fuhrer, J. C. (1997), "Inflation/Output Variance Trade-Offs and Optimal
@@ -21,7 +21,7 @@ using PyPlot                        #comment out this is PyPlot is not installed
 
 using LinearAlgebra
 include("Fuhrer1.jl")
-include("Var1SimPs.jl")
+include("VAR1SimPs.jl")
 include("SimpRulT.jl")
 include("ComitAlg.jl")
 include("DiscAlg.jl")
@@ -62,7 +62,7 @@ SigmaXX = diagm(0=>[Varep,Varey,0])  #covariance matrix of shocks
 (M_Simp,C_Simp,J0) = SimpRulT(A,B,Q,R,U,bet,n1,n2,F,SigmaXX,x10,1.0)
 
 
-x1 = Var1SimPs(M_Simp,Shock0,Tbig)     #VAR of x1(t)
+x1 = VAR1SimPs(M_Simp,Shock0,Tbig)     #VAR of x1(t)
 x2 = x1*C_Simp'                        #x2(t)
 x  = [x1 x2]                           #x(t) = [x1(t),x2(t)]
 uu = -x*F'                             #u(t)
@@ -83,7 +83,7 @@ figure()
 (M_Commit,C_Commit) = ComItAlg(A,B,Q,R,U,bet,n1,n2,1.0)
 
 
-k      = Var1SimPs(M_Commit,[Shock0;zeros(2)],Tbig) #VAR of x1(t),p2(t)
+k      = VAR1SimPs(M_Commit,[Shock0;zeros(2)],Tbig) #VAR of x1(t),p2(t)
 lambda = k*C_Commit'                          #x2(t),u(t),p1(t)
 uu     = lambda[:,n2+1:n2+1]                  #u(t)
 x      = [k[:,1:n1] lambda[:,1:n2]]           #x(t) = [x1(t),x2(t)]
@@ -104,7 +104,7 @@ println("\nPlease wait, discretionary case takes some time to solve")
 (M_Disc,C_Disc,V,F) = DiscAlg(A,B,Q,R,U,bet,n1,n2,Matrix(1.0I,n1,n1),zeros(n2,n1),
                                [1e-1;1e-5],0,1,0,1,0,1e+4)
 
-x1 = Var1SimPs(M_Disc,Shock0,Tbig)    #VAR of x1(t)
+x1 = VAR1SimPs(M_Disc,Shock0,Tbig)    #VAR of x1(t)
 x2 = x1*C_Disc'                        #x2(t)
 x  = [x1 x2]                           #x(t) = [x1(t),x2(t)]
 uu = -x1*F'                            #u(t)

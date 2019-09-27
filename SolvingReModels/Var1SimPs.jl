@@ -1,10 +1,10 @@
-function Var1SimPs(A,epsilon,T,x0=0.0)
-#Var1SimPs   Calculates impulse response function of a VAR(1) system.
+function VAR1SimPs(A,epsilon,T,x0=0.0)
+#VAR1SimPs   Calculates impulse response function of a VAR(1) system.
 #
 #             x(t) = A * x(t-1) +  epsilon(t), where x(t) is nx1
 #
-#  Usage:     xM = Var1SimPs(A,epsilon,T,x0) or
-#                = Var1SimPs(A,epsilon,T)
+#  Usage:     xM = VAR1SimPs(A,epsilon,T,x0) or
+#                = VAR1SimPs(A,epsilon,T)
 #
 #  Input:     A             nxn VAR(1) matrix, see above
 #             epsilon       nx1 or 1xn vector of shocks in inital period, or Txn
