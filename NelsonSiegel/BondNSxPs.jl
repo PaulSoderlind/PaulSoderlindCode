@@ -1,5 +1,5 @@
 function BondNSxPs(m,b0,b1,b2,tau,b3=0.0,tau2=1.0)
-#BondNS2xPs    Extended Nelson and Siegel (1987) spot rate, forward rate, and discount function
+#BondNSxPs    Extended Nelson and Siegel (1987) spot rate, forward rate, and discount function
 #
 #
 #
@@ -93,14 +93,8 @@ function BondNSxEstPs(par0,Q,tm,c,s0,ytmLoss=0,weight=1.0)
 
   Qtc = [Q tm c]
 
-  if length(par0) == 4          #standard Nelson-Siegel
-    if !isempty(s0)             #b1 = s0 - b0 is then imposed by BondNSxLossPs
-      par0 = par0[[1;3;4]]
-    end
-  elseif length(par0) == 6      #extended Nelson-Siegel
-    if !isempty(s0)             #b1 = s0 - b0 is imposed by BondNSxLossPs
-      par0 = par0[[1;3;4;5;6]]
-    end
+  if in(length(par0),[4,6]) && !isempty(s0)
+      par0 = deleteat!(par0,2)   #b1 = s0 - b0 is imposed by BondNSxLossPs
   end
 
   Sol = optimize(b->BondNSxLossPs(b,Qtc,s0,ytmLoss,weight),par0)
@@ -111,19 +105,15 @@ function BondNSxEstPs(par0,Q,tm,c,s0,ytmLoss=0,weight=1.0)
   end
 
   if length(NSb) == 3
-    NSb[[1;3]] = abs.(NSb[[1;3]])
+    NSb[[1,3]] = abs.(NSb[[1,3]])
+    NSb        = [NSb[1]; s0-NSb[1]; NSb[2:3]]
   elseif length(NSb) == 4
-    NSb[[1;4]] = abs.(NSb[[1;4]])
+    NSb[[1,4]] = abs.(NSb[[1,4]])
   elseif length(NSb) == 5
-    NSb[[1;3;5]] = abs.(NSb[[1;3;5]])
-  elseif length(NSb) == 6
-    NSb[[1;4;6]] = abs.(NSb[[1;4;6]])
-  end
-
-  if length(NSb) == 3          #standard NS with restriction
-    NSb = [NSb[1]; s0-NSb[1]; NSb[2:3]]
-  elseif length(NSb) == 5      #extended NS with restriction
+    NSb[[1,3,5]] = abs.(NSb[[1,3,5]])
     NSb = [NSb[1]; s0-NSb[1]; NSb[2:5]]
+  elseif length(NSb) == 6
+    NSb[[1,4,6]] = abs.(NSb[[1,4,6]])
   end
 
   return NSb
@@ -162,11 +152,8 @@ function BondNSxLossPs(b,Qtc,s0,ytmLoss=0,weight=1.0)
 #
 #------------------------------------------------------------------------------
 
-  Q  = Qtc[:,1]           #data on bond prices
-  tm = Qtc[:,2]           #data on time to maturity, fraction of years
-  c  = Qtc[:,3]           #data on coupons
-
-  n = length(c)           #number of bonds
+  (Q,tm,c) = [Qtc[:,i] for i=1:3]       #data on bond prices, time to maturity, coupons
+  n        = length(c)           #number of bonds
 
   if length(b) == 3             #standard Nelson-Siegel with restriction b1 = s0-b0
     (b0,b1,b2,tau,b3,tau2) = (abs(b[1]),s0-abs(b[1]),b[2],abs(b[3]),0.0,1.0)
@@ -180,14 +167,11 @@ function BondNSxLossPs(b,Qtc,s0,ytmLoss=0,weight=1.0)
 
   QNS = fill(NaN,n)
   for i = 1:n                            #loop over bonds
-    ti  = collect(mod(tm[i],1):tm[i])    #vector for coupon stream
-    vv0 = ti .> 0                        #get rid of zero time to coupon payment
-    ti  = ti[vv0]
-    (_,_,d) = BondNSxPs(ti,b0,b1,b2,tau,b3,tau2)  #NSx: spot, forward, discount fn
-    QNS[i]  = sum(d.*c[i]) + d[end]               #fitted bond price
+    ti     = filter(z->z>0,mod(tm[i],1):tm[i])      #time to coupon payments, >0 only
+    d      = BondNSxPs(ti,b0,b1,b2,tau,b3,tau2)[3]  #NSx: spot, forward, discount fn
+    QNS[i] = sum(d.*c[i]) + d[end]                  #fitted bond price
     if ytmLoss == 1
-      QNS_i = BondYieldToMatPs(QNS[i],c[i],ti,1,1,0.05,1e-7)  #fitted ytm
-      QNS[i] = QNS_i  #fitted ytm
+      QNS[i] = BondYieldToMatPs(QNS[i],c[i],ti,1,1,0.05,1e-7)  #fitted ytm
     end
   end
   Loss = 1.0 + 100*sum( weight.*(QNS - Q).^2 )  #weighted sum of squared deviations of fitted from actual
