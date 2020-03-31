@@ -5,8 +5,7 @@ function Fuhrer1(a1,ap,Varey,w,gamm,Varep,Dbig,qy,qpi,qf,bet)
 #  Purpose:   Generate A,B,K,Q,U, and R from parameter values of simplified
 #             Fuhrer model.
 #
-#  Usage:     (A,B,K,Q,U,R) =
-#              Fuhrer1(a1,ap,Varey,w,gamm,Varep,Dbig,qy,qpi,qf,bet)
+#  Usage:     (A,B,K,Q,U,R) = Fuhrer1(a1,ap,Varey,w,gamm,Varep,Dbig,qy,qpi,qf,bet)
 #
 #  The period loss function is
 #
@@ -23,7 +22,7 @@ function Fuhrer1(a1,ap,Varey,w,gamm,Varep,Dbig,qy,qpi,qf,bet)
 #
 #
 #
-#  Paul Soderlind, Paul.Soderlind@hhs.se, 20 August 1997, to MatLab Aug 2000
+#  Paul Soderlind, 20 August 1997
 #----------------------------------------------------------------------------
 
                              #model->general setup
@@ -49,10 +48,11 @@ function Fuhrer1(a1,ap,Varey,w,gamm,Varep,Dbig,qy,qpi,qf,bet)
          0  0  4*(1-w)   0   4*w    0;
          0  0  0         0   0      1  ]
 
-  Wbig = K'Matrix(Diagonal([qy;qpi;qf]))*K
-  Q = Wbig[1:5,1:5]
-  U = Wbig[1:5,6]
-  R = Wbig[6,6]
+  Wbig = K'Diagonal([qy;qpi;qf])*K
+
+  Q    = Wbig[1:5,1:5]
+  U    = Wbig[1:5,6]
+  R    = Wbig[6,6]
 
   return A,B,K,Q,U,R
 

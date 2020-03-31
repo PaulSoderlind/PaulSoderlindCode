@@ -17,7 +17,6 @@
 #------------------------------------------------------------------------------
 
 using Optim, SpecialFunctions, Statistics
-
 include("HistogramFitfn.jl")         #functions used
 
 
@@ -68,6 +67,7 @@ println("\n[mean,std]=$(round.(parM[1:2]',digits=3)), no. active intervals: $(pa
 #Comment out this if you do not have PyPlot installed.
 
 using PyPlot
+#PyPlot.svg(true)           #for ipynb notebooks
 close("all")
 
 if NActiveCat == 1                           #assumed triangular dist
@@ -80,7 +80,7 @@ if NActiveCat == 1                           #assumed triangular dist
     xlim(-2,6)
     title("Histogram and assumed triangular distribution")
     plot(y,pdfy)
-    display(gcf())
+    #display(gcf())          #uncomment in Atom/Juno
 elseif NActiveCat >= 2                           #fitted N(mu,s^2)
   y    = range(-2,stop=6,length=101)
   pdfy = NormPdfPs.(y,parM[1],parM[2]^2)
@@ -89,7 +89,7 @@ elseif NActiveCat >= 2                           #fitted N(mu,s^2)
     xlim(-2,6)
     title("Histogram and fitted \$N(\\mu,\\sigma^2)\$")
     plot(y,pdfy)
-    display(gcf())
+    #display(gcf())          #uncomment in Atom/Juno
 end
 
 #-------------------------------------------------------------------------------

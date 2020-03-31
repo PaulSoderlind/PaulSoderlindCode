@@ -100,6 +100,7 @@ println("\nImplied ytm (NSXbR): ",round.(100*ytmx,digits=3))
 #Comment out this if you do not have PyPlot installed.
 
 using PyPlot
+#PyPlot.svg(true)           #for ipynb notebooks
 close("all")
                                        #plotting
 figure()
@@ -109,8 +110,7 @@ figure()
   legend(["Coupon rate","Yield to maturity","Estimated spot rate",
          "Estimated forward rate","Estimated yield to maturity"],loc=1)
   ylim(0.04,0.14)
-  display(gcf())
-
+  #display(gcf())            #uncomment in Atom/Juno
 #----------------------------------------------------------------------------
 
 println("done")

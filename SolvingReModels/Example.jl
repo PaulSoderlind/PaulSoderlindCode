@@ -17,8 +17,6 @@
 #  Paul Soderlind (Paul.Soderlind@unisg.ch), 20 June 2000, to Julia Jan 2016
 #----------------------------------------------------------------------------
 
-using PyPlot                        #comment out this is PyPlot is not installed
-
 using LinearAlgebra
 include("Fuhrer1.jl")
 include("VAR1SimPs.jl")
@@ -28,33 +26,21 @@ include("DiscAlg.jl")
 #-----------------------------------------------------------------------
 
                                #simplified Fuhrer model, parameter values
-a1    = 0.85                   #IS equation
-ap    = -0.41
-Varey = 0.84^2
+(a1,ap,Varey)  = (0.85,-0.41,0.84^2)   #IS equation
+(w,gamm,Varep) = (0.65,0.002,0.19^2)   #contracting equation
+Dbig = 40                              #arbitrage condition
+(qy,qpi,qf,bet) = (1,1,0.5,0.99)       #Loss function
 
-w     = 0.65                   #contracting equation
-gamm  = 0.002
-Varep = 0.19^2
-
-Dbig  = 40                     #arbitrage condition
-
-qy    = 1                      #Loss function
-qpi   = 1
-qf    = 0.5
-bet  = 0.99
                                 #Parameters -> system matrices
 (A,B,K,Q,U,R) = Fuhrer1(a1,ap,Varey,w,gamm,Varep,Dbig,qy,qpi,qf,bet)
-n1 = 3
-n2 = 2
-k  = 1
+(n1,n2,K)     = (3,2,1)
 
 Tbig   = 12                       #periods to simulate in VAR
 Shock0 = [sqrt(Varep);zeros(2)]   #Impulse response wrt ep
 #-----------------------------------------------------------------------
-                                  #SIMPLE RULE, u(t)=-Fx(t)
 
-Fy  = 0.5     #Simple decision rule: i(t) = = Fy*y(t) + Fpi*[p(t)-p(t-1)]
-Fpi = 1.2
+                         #SIMPLE RULE, u(t)=-Fx(t)
+(Fy,Fpi) = (0.5,1.2)     #Simple decision rule: i(t) = = Fy*y(t) + Fpi*[p(t)-p(t-1)]
 F   = [0  -Fy  -Fpi*4*(1-w)  0  -Fpi*4*w ]
 
 x10 = zeros(n1)                      #initial state vector
@@ -72,14 +58,19 @@ ypii_Simp = [x[:,2]  (4*(1-w)*x[:,3]+4*w*x[:,5]) uu]
 println("\nSimple rule: impulse response to a one std of price shock (y,pi,i)")
 display(round.([1:Tbig ypii_Simp],digits=3))
 
-#comment out this if PyPlot is not installed
+#---------------------------------------
+#plotting, comment out this if PyPlot is not installed
+
+using PyPlot
+#PyPlot.svg(true)           #for ipynb notebooks
 figure()
   plot(1:Tbig,ypii_Simp)
   title("Simple rule: impulse response to a one std of price shock")
   legend(["Output","Inflation","Short interest rate"])
+  #display(gcf())            #uncomment in Atom/Juno
 #-----------------------------------------------------------------------
-                                  #COMMITMENT
 
+                         #COMMITMENT
 (M_Commit,C_Commit) = ComItAlg(A,B,Q,R,U,bet,n1,n2,1.0)
 
 
@@ -92,15 +83,18 @@ ypii_Commit = [x[:,2] (4*(1-w)*x[:,3]+4*w*x[:,5]) uu]
 println("\nCommitment: impulse response to a one std of price shock (y,pi,i)")
 display(round.([1:Tbig ypii_Commit],digits=3))
 
-#comment out this if PyPlot is not installed
+#---------------------------------------
+#plotting, comment out this if PyPlot is not installed
+
 figure()
   plot(1:Tbig,ypii_Commit)
   title("Commitment: impulse response to a one std of price shock")
   legend(["Output","Inflation","Short interest rate"])
+  #display(gcf())            #uncomment in Atom/Juno
 #-----------------------------------------------------------------------
-                                 #DISCRETION
 
-println("\nPlease wait, discretionary case takes some time to solve")
+                         #DISCRETION
+println("\nPlease wait, the discretionary case takes some time to solve")
 (M_Disc,C_Disc,V,F) = DiscAlg(A,B,Q,R,U,bet,n1,n2,Matrix(1.0I,n1,n1),zeros(n2,n1),
                                [1e-1;1e-5],0,1,0,1,0,1e+4)
 
@@ -113,11 +107,11 @@ ypii_Disc = [x[:,2] (4*(1-w)*x[:,3]+4*w*x[:,5]) uu]
 println("\nDiscretion: impulse response to a one std of price shock (y,pi,i)")
 display(round.([1:Tbig ypii_Disc],digits=3))
 
-#comment out this if PyPlot is not installed
-
+#---------------------------------------
+#plotting, comment out this if PyPlot is not installed
 figure()
   plot(1:Tbig,ypii_Disc)
   title("Discretion: impulse response to a one std of price shock")
   legend(["Output","Inflation","Short interest rate"])
+  #display(gcf())            #uncomment in Atom/Juno
 #-----------------------------------------------------------------------
-
