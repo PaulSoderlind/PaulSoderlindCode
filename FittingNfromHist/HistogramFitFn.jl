@@ -1,5 +1,6 @@
 """
     NormalHistLoss
+
 Create loss function from observed histogram and fitted probabilities from normal distribution.
 
 # Notice
@@ -9,17 +10,16 @@ so there are n+1 categories (and therefore probabilities)
 
 Notice: both the lowest and the highest intervals are open
 
-Paul Soderlind (Paul.Soderlind@hhs.se), 10 February 2000, to Julia Dec 2016
+Paul Soderlind, February 2000, to Julia Dec 2016
+
 """
 function NormalHistLoss(par,Probs,Bounds)
 
-  n = length(Bounds)                        #n bounds, n+1 categories
+  n       = length(Bounds)                  #n bounds, n+1 categories
+  (mu,s2) = (par[1],par[2]^2)               #square to avoid s<0
 
-  mu = par[1]
-  s2 = par[2]^2
-
-  xnorm        = (Bounds.-mu)./sqrt(s2)                 #(x-mu)/s
-  TheoryProb_x = 0.5 .+ 0.5*erf.(xnorm/sqrt(2))          #theoretical Pr( z<=x(i) )
+  xnorm        = (Bounds.-mu)./sqrt(s2)                  #(x-mu)/s
+  TheoryProb_x = 0.5 .+ 0.5*erf.(xnorm/sqrt(2))          #theoretical Pr( z<=x[i] )
 
   TheoryProb_Interval = [ TheoryProb_x[1]                        ;
                           TheoryProb_x[2:n] - TheoryProb_x[1:n-1];
@@ -34,21 +34,29 @@ end
 
 """
     NormPdfPs
+
 Pdf value of a normally distributed variable
+
 """
 function NormPdfPs(x,mu=0,s2=1)
-  s = sqrt(s2)
+
+  s    = sqrt(s2)
   z    = (x - mu)/s
   pdfx = exp(-0.5*z^2)/(sqrt(2*pi)*s)
+
   return pdfx
+
 end
 #----------------------------------------------------------------------------
 
 """
   TriangularPdfPs
-Pdf value of a triangularly distributed variable over (a,b) with mode c.
+
+Pdf value of a triangularly distributed variable over (a,b) with mode c
+
 """
 function TriangularPdfPs(x,a,b,c)
+
   if (x<a) || (x>b)     #outside (a,b)
     pdfx = 0
   elseif a <= x < c
@@ -56,8 +64,10 @@ function TriangularPdfPs(x,a,b,c)
   elseif y == c
     pdfx = 2/(b-a)
   else
-     pdfx = 2*(b-x)/((b-a)*(b-c))
+    pdfx = 2*(b-x)/((b-a)*(b-c))
   end
+
   return pdfx
+
 end
 #------------------------------------------------------------------------------
