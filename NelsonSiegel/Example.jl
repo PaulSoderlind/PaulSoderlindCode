@@ -12,10 +12,11 @@
 #  Paul.Soderlind@unisg.ch, April 2002, to Julia Nov 2015
 #------------------------------------------------------------------------------
 
-using Optim
+using Dates, Optim
 
-include("BondPricePs.jl")
-include("BondNSxPs.jl")
+include("jlFiles/BondPricePs.jl")
+include("jlFiles/BondNSxPs.jl")
+include("jlFiles/printmat.jl")
 
 
 ytmLoss  = 0           #0: mimimize squared price errors: 1: minimize squared ytm errors
@@ -35,6 +36,8 @@ tm = [ 0.00274;  0.21096;   0.46027;   0.88219;   1.67397;   3.06849;
 #interest rates.  Bills: simple rates in %/yr; bonds: yield to maturity in %/yr
 y  = [ 7.75;     6.835;    6.655;     6.41;      6.215;     6.195;
        6.41;     6.755;    7.01;      7.21;      7.325 ]
+
+n = length(y)       #number of bonds
 #----------------------------------------------------------------------------
 
 #transform the data
@@ -45,56 +48,55 @@ y  = y/100
 vvc    = c .== 0                #if bill, change from simple to effective rate
 y[vvc] = (1 .+ tm[vvc].*y[vvc]).^(1.0./tm[vvc]) .- 1
 
-pdat = fill(NaN,length(y))         #calculate bond prices
-for i = 1:length(y)
+P = fill(NaN,length(y))         #calculate bond prices
+for i = 1:n
   local ti
-  ti      = mod(tm[i],1):tm[i]
-  pdat[i] = BondPricePs(y[i],c[i],ti)
+  ti   = mod(tm[i],1):tm[i]
+  P[i] = BondPricePs(y[i],c[i],ti)
 end
 #----------------------------------------------------------------------------
 
-parX0 = [0.1045;-0.03;-0.0562;1.2;0;0.5]           #starting guess
-tmFig = range(1e-8,stop=maximum(tm),length=1001)   #maturities to plot
-(shx,fhx,dhx) = BondNSxPs(tmFig,parX0[1],parX0[2],parX0[3],parX0[4],parX0[5],parX0[6])
-
-println("\nImplied spot rates (test): ",round.(100*shx[[1:3;end-3:end]],digits=3))
-#----------------------------------------------------------------------------
-
-#estimating parameters in extended Nelson&Siegel model
+#estimating parameters in extended Nelson&Siegel model, restricted so b0 + b1 = log(1+y[1])
 
 parX0 = [0.1045;-0.03;-0.0562;1.2;0;0.5]       #starting guess
 
-if ytmLoss == 1
+if ytmLoss == 1                                #loss(ytm)
   NSXbR = BondNSxEstPs(parX0,y,tm,c,log(1+y[1]),1)
 else
-  if weightLoss == 1
-    NSXbR = BondNSxEstPs(parX0,pdat,tm,c,log(1+y[1]),0,1.0./tm)
-  else
-    NSXbR = BondNSxEstPs(parX0,pdat,tm,c,log(1+y[1]))
+  if weightLoss == 1                           #loss(P/maturity)
+    NSXbR = BondNSxEstPs(parX0,P,tm,c,log(1+y[1]),0,1.0./tm)
+  else                                         #loss(P)
+    NSXbR = BondNSxEstPs(parX0,P,tm,c,log(1+y[1]))
   end
 end
-println("\nEstimates: ",round.(NSXbR,digits=3))
+
+println("\nParameter estimates: ")
+printTable(NSXbR,[""],["b0","b1","b2","tau","b3","tau2"])
 #----------------------------------------------------------------------------
 
-#calculate implied rates (spot, forward, yield to maturity) to plot
-
-tmFig = range(1e-8,stop=maximum(tm),length=101)           #maturities to plot
-(shx,fhx,dhx) = BondNSxPs(tmFig,NSXbR[1],NSXbR[2],NSXbR[3],NSXbR[4],NSXbR[5],NSXbR[6])
-shx = exp.(shx) .- 1     #effective interest rate
-fhx = exp.(fhx) .- 1
-println("\nImplied spot rates (NSXbR): ",round.(100*shx[[1:3;end-3:end]],digits=3))
-
-n    = length(c)
-ytmx = fill(NaN,n)
-for i = 1:n                #loop over bonds
-  local ti,s,f,d,Qx
+ytmx = fill(NaN,n)            #model implied ytm
+for i = 1:n
+  local ti,d,Qx
   ti      = mod(tm[i],1):tm[i]
-  (s,f,d) = BondNSxPs(ti,NSXbR[1],NSXbR[2],NSXbR[3],NSXbR[4],NSXbR[5],NSXbR[6])
-  Qx      = sum(d.*c[i]) + d[end]          #implied bond price
+  d       = BondNSxPs(ti,NSXbR...)[3]    #... expands into NSXbR[1],NSXbR[2],...
+  Qx      = sum(d.*c[i]) + d[end]     #model implied bond price
   #println(ti)
   ytmx[i] = BondYieldToMatPs(Qx,c[i],ti,1,1,0.05,1e-7)[1]
 end
-println("\nImplied ytm (NSXbR): ",round.(100*ytmx,digits=3))
+
+println("\nActual and model ytm, %: ")
+printTable([y ytmx]*100,["ytm actual","ytm model"],string.(tm),width=15,cell00="maturity")
+#----------------------------------------------------------------------------
+
+#calculate model implied rates (spot, forward, yield to maturity) to plot
+
+tmFig      = [1e-8;0.1:0.1:16]           #maturities to plot
+(shx,fhx,) = BondNSxPs(tmFig,NSXbR...)
+shx        = exp.(shx) .- 1     #effective interest rate
+fhx        = exp.(fhx) .- 1
+
+println("\nmodel spot and forward rates, %: ")
+printTable([shx fhx]*100,["spot","forward"],string.(tmFig),width=15,cell00="maturity")
 #----------------------------------------------------------------------------
 
 #Comment out this if you do not have PyPlot installed.
@@ -112,5 +114,3 @@ figure()
   ylim(0.04,0.14)
   #display(gcf())            #uncomment in Atom/Juno
 #----------------------------------------------------------------------------
-
-println("done")
