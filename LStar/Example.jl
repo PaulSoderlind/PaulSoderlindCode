@@ -13,13 +13,13 @@
 #  Paul.Soderlind@unisg.ch   18 January 2013, to Julia Nov 2015
 #------------------------------------------------------------------------------
 
+using Statistics, Dates, DelimitedFiles, LinearAlgebra, Optim, ForwardDiff
 
-using Statistics, DelimitedFiles, LinearAlgebra, Optim, ForwardDiff
-
-include("FindNoNaNPs.jl")
-include("NewEst3Ps.jl")
-include("OlsPs.jl")
-include("OlsLStar3Ps.jl")
+include("jlFiles/FindNoNaNPs.jl")
+include("jlFiles/NewEst3Ps.jl")
+include("jlFiles/OlsPs.jl")
+include("jlFiles/OlsLStar3Ps.jl")
+include("jlFiles/printmat.jl")
 #------------------------------------------------------------------------------
 
 x     = readdlm("CTData.csv",',')      #date, FXV, Return_CT, SP, Ty
@@ -42,38 +42,39 @@ gcKeep = [NaN;NaN]                       #(gamma,c) set to NaN if estimated in N
 #gcKeep = [NaN;1.3]                      #or this
 
 
-w = zeros(T,0)
+w = zeros(T,0)                           #no regressors without "regimes": empty vector
 (theta,Stdtheta,fnOutput) = OlsLStar3Ps(Re_CT,[ones(T) SP Ty],w,true,z,gM,cM,gcKeep)
 
 if all(isnan.(gcKeep))
   println("\n","theta is [g;c;b_low;b_high;(slopes without regimes, if any)]")
+  rowNames = ["γ";"c";string.("b",1:3,"_L");string.("b",1:3,"_H")]
 elseif isnan.(gcKeep) == [true;false]
   println("\n","theta is [g;b_low;b_high;(slopes without regimes, if any)]")
+  rowNames = ["γ";string.("b",1:3,"_L"); string.("b",1:3,"_H")]
 elseif isnan.(gcKeep) == [false;true]
   println("\n","theta is [c;b_low;b_high;(slopes without regimes, if any)]")
+  rowNames = ["c";string.("b",1:3,"_L");string.("b",1:3,"_H")]
 end
-println("[theta Stdtheta]")
-display(round.([theta Stdtheta],digits=3))
 
-println("\n","difference of slope (b, high minus low state), t-stat")
-display(round.(fnOutput.slopeDiff,digits=3))
-println("-----------------------------------------------------")
+println("Estimates and t-stats")
+printTable([theta Stdtheta],["coef","t-stat"],rowNames)
 
+println("\n","difference of slope (b, high minus low state)")
+printTable(fnOutput.slopeDiff,["coef","t-stat"],string.("b",1:3))
 #------------------------------------------------------------------------------
 
 #Plot of the loss function. Comment out this if you do not have PyPlot installed.
-
 using PyPlot
-close("all")
+#PyPlot.svg(true)           #for ipynb notebooks
 
-PyPlot.PyObject(PyPlot.axes3D)          #to activate mplot3
-fig = figure(figsize=(16,16/1.2))
+using3D()                   #active 3D plotting
+fig = figure(figsize=(12,8))
 ax = gca(projection="3d")
-  surf(gM,cM,copy(fnOutput.sseM'),rstride=2,cstride=2,cmap=ColorMap("summer"),alpha=0.8)
+  surf(gM,cM,fnOutput.sseM',rstride=2,cstride=2,cmap=ColorMap("summer"),alpha=0.8)
   scatter(fnOutput.gcHat[1],fnOutput.gcHat[2],zs=minimum(fnOutput.sseM),s=200,color="k")
   ax.view_init(elev=20.0, azim=10)
-  title("Sum of squared residuals (optimum at dot)")
+  title("Sum of squared residuals (optimum at the dot)")
   xlabel(L"$\gamma$")
   ylabel(L"$c$")
+  #display(gcf())          #uncomment in Atom/Juno
 #------------------------------------------------------------------------------
-
