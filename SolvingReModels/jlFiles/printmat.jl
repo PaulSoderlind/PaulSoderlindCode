@@ -7,7 +7,7 @@ Print all elements of matrix with predefined formatting.
 # Input
 - `fh::IO`:            (optional) file handle. If not supplied, prints to screen
 - `x::Array`:          string, date or array to print
-- `width::Int`:        (keyword) scalar, width of printed cells
+- `width::Int`:        (keyword) scalar, minimum width of printed cells
 - `prec::Int`:         (keyword) scalar, precision of printed cells
 - `NoPrinting::Bool`:  (keyword) bool, true: no printing, just return formatted string
 - `StringFmt::String`: (keyword) string, "", "html", "csv"
@@ -15,15 +15,27 @@ Print all elements of matrix with predefined formatting.
 # Output
 - str         (if NoPrinting) string, (otherwise nothing)
 
-# Examples. Try printing the following arrays:
-- x = [11 12;21 22]
-- x = Any[1 "ab"; Date(2018,10,7) 3.14]
+# Examples
+```
+x = [11 12;21 22]
+printmat(x)
+```
+```
+x = Any[1 "ab"; Date(2018,10,7) 3.14]
+printmat(x,width=20)
+```
+Can also call as
+```
+opt = Dict(:width=>10,:prec=>3,:NoPrinting=>false,:StringFmt=>"")
+printmat(x;opt...)     #notice , and ...
+```
+(not all keywords are needed)
 
-# Uses
+# Requires
+- Dates
 - fmtNumPs
 
 # To do
-- use Dict() for the options, width etc?
 
 
 Paul.Soderlind@unisg.ch
@@ -80,175 +92,6 @@ printmat(x;width=10,prec=3,NoPrinting=false,StringFmt="") = printmat(stdout::IO,
 
 #------------------------------------------------------------------------------
 """
-    printmat2
-
-Call on printmat twice: to print to screen and then to an open file (IOStream)
-"""
-function printmat2(fh,x;width=10,prec=3,NoPrinting=false,StringFmt="")
-  printmat(x,width=width,prec=prec,NoPrinting=NoPrinting,StringFmt=StringFmt)       #to screen
-  if isa(fh,IOStream) && isopen(fh)
-    printmat(fh,x,width=width,prec=prec,NoPrinting=NoPrinting,StringFmt=StringFmt)  #to file
-  end
-end
-#------------------------------------------------------------------------------
-
-
-#------------------------------------------------------------------------------
-"""
-    writeElementPs(iob,x,i,j,width,prec,StringFmt)
-
-Writes one element to iob, formatting depends on type
-"""
-function writeElementPs(iob,x,i,j,width,prec,StringFmt)
-
-  if isa(x[i,j],AbstractFloat)         #Float
-    write(iob,fmtNumPs(x[i,j],width,prec,"right",StringFmt))
-  elseif isa(x[i,j],Union{Int,String}) #Int, String
-    write(iob,fmtNumPs(x[i,j],width,0,"right",StringFmt))
-  elseif isa(x[i,j],Bool)              #Bool, BitArrays, as 0/1, left
-    write(iob,fmtNumPs(x[i,j]+0,width,0,"right",StringFmt))
-  elseif isa(x[i,j],Nothing)           #Nothing, as ""
-    write(iob,fmtNumPs("",width,0,"right",StringFmt))
-  else                                 #other types (Missing,Date,...), right
-    write(iob,fmtNumPs(x[i,j],width,0,"right",StringFmt))
-  end
-
-  return nothing
- end
-#------------------------------------------------------------------------------
-
-
-#------------------------------------------------------------------------------
-"""
-    fmtNumPs(z,width=10,prec=2,justify="right",StringFmt="")
-
-Create a formatted string of a number. With prec=0, it can be used Bools and Strings
-
-
-
-# Remark
-- with prec=0, the function can be used for non-floats (incl. Bools and Strings)
-- The Formatting.jl package provides more elegant solutions:
-  fmt  = FormatSpec(string(">",width,".",prec,"f"))   #right justified, else "<"
-  fmt  = FormatSpec(string(">",wid,"d"))              #for Int
-  str  = Formatting.fmt(fmt1,z))
-
-"""
-function fmtNumPs(z,width=10,prec=2,justify="right",StringFmt="")
-
-  if prec > 0                                     #if decimal number
-    z   = round(z,digits=prec)                    #101.23
-    str = split(string(z),'.')
-    if length(str) > 1
-      strR  = string(".",rpad(str[2],prec,"0"))   #.23
-      strLR = string(str[1],strR)                 #"101" * ".23"
-    else                                          #eg. NaN, missing
-      strLR = string(z)
-    end
-  else
-    isa(z,AbstractFloat) && (z = round(Int,z))    #for Floats
-    strLR = string(z)                             #
-  end
-
-  if justify == "left"                            #justification
-    strLR = rpad(strLR,width)
-  else
-    strLR = lpad(strLR,width)
-  end
-
-  if StringFmt == "html"                          #html or csv formatting
-    strLR = string("<td>",strLR,"</td>")
-  elseif StringFmt == "csv"
-    strLR = string(strLR,",")
-  end
-
-  return strLR
-
-end
-#------------------------------------------------------------------------------
-
-
-#------------------------------------------------------------------------------
-"""
-    printlnPs([fh::IO],z...;width=10,prec=3)
-
-Subsitute for println, with predefined formatting.
-
-
-# Input
-- `fh::IO`:    (optional) file handle. If not supplied, prints to screen
-- `z::String`: string, numbers and arrays to print
-
-Paul.Soderlind@unisg.ch
-
-"""
-function printlnPs(fh::IO,z...;width=10,prec=3)
-
-  for x in z                              #loop over inputs in z...
-    if isa(x,Union{String,Date,DateTime,Missing})
-      print(fh,lpad(x,width))
-    elseif isa(x,Nothing)
-      print(fh,"")
-    else                                         #other types
-      iob = IOBuffer()
-      for i = 1:length(x)
-        if isa(x[i],AbstractFloat)               #Float
-          write(iob,fmtNumPs(x[i],width,prec,"right"))
-        elseif isa(x[i],Nothing)                 #Nothing
-          write(iob,lpad("",width))
-        else                                     #Integer, etc
-          write(iob,lpad(x[i],width))
-        end
-      end
-      print(fh,String(take!(iob)))
-    end
-  end
-
-  print(fh,"\n")
-
-end
-                      #when fh is not supplied: printing to screen
-printlnPs(z...;width=10,prec=3) = printlnPs(stdout::IO,z...,width=width,prec=prec)
-#------------------------------------------------------------------------------
-
-
-#------------------------------------------------------------------------------
-"""
-    println2Ps
-
-Call on printlnPs twice: to print to screen and then to an open file (IOStream)
-"""
-function println2Ps(fh::IO,z...;width=10,prec=3)
-  printlnPs(z...,width=width,prec=prec)              #to screen
-  if isa(fh,IOStream) && isopen(fh)
-    printlnPs(fh::IO,z...,width=width,prec=prec)     #to file
-  end
-end
-#------------------------------------------------------------------------------
-
-
-#------------------------------------------------------------------------------
-function printblue(x...)
-  foreach(z->printstyled(z,color=:blue,bold=true),x)
-  print("\n")
-end
-function printred(x...)
-  foreach(z->printstyled(z,color=:red,bold=true),x)
-  print("\n")
-end
-function printmagenta(x...)
-  foreach(z->printstyled(z,color=:magenta,bold=true),x)
-  print("\n")
-end
-function printyellow(x...)
-  foreach(z->printstyled(z,color=:yellow,bold=true),x)
-  print("\n")
-end
-#------------------------------------------------------------------------------
-
-
-#------------------------------------------------------------------------------
-"""
     printTable([fh::IO],x,colNames=[],rowNames=[];
                width=10,prec=3,NoPrinting=false,StringFmt="",cell00="")
 
@@ -261,7 +104,7 @@ and data matrix (the rest).
 - `x::Array`:          (of numbers, dates, strings, ...) to print
 - `colNames::Array`:   of strings with column headers
 - `rowNames::Array`:   of strings with row labels
-- `width::Int`:        (keyword) scalar, width of printed cells. [10]
+- `width::Int`:        (keyword) scalar, minimum width of printed cells. [10]
 - `prec::Int`:         (keyword) scalar, precision of printed cells. [3]
 - `NoPrinting::Bool`:  (keyword) bool, true: no printing, just return formatted string [false]
 - `StringFmt::String`: (keyword) string, "", "html", "csv"
@@ -275,8 +118,15 @@ and data matrix (the rest).
 xA = [1 "ab" "abc"; "ccc" 3.14 missing]
 printTable(xA,colNames,["1";"4"],width=12,prec=2)
 ```
+Can also call as
+```
+opt = Dict(:width=>10,:prec=>3,:NoPrinting=>false,:StringFmt=>"",:cell00=>"")
+printTable(x;opt...)     #notice , and ...
+```
+(not all keywords are needed)
 
-# Uses
+# Requires
+- Dates
 - printmat
 
 """
@@ -349,6 +199,65 @@ printTable(stdout::IO,x,colNames,rowNames,width=width,prec=prec,NoPrinting=NoPri
 
 #------------------------------------------------------------------------------
 """
+    printlnPs([fh::IO],z...;width=10,prec=3)
+
+Subsitute for println, with predefined formatting.
+
+
+# Input
+- `fh::IO`:    (optional) file handle. If not supplied, prints to screen
+- `z::String`: string, numbers and arrays to print
+
+Paul.Soderlind@unisg.ch
+
+"""
+function printlnPs(fh::IO,z...;width=10,prec=3)
+
+  for x in z                              #loop over inputs in z...
+    if isa(x,Union{String,Date,DateTime,Missing})
+      print(fh,lpad(x,width))
+    elseif isa(x,Nothing)
+      print(fh,"")
+    else                                         #other types
+      iob = IOBuffer()
+      for i = 1:length(x)
+        if isa(x[i],AbstractFloat)               #Float
+          write(iob,fmtNumPs(x[i],width,prec,"right"))
+        elseif isa(x[i],Nothing)                 #Nothing
+          write(iob,lpad("",width))
+        else                                     #Integer, etc
+          write(iob,lpad(x[i],width))
+        end
+      end
+      print(fh,String(take!(iob)))
+    end
+  end
+
+  print(fh,"\n")
+
+end
+                      #when fh is not supplied: printing to screen
+printlnPs(z...;width=10,prec=3) = printlnPs(stdout::IO,z...,width=width,prec=prec)
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+"""
+    printmat2
+
+Call on printmat twice: to print to screen and then to an open file (IOStream)
+"""
+function printmat2(fh,x;width=10,prec=3,NoPrinting=false,StringFmt="")
+  printmat(x,width=width,prec=prec,NoPrinting=NoPrinting,StringFmt=StringFmt)       #to screen
+  if isa(fh,IOStream) && isopen(fh)
+    printmat(fh,x,width=width,prec=prec,NoPrinting=NoPrinting,StringFmt=StringFmt)  #to file
+  end
+end
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+"""
     printTable2
 
 Call on printTable2 twice: to print to screen and then to an open file (IOStream)
@@ -363,3 +272,149 @@ function printTable2(fh,x,colNames=[],rowNames=[];width=10,prec=3,NoPrinting=fal
   end
 end
 #------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+"""
+    println2Ps
+
+Call on printlnPs twice: to print to screen and then to an open file (IOStream)
+"""
+function println2Ps(fh::IO,z...;width=10,prec=3)
+  printlnPs(z...,width=width,prec=prec)              #to screen
+  if isa(fh,IOStream) && isopen(fh)
+    printlnPs(fh::IO,z...,width=width,prec=prec)     #to file
+  end
+end
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+"""
+    writeElementPs(iob,x,i,j,width,prec,StringFmt)
+
+Writes one element to iob, formatting depends on type
+"""
+function writeElementPs(iob,x,i,j,width,prec,StringFmt)
+
+  if isa(x[i,j],AbstractFloat)         #Float
+    write(iob,fmtNumPs(x[i,j],width,prec,"right",StringFmt))
+  elseif isa(x[i,j],Union{Int,String}) #Int, String
+    write(iob,fmtNumPs(x[i,j],width,0,"right",StringFmt))
+  elseif isa(x[i,j],Bool)              #Bool, BitArrays, as 0/1, left
+    write(iob,fmtNumPs(x[i,j]+0,width,0,"right",StringFmt))
+  elseif isa(x[i,j],Nothing)           #Nothing, as ""
+    write(iob,fmtNumPs("",width,0,"right",StringFmt))
+  else                                 #other types (Missing,Date,...), right
+    write(iob,fmtNumPs(x[i,j],width,0,"right",StringFmt))
+  end
+
+  return nothing
+ end
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+
+#One of the two subsequent functions is needed for handling cases like "1.5e-6"
+#This should not be necessary after Julia 1.6
+
+#fmtNumPsX(fmt,z) = @eval Printf.@sprintf($fmt,$z)   #slow fallback solution
+
+function fmtNumPsC(fmt,z)                           #c fallback solution
+  if ismissing(z) || isnan(z) || isinf(z)    #asprintf does not work for these cases
+    str = string(z)
+  else
+    strp = Ref{Ptr{Cchar}}(0)
+    len = ccall(:asprintf,Cint,(Ptr{Ptr{Cchar}},Cstring,Cdouble...),strp,fmt,z)
+    str = unsafe_string(strp[],len)
+    Libc.free(strp[])
+  end
+  return str
+end
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+"""
+    fmtNumPs(z,width=10,prec=2,justify="right",StringFmt="")
+
+Create a formatted string of a number. With prec=0, it can be used Bools and Strings
+
+
+
+# Remark
+- with prec=0, the function can be used for non-floats (incl. Bools and Strings)
+- The Formatting.jl package provides more elegant solutions:
+  fmt  = FormatSpec(string(">",width,".",prec,"f"))   #right justified, else "<"
+  fmt  = FormatSpec(string(">",wid,"d"))              #for Int
+  str  = Formatting.fmt(fmt1,z))
+
+# Requires
+- Dates
+
+"""
+function fmtNumPs(z,width=10,prec=2,justify="right",StringFmt="")
+
+  if (prec > 0) && !ismissing(z) && !isnan(z)  && !isinf(z)  #example: 101.0234, prec=3
+    zRound = round(z,digits=prec)
+    str = split(string(zRound),'.')
+    if length(str) > 1 && !occursin("e",str[2])   #skip "1.5e-6"
+      strR  = string(".",rpad(str[2],prec,"0"))   #.23
+      strLR = string(str[1],strR)                 #"101" * ".23"
+    elseif occursin("e",str[2])                   #"1.5e-6" -> " 0.0000015" if prec=7
+      fmt = "%$(width).$(prec)f"
+      #strLR = fmtNumPsX(fmt,zRound)               #slow fallback solution
+      strLR = fmtNumPsC(fmt,zRound)                #C fallback solution
+    else
+      strLR = string(zRound)
+    end
+  else
+    (isa(z,AbstractFloat) && !isnan(z) && !isinf(z)) && (z = round(Int,z))  #Float -> Int
+    strLR = string(z)
+  end
+
+  if justify == "left"                            #justification
+    strLR = rpad(strLR,width)
+  else
+    strLR = lpad(strLR,width)
+  end
+
+  if StringFmt == "html"                          #html or csv formatting
+    strLR = string("<td>",strLR,"</td>")
+  elseif StringFmt == "csv"
+    strLR = string(strLR,",")
+  end
+
+  return strLR
+
+end
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+function printblue(x...)
+  foreach(z->printstyled(z,color=:blue,bold=true),x)
+  print("\n")
+end
+function printred(x...)
+  foreach(z->printstyled(z,color=:red,bold=true),x)
+  print("\n")
+end
+function printmagenta(x...)
+  foreach(z->printstyled(z,color=:magenta,bold=true),x)
+  print("\n")
+end
+function printyellow(x...)
+  foreach(z->printstyled(z,color=:yellow,bold=true),x)
+  print("\n")
+end
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+function printwhere(txt)
+  println(@__FILE__," ",@__LINE__," ",txt)
+end
+#------------------------------------------------------------------------------
+

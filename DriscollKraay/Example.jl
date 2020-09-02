@@ -69,7 +69,7 @@ println("Compare the results to Table 2 in Hoechle, 2007, 'Robust Standard Error
 println("\nHszDk5dwPs, effectively weighting all periods equally, irrespective of number of obs")
 x = ones(T,1)
 z = cat(aVol,Size,TRMS2,TRMS,ones(T,N),dims=3)
-fnO = HszDk5dwPs(BA,x,z,false,8,true)
+fnO = HszDk5dwPs(BA,x,z,false,8,1)
 theta    = fnO.theta
 stdDKj   = fnO.stdDKj
 
