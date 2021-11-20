@@ -13,5 +13,5 @@ Julia code for panel regressions with Driscoll-Kraay standard errors
 
 5.  DVMS.pdf: a paper using this method
 
-6. The current version has been tested on Julia 1.0.0 - 1.2.0.
+6. The current version has been tested on Julia 1.3 to 1.6.
 
