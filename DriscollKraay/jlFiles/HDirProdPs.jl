@@ -30,6 +30,8 @@ julia> HDirProdPs(x,y)
 """
 function HDirProdPs(x,y)
 
+  Base.require_one_based_indexing(x,y)
+
   Kx = size(x,2)       #columns in x
   Ky = size(y,2)       #columns in y
 

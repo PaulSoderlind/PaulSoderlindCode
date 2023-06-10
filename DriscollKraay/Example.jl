@@ -2,7 +2,7 @@
 #  Example.jl
 #
 #
-#  This file imports the data from a jld file with Hoechle's data and then
+#  This file imports the data from csv files with Hoechle's data and then
 #  runs the regressions.
 #
 #  Compare the results to Table 2 in Hoechle, 2007, "Robust Standard Errors...",
@@ -19,10 +19,10 @@
 
 using Printf, DelimitedFiles, LinearAlgebra, Statistics
 
-include("FindNoNaNPs.jl")
-include("HDirProdPs.jl")
-include("iterationPrintPs.jl")
-include("HszDk5dwPs.jl")
+include("jlFiles/FindNoNaNPs.jl")
+include("jlFiles/HDirProdPs.jl")
+include("jlFiles/iterationPrintPs.jl")
+include("jlFiles/HszDk5dwPs.jl")
 #------------------------------------------------------------------------------
 
 #using JLD

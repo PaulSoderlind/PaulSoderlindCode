@@ -46,6 +46,8 @@ function HszDk5dwPs(y,x,z,yhatQ=false,m=0,ScaleByNtQ=0,vvzx=[],wM=[])
 #  Paul.Soderlind@unisg.ch   May 2010, to Julia Oct 2015
 #------------------------------------------------------------------------------
 
+  Base.require_one_based_indexing(y,x,z,vvzx,wM)
+
   if isempty(vvzx)
     vvzx = 1:(size(x,2)*size(z,3))
   end
