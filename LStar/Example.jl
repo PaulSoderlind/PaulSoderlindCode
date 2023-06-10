@@ -69,12 +69,12 @@ using PyPlot
 
 using3D()                   #active 3D plotting
 fig = figure(figsize=(12,8))
-ax = gca(projection="3d")
+ax = PyPlot.axes(projection="3d")
   surf(gM,cM,fnOutput.sseM',rstride=2,cstride=2,cmap=ColorMap("summer"),alpha=0.8)
   scatter(fnOutput.gcHat[1],fnOutput.gcHat[2],zs=minimum(fnOutput.sseM),s=200,color="k")
   ax.view_init(elev=20.0, azim=10)
   title("Sum of squared residuals (optimum at the dot)")
   xlabel(L"$\gamma$")
   ylabel(L"$c$")
-  #display(gcf())          #uncomment in Atom/Juno
+  #display(gcf())          #uncomment in VsCode
 #------------------------------------------------------------------------------

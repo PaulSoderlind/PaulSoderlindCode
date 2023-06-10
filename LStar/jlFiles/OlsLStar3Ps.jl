@@ -48,6 +48,8 @@ function OlsLStar3Ps(y,x0,w,ExciseIt,z,gM,cM,gcKeep=[],NWm=0)
 #  Paul.Soderlind@unisg.ch, Jan 2013, to Julia Nov 2015
 #----------------------------------------------------------------------------
 
+  Base.require_one_based_indexing(y,x0,w,z,gM,cM)
+
   (Ng,Nc) = (length(gM),length(cM))
   (k,kw)  = (size(x0,2),size(w,2))
 

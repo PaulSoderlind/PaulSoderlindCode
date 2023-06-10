@@ -23,6 +23,8 @@ Newey and West, 1987 (Econometrica),  Newey, 1985 (Journal of Econometrics)
 """
 function NewEst3Ps(g0,m=0,HHQ=false)
 
+  Base.require_one_based_indexing(g0)
+
   (T,q) = (size(g0,1),size(g0,2))        #g is Txq
   m     = min(m,T-1)                     #number of lags
 

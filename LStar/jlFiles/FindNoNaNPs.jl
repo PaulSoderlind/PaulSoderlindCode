@@ -20,6 +20,8 @@ Paul.Soderlind@unisg.ch
 """
 function FindNNPs(x...;Keepdim=1)
 
+  Base.require_one_based_indexing(x)
+
   xNum  = length(x)
   T     = size(x[1],Keepdim)                 #length of output
 

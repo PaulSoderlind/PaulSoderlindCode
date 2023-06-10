@@ -28,6 +28,8 @@ Do OLS of y on x, for one dependent variable or SURE with same regressors
 """
 function OlsPs(y,x,ExciseIt=false,UnExciseIt=false,SkipCovbIt=false)
 
+  Base.require_one_based_indexing(y,x)
+
   (T,n) = (size(y,1),size(y,2))
 
   if ExciseIt
