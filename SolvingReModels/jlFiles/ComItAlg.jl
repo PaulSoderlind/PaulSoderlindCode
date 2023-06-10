@@ -41,6 +41,8 @@ function ComItAlg(A,B,Q,R,U,bet,n1,n2,cutoff=1.0)
 #  Paul Söderlind, Paul.Soderlind@unisg.ch, Aug 2000, to Julia Jan 2016
 #----------------------------------------------------------------------------
 
+  Base.require_one_based_indexing(A,B,Q,R,U)
+
   Q = (Q + Q')/2                #to make symmetric
   R = (R + R')/2
 

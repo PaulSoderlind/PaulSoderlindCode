@@ -10,4 +10,4 @@ Julia code for solve RE models.
 
 3. MonEEA199812.pdf: paper on these algorithms, published as Paul Söderlind, "Solution and Estimation of RE Macromodels with Optimal Policy," European Economic Review, 43, 813-823, 1999
 
-4. The current version has been tested on Julia 1.3 to 1.6.
+4. The current version has been tested on Julia 1.9.

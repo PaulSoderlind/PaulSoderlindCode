@@ -65,7 +65,7 @@ figure()
   plot(1:T,ypii_Simp)
   title("Simple rule: impulse response to a one std of price shock")
   legend(["Output","Inflation","Short interest rate"])
-  #display(gcf())            #uncomment in Atom/Juno
+  #display(gcf())            #uncomment in VsCode
 #-----------------------------------------------------------------------
 
                          #COMMITMENT
@@ -86,7 +86,7 @@ figure()
   plot(1:T,ypii_Commit)
   title("Commitment: impulse response to a one std of price shock")
   legend(["Output","Inflation","Short interest rate"])
-  #display(gcf())            #uncomment in Atom/Juno
+  #display(gcf())            #uncomment in VsCode
 #-----------------------------------------------------------------------
 
                          #DISCRETION
@@ -109,5 +109,5 @@ figure()
   plot(1:T,ypii_Disc)
   title("Discretion: impulse response to a one std of price shock")
   legend(["Output","Inflation","Short interest rate"])
-  #display(gcf())            #uncomment in Atom/Juno
+  #display(gcf())            #uncomment in VsCode
 #-----------------------------------------------------------------------

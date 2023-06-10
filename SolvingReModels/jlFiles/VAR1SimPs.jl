@@ -17,6 +17,7 @@ Paul.Soderlind@unisg.ch, to Julia Nov 2015
 
 """
 function VAR1SimPs(A,epsilon,T,x0=0.0)
+  Base.require_one_based_indexing(A,epsilon,x0)
 
   n = size(A,1)
 
