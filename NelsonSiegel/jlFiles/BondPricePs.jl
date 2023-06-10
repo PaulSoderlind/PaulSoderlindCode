@@ -115,6 +115,8 @@ Can also be used for general IRR calculations. Works with arbitrary coupon perio
 """
 function BondYieldToMatPs(Q,c0,t,FaceValue=1,method=1,yLH=[-0.1;0.5],tol=1e-7)
 
+  Base.require_one_based_indexing(yLH)
+
   if method == 1                   #Newton-Raphson
 
     y = yLH[1]

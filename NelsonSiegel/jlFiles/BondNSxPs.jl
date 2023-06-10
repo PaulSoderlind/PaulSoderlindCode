@@ -91,6 +91,8 @@ function BondNSxEstPs(par0,Q,tm,c,s0,ytmLoss=0,weight=1.0)
 #  Paul.Soderlind@unisg.ch, April 2002, to Julia Nov 2015
 #------------------------------------------------------------------------------
 
+  Base.require_one_based_indexing(par0)
+
   Qtc = [Q tm c]
 
   if in(length(par0),[4,6]) && !isempty(s0)
@@ -151,6 +153,8 @@ function BondNSxLossPs(b,Qtc,s0,ytmLoss=0,weight=1.0)
 #  Calls on: BondNSxPs, BondYieldToMatPs (if ytmLoss==1)
 #
 #------------------------------------------------------------------------------
+
+  Base.require_one_based_indexing(b)
 
   (Q,tm,c) = [Qtc[:,i] for i=1:3]       #data on bond prices, time to maturity, coupons
   n        = length(c)           #number of bonds

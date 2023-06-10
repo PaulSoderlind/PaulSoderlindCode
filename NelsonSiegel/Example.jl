@@ -38,6 +38,8 @@ y  = [ 7.75;     6.835;    6.655;     6.41;      6.215;     6.195;
        6.41;     6.755;    7.01;      7.21;      7.325 ]
 
 n = length(y)       #number of bonds
+
+Base.require_one_based_indexing(tm,y)
 #----------------------------------------------------------------------------
 
 #transform the data
@@ -112,5 +114,5 @@ figure()
   legend(["Coupon rate","Yield to maturity","Estimated spot rate",
          "Estimated forward rate","Estimated yield to maturity"],loc=1)
   ylim(0.04,0.14)
-  #display(gcf())            #uncomment in Atom/Juno
+  #display(gcf())            #uncomment in VsCode
 #----------------------------------------------------------------------------
