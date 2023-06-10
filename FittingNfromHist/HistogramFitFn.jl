@@ -15,6 +15,8 @@ Paul Soderlind, February 2000, to Julia Dec 2016
 """
 function NormalHistLoss(par,Probs,Bounds)
 
+  Base.require_one_based_indexing(par,Probs,Bounds)
+
   n       = length(Bounds)                  #n bounds, n+1 categories
   (mu,s2) = (par[1],par[2]^2)               #square to avoid s<0
 
