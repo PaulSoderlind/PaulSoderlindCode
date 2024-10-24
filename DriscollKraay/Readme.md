@@ -3,15 +3,9 @@ Readme for DriscollKraay
 
 Julia code for panel regressions with Driscoll-Kraay standard errors
 
-1.  Example.ipynb/jl: example file
+As of October 2024, I recommend to use the panel regression routines in 
+my repository Financial Econometrics (https://github.com/PaulSoderlind/FinancialEconometrics) instead,
+in particular, the functions in `PanelOls.jl`. 
+They are quicker, more versatile (fixed effects) and handle unbalanced panels better. 
 
-2.  Data/.csv files: data from Hoechle 
-
-3.  jlFiles/HszDk5dwPs.jl: the main function
-
-4.  jlFiles/FindNoNaNPs.jl, HDirProdPs.jl and iterationPrintPs.jl are functions used by the main function
-
-5.  DVMS.pdf: a paper using this method
-
-6. The current version has been tested on Julia 1.9.
-
+I plan to update the example previously posted here to use those routines.
