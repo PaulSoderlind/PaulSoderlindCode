@@ -34,9 +34,6 @@ println("\nPooled OLS")
 x   = [vec(aVol') vec(Size') vec(TRMS2') vec(TRMS') vec(ones(T,N)')]
 y   = vec(BA')           #stack rows in column vector
 
-
-
-
 vv  = FindNN(y,x)
 (y,x) = (y[vv],x[vv,:])    #prune NaNs
 
@@ -54,13 +51,13 @@ printmat(b,Stdb,b./Stdb;colNames,rowNames,prec=4)
 x0 = cat(aVol,Size,TRMS2,TRMS,ones(T,N),dims=3)
 x  = permutedims(x0,[1,3,2])               #TxNxK -> TxKxN
 
-fnO = PanelOls(BA,x,0;FixNaNQ=true)       #no lags in covariance estimation
+fnO = PanelOls(BA,x,0;FixNaNQ=true)         #no lags in covariance estimation
 θ     = fnO.theta                           #coefs
-stdLS = sqrt.(diag(fnO.CovLS))          #standard errors from LS, White, DK
-stdW  = sqrt.(diag(fnO.CovW))
+stdLS = sqrt.(diag(fnO.CovLS))              #standard errors from LS, White, DK
+stdW  = sqrt.(diag(fnO.CovNW))
 
-fn8 = PanelOls(BA,x,8;FixNaNQ=true)       #8 lags in covariance estimation
-stdNW = sqrt.(diag(fn8.CovW))
+fn8 = PanelOls(BA,x,8;FixNaNQ=true)         #8 lags in covariance estimation
+stdNW = sqrt.(diag(fn8.CovNW))
 stdDK = sqrt.(diag(fn8.CovDK))
 
 
